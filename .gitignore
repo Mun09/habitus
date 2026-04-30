@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# verification artifacts (Playwright screenshots / MCP logs)
+/docs/screenshots/
+/.playwright-mcp/
+
+# loose screenshots that may land in the repo root during local QA
+/*.png
+/*.jpg
+/*.jpeg
+/*.webp
