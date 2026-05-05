@@ -7,7 +7,6 @@ import { Clock, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import { BADGE_LABELS, type Contractor } from "@/lib/mock/contractors";
-import { formatKRW } from "@/lib/utils";
 import { VerificationBadge } from "./verification-badge";
 
 export function ContractorCard({
@@ -17,7 +16,7 @@ export function ContractorCard({
   contractor: Contractor;
   index?: number;
 }) {
-  const { t, pick, locale } = useLocale();
+  const { t } = useLocale();
   return (
     <motion.div
       layout
@@ -32,7 +31,7 @@ export function ContractorCard({
         <div className="relative aspect-[5/4] overflow-hidden">
           <Image
             src={contractor.cover}
-            alt={pick(contractor.company)}
+            alt={contractor.company}
             fill
             sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
             className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -47,18 +46,18 @@ export function ContractorCard({
         </div>
         <div className="p-5">
           <div className="serif text-lg font-medium leading-tight">
-            {pick(contractor.company)}
+            {contractor.company}
           </div>
           <div className="text-xs text-muted-foreground mt-1">
-            {pick(contractor.name)} · {pick(contractor.region)}
+            {contractor.name} · {contractor.region}
           </div>
           <p className="mt-3 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-            {pick(contractor.bio)}
+            {contractor.bio}
           </p>
           <div className="mt-4 flex flex-wrap gap-1.5">
             {contractor.badges.slice(0, 2).map((b) => (
               <Badge key={b} variant="muted" className="text-[10px]">
-                {pick(BADGE_LABELS[b])}
+                {BADGE_LABELS[b]}
               </Badge>
             ))}
             {contractor.badges.length > 2 && (
@@ -73,16 +72,12 @@ export function ContractorCard({
                 {t("matching.startingPrice")}
               </div>
               <div className="text-sm font-semibold">
-                {locale === "ko"
-                  ? formatKRW(contractor.startingPrice)
-                  : `$${Math.round(contractor.startingPrice / 1300).toLocaleString()}`}
+                {`$${Math.round(contractor.startingPrice / 1300).toLocaleString()}`}
               </div>
             </div>
             <div className="inline-flex items-center gap-1 text-xs text-muted-foreground">
               <Clock className="h-3 w-3" />
-              {locale === "ko"
-                ? `${contractor.responseHours}시간 응답`
-                : `${contractor.responseHours}h reply`}
+              {`${contractor.responseHours}h reply`}
             </div>
           </div>
         </div>

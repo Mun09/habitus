@@ -18,7 +18,7 @@ export function Logo({ className }: { className?: string }) {
         />
         <circle cx="13.5" cy="13.5" r="1.6" fill="#3F4A3C" />
       </svg>
-      <span className="serif text-xl font-semibold tracking-tight">Gather</span>
+      <span className="serif text-xl font-semibold tracking-tight">Habitus</span>
     </div>
   );
 }

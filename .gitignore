@@ -49,3 +49,5 @@ next-env.d.ts
 /*.jpg
 /*.jpeg
 /*.webp
+
+.vercel

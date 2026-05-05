@@ -11,7 +11,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { FadeIn } from "@/components/common/fade-in";
 import { SectionHeading } from "@/components/common/section-heading";
-import { BanStatistics } from "@/components/aftercare/ban-statistics";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import { TRUST_FAQ, TRUST_LAYERS } from "@/lib/mock/bans";
 import { IMAGES } from "@/lib/mock/images";
@@ -19,20 +18,20 @@ import { IMAGES } from "@/lib/mock/images";
 const ICONS = [ShieldCheck, Sparkles, Lock, Scale];
 
 export default function TrustPage() {
-  const { t, pick, locale } = useLocale();
+  const { t } = useLocale();
 
   const reports = [
     {
-      title: locale === "ko" ? "2026 1분기 신뢰 보고서" : "Q1 2026 Trust Report",
-      sub: locale === "ko" ? "분쟁 18건, 영구 밴 9명" : "18 disputes, 9 permanent bans",
+      title: "Q1 2026 Trust Report",
+      sub: "18 disputes, 9 permanent bans",
     },
     {
-      title: locale === "ko" ? "2025 4분기 신뢰 보고서" : "Q4 2025 Trust Report",
-      sub: locale === "ko" ? "분쟁 14건, 영구 밴 7명" : "14 disputes, 7 permanent bans",
+      title: "Q4 2025 Trust Report",
+      sub: "14 disputes, 7 permanent bans",
     },
     {
-      title: locale === "ko" ? "2025 3분기 신뢰 보고서" : "Q3 2025 Trust Report",
-      sub: locale === "ko" ? "분쟁 11건, 영구 밴 6명" : "11 disputes, 6 permanent bans",
+      title: "Q3 2025 Trust Report",
+      sub: "11 disputes, 6 permanent bans",
     },
   ];
 
@@ -75,30 +74,15 @@ export default function TrustPage() {
                       <Icon className="h-5 w-5" />
                     </div>
                     <div className="serif text-lg font-medium mt-5">
-                      {locale === "ko" ? layer.titleKo : layer.titleEn}
+                      {layer.title}
                     </div>
                     <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                      {locale === "ko" ? layer.bodyKo : layer.bodyEn}
+                      {layer.body}
                     </p>
                   </div>
                 </FadeIn>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* Bans */}
-      <section className="py-16 bg-muted/40">
-        <div className="mx-auto max-w-7xl px-5 md:px-8">
-          <FadeIn>
-            <SectionHeading
-              title={t("aftercare.bans.title")}
-              body={t("aftercare.bans.body")}
-            />
-          </FadeIn>
-          <div className="mt-10">
-            <BanStatistics />
           </div>
         </div>
       </section>
@@ -117,7 +101,7 @@ export default function TrustPage() {
               <FadeIn key={i} delay={i * 0.06}>
                 <div className="rounded-3xl border border-border bg-card p-6 h-full flex flex-col">
                   <div className="text-xs uppercase tracking-wider text-primary">
-                    {locale === "ko" ? "보고서" : "Report"}
+                    Report
                   </div>
                   <div className="serif text-xl font-medium mt-2">{r.title}</div>
                   <div className="text-sm text-muted-foreground mt-2">{r.sub}</div>
@@ -142,8 +126,8 @@ export default function TrustPage() {
             <Accordion type="single" collapsible>
               {TRUST_FAQ.map((q, i) => (
                 <AccordionItem key={i} value={`q-${i}`}>
-                  <AccordionTrigger>{pick(q.q)}</AccordionTrigger>
-                  <AccordionContent>{pick(q.a)}</AccordionContent>
+                  <AccordionTrigger>{q.q}</AccordionTrigger>
+                  <AccordionContent>{q.a}</AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>

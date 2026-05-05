@@ -5,7 +5,7 @@ import { Logo } from "@/components/common/logo";
 import { useLocale } from "@/lib/i18n/locale-provider";
 
 export function Footer() {
-  const { t, locale } = useLocale();
+  const { t } = useLocale();
 
   const sections = [
     {
@@ -20,24 +20,23 @@ export function Footer() {
       title: t("footer.support"),
       links: [
         { href: "/trust", label: t("nav.trust") },
-        { href: "#", label: locale === "ko" ? "고객센터" : "Help Center" },
-        { href: "#", label: locale === "ko" ? "분쟁 신고" : "File a dispute" },
+        { href: "#", label: "Help Center" },
+        { href: "#", label: "File a dispute" },
       ],
     },
     {
       title: t("footer.company"),
       links: [
-        { href: "#", label: locale === "ko" ? "회사 소개" : "About" },
-        { href: "#", label: locale === "ko" ? "채용" : "Careers" },
-        { href: "#", label: locale === "ko" ? "뉴스" : "Press" },
+        { href: "#", label: "About" },
+        { href: "#", label: "Careers" },
+        { href: "#", label: "Press" },
       ],
     },
     {
       title: t("footer.legal"),
       links: [
-        { href: "#", label: locale === "ko" ? "이용약관" : "Terms" },
-        { href: "#", label: locale === "ko" ? "개인정보처리방침" : "Privacy" },
-        { href: "#", label: locale === "ko" ? "보증 약관" : "Warranty" },
+        { href: "#", label: "Terms" },
+        { href: "#", label: "Privacy" },
       ],
     },
   ];
@@ -73,8 +72,8 @@ export function Footer() {
       </div>
       <div className="border-t border-border">
         <div className="mx-auto max-w-7xl px-5 md:px-8 py-5 text-xs text-muted-foreground flex justify-between">
-          <span>© 2026 Gather Inc.</span>
-          <span>Prototype demo · {locale.toUpperCase()}</span>
+          <span>© 2026 Habitus Inc.</span>
+          <span>Prototype demo · EN</span>
         </div>
       </div>
     </footer>

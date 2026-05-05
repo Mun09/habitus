@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/dialog";
 
 function MatchingContent() {
-  const { t, pick } = useLocale();
+  const { t } = useLocale();
   const params = useSearchParams();
   const fromPlan = params.get("planId");
   const continueProject = params.get("continueProject");
@@ -107,7 +107,7 @@ function MatchingContent() {
               <div className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                 <MapPin className="h-3.5 w-3.5" />
                 <span>
-                  {pick({ ko: "기준 위치", en: "From" })}:{" "}
+                  From:{" "}
                   <span className="text-foreground font-medium">
                     {filters.userLocation.address}
                   </span>

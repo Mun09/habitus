@@ -1,11 +1,12 @@
 /**
- * 모든 이미지 경로는 여기서만 관리합니다.
- * 실제 사진 수령 시 이 파일의 URL만 교체하면 전체 사이트에 반영됩니다.
+ * All image paths are managed in this single file.
+ * To swap in real photos, replace only the URLs here — the rest of the
+ * site picks them up automatically.
  *
- * - `u(id)`     unsplash 임시 placeholder
- * - `local(p)`  `public/images/*` 경로 (실 사진으로 교체 시 사용)
+ * - `u(id)`     Unsplash placeholder helper
+ * - `local(p)`  `public/images/*` path (use once real assets land)
  *
- * 폴더 구조와 권장 파일명은 `public/images/README.md` 참고.
+ * See `public/images/README.md` for the folder layout and naming convention.
  */
 
 const u = (id: string, w = 1200) =>
@@ -15,14 +16,35 @@ const local = (path: string) => `/images/${path}`;
 
 export const IMAGES = {
   designDemo: {
-    before: local("design-demo/before.png"),
-    after: local("design-demo/after.png"),
+    before: local("design-demo/before.webp"),
+    after: local("design-demo/after.webp"),
+  },
+  scenarios: {
+    random: {
+      referenceSpace: local("scenarios/random/reference-space.webp"),
+      furniture: {
+        chair: local("scenarios/random/chair.webp"),
+        lamp: local("scenarios/random/lamp.webp"),
+      },
+      styles: [
+        local("scenarios/random/style-warm.webp"),
+        local("scenarios/random/style-scandinavian.webp"),
+        local("scenarios/random/style-vintage.webp"),
+        local("scenarios/random/style-cafe.webp"),
+        local("scenarios/random/style-natural.webp"),
+      ],
+    },
+    w8: {
+      studioEntry: local("scenarios/w8/w8_2.jpg"),
+      meetingBay: local("scenarios/w8/w8_3.jpg"),
+      tvLounge: local("scenarios/w8/w8_4.jpg"),
+      openLounge: local("scenarios/w8/w8_5.jpg"),
+    },
   },
   hero: {
     landing: u("1616486338812-3dadae4b4ace"),
     design: u("1505691938895-1758d7feb511"),
     matching: u("1618220179428-22790b461013"),
-    aftercare: u("1600585154340-be6161a56a0c"),
     trust: u("1600210492486-724fe5c67fb0"),
   },
   moodboard: {

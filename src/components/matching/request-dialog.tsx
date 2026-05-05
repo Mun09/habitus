@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Calendar, MessageSquare, ShieldCheck, Sparkles } from "lucide-react";
+import { Calendar, MessageSquare, Sparkles } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -21,23 +21,17 @@ import { Switch } from "@/components/ui/switch";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import { useDesignPlan } from "@/lib/design-plan";
 import { CATEGORIES } from "@/lib/mock/design-options";
-import { COST_BENCHMARK } from "@/lib/mock/materials";
-import { formatKRW } from "@/lib/utils";
 import type { Contractor } from "@/lib/mock/contractors";
 
 export function RequestDialog({ contractor }: { contractor: Contractor }) {
-  const { t, pick, locale } = useLocale();
-  const { plan, hasPlan, setAftercareUpgrade } = useDesignPlan();
+  const { t } = useLocale();
+  const { plan, hasPlan } = useDesignPlan();
   const [open, setOpen] = useState(false);
   const [attachPlan, setAttachPlan] = useState(true);
-  const [aftercare, setAftercare] = useState(plan?.aftercareUpgrade ?? false);
   const router = useRouter();
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (hasPlan && aftercare !== plan?.aftercareUpgrade) {
-      setAftercareUpgrade(aftercare);
-    }
     setOpen(false);
     toast.success(
       hasPlan && attachPlan
@@ -56,7 +50,7 @@ export function RequestDialog({ contractor }: { contractor: Contractor }) {
         <DialogHeader>
           <DialogTitle>{t("matching.request.title")}</DialogTitle>
           <DialogDescription>
-            {pick(contractor.company)} · {pick(contractor.name)}
+            {contractor.company} · {contractor.name}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} className="space-y-5">
@@ -82,11 +76,10 @@ export function RequestDialog({ contractor }: { contractor: Contractor }) {
                       {t("matching.request.attachPlan")}
                     </div>
                     <div className="text-sm font-medium mt-1 truncate">
-                      {pick(plan.styleLabel)}
+                      {plan.styleLabel}
                     </div>
                     <div className="text-[11px] text-muted-foreground mt-0.5">
-                      {plan.options.length}{" "}
-                      {pick({ ko: "개 옵션", en: "options" })} ·{" "}
+                      {plan.options.length} options ·{" "}
                       {t("matching.request.attachPlanBody")}
                     </div>
                   </div>
@@ -107,51 +100,15 @@ export function RequestDialog({ contractor }: { contractor: Contractor }) {
                         />
                       )}
                       <span className="text-muted-foreground uppercase tracking-wider text-[9px]">
-                        {pick(
-                          CATEGORIES.find((c) => c.key === o.category)?.label ?? {
-                            ko: "",
-                            en: "",
-                          }
-                        )}
+                        {CATEGORIES.find((c) => c.key === o.category)?.label ?? ""}
                       </span>
-                      {pick(o.name)}
+                      {o.name}
                     </span>
                   ))}
                 </div>
               )}
             </div>
           )}
-
-          {/* Aftercare option (pre-construction only) */}
-          <div className="rounded-2xl border border-border p-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <div className="text-xs uppercase tracking-wider text-secondary inline-flex items-center gap-1">
-                  <ShieldCheck className="h-3 w-3" />
-                  {t("matching.request.aftercareOption")}
-                </div>
-                <p className="text-sm text-foreground/80 mt-2 leading-relaxed">
-                  {t("matching.request.aftercareBody")}
-                </p>
-                <div className="mt-3 inline-flex items-baseline gap-2 rounded-full bg-secondary/10 px-3 py-1">
-                  <span className="serif text-base font-semibold text-secondary">
-                    {locale === "ko"
-                      ? formatKRW(Math.round(COST_BENCHMARK.ourQuote * 0.5))
-                      : `$${Math.round(
-                          (COST_BENCHMARK.ourQuote * 0.5) / 1300
-                        ).toLocaleString()}`}
-                  </span>
-                  <span className="text-[11px] text-muted-foreground">
-                    {locale === "ko" ? "공사비의 50%" : "50% of cost"}
-                  </span>
-                </div>
-                <p className="text-[11px] text-muted-foreground mt-2">
-                  {t("matching.request.aftercareNote")}
-                </p>
-              </div>
-              <Switch checked={aftercare} onCheckedChange={setAftercare} />
-            </div>
-          </div>
 
           <div>
             <label className="text-xs uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1.5 mb-2">

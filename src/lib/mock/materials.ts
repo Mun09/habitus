@@ -17,70 +17,70 @@ export type MaterialItem = {
 export const MATERIALS: MaterialItem[] = [
   {
     id: "m1",
-    category: { ko: "벽", en: "Walls" },
-    name: { ko: "친환경 페인트 (베이지)", en: "Low-VOC paint (beige)" },
+    category: "Walls",
+    name: "Low-VOC paint (beige)",
     brand: "Benjamin Moore",
     tier: "premium",
-    unit: { ko: "L", en: "L" },
+    unit: "L",
     qty: 24,
     unitPrice: 28000,
     alternatives: [
-      { name: { ko: "친환경 페인트 (보급)", en: "Eco paint (basic)" }, tier: "standard", unitPrice: 18000 },
-      { name: { ko: "일반 수성 페인트", en: "Standard latex" }, tier: "basic", unitPrice: 9500 },
+      { name: "Eco paint (basic)", tier: "standard", unitPrice: 18000 },
+      { name: "Standard latex", tier: "basic", unitPrice: 9500 },
     ],
   },
   {
     id: "m2",
-    category: { ko: "바닥", en: "Floor" },
-    name: { ko: "원목마루 (오크)", en: "Engineered oak floor" },
-    brand: "구정마루",
+    category: "Floor",
+    name: "Engineered oak floor",
+    brand: "Gujung Maru",
     tier: "premium",
-    unit: { ko: "㎡", en: "m²" },
+    unit: "m²",
     qty: 78,
     unitPrice: 145000,
     alternatives: [
-      { name: { ko: "강마루 (오크 패턴)", en: "Laminate oak" }, tier: "standard", unitPrice: 78000 },
-      { name: { ko: "장판 (모노륨)", en: "Vinyl sheet" }, tier: "basic", unitPrice: 18000 },
+      { name: "Laminate oak", tier: "standard", unitPrice: 78000 },
+      { name: "Vinyl sheet", tier: "basic", unitPrice: 18000 },
     ],
   },
   {
     id: "m3",
-    category: { ko: "조명", en: "Lighting" },
-    name: { ko: "다운라이트 (LED 7W)", en: "LED downlight 7W" },
+    category: "Lighting",
+    name: "LED downlight 7W",
     brand: "Philips",
     tier: "standard",
-    unit: { ko: "개", en: "ea" },
+    unit: "ea",
     qty: 22,
     unitPrice: 18000,
     alternatives: [
-      { name: { ko: "디밍 LED 다운라이트", en: "Dimmable LED downlight" }, tier: "premium", unitPrice: 38000 },
-      { name: { ko: "일반 LED", en: "Standard LED" }, tier: "basic", unitPrice: 7500 },
+      { name: "Dimmable LED downlight", tier: "premium", unitPrice: 38000 },
+      { name: "Standard LED", tier: "basic", unitPrice: 7500 },
     ],
   },
   {
     id: "m4",
-    category: { ko: "주방", en: "Kitchen" },
-    name: { ko: "자작 합판 상부장 + 인조대리석", en: "Birch ply cabinets + quartz top" },
+    category: "Kitchen",
+    name: "Birch ply cabinets + quartz top",
     tier: "premium",
-    unit: { ko: "세트", en: "set" },
+    unit: "set",
     qty: 1,
     unitPrice: 4800000,
     alternatives: [
-      { name: { ko: "MDF + 라미네이트 상판", en: "MDF + laminate top" }, tier: "standard", unitPrice: 2900000 },
-      { name: { ko: "PB + 인조 상판", en: "PB + faux top" }, tier: "basic", unitPrice: 1700000 },
+      { name: "MDF + laminate top", tier: "standard", unitPrice: 2900000 },
+      { name: "PB + faux top", tier: "basic", unitPrice: 1700000 },
     ],
   },
   {
     id: "m5",
-    category: { ko: "마감", en: "Finishing" },
-    name: { ko: "걸레받이 + 몰딩 패키지", en: "Skirting + molding package" },
+    category: "Finishing",
+    name: "Skirting + molding package",
     tier: "standard",
-    unit: { ko: "세트", en: "set" },
+    unit: "set",
     qty: 1,
     unitPrice: 1200000,
     alternatives: [
-      { name: { ko: "히든 몰딩 패키지", en: "Hidden molding pkg" }, tier: "premium", unitPrice: 2400000 },
-      { name: { ko: "기본 몰딩", en: "Basic molding" }, tier: "basic", unitPrice: 600000 },
+      { name: "Hidden molding pkg", tier: "premium", unitPrice: 2400000 },
+      { name: "Basic molding", tier: "basic", unitPrice: 600000 },
     ],
   },
 ];
@@ -89,25 +89,419 @@ export const COST_BENCHMARK = {
   ourQuote: 18250000,
   marketAvg: 24800000,
   lowballQuote: 11900000,
-  warning: {
-    ko: "저가 견적은 자재를 한 단계 낮춰 채우는 경우가 60%에 달해요. 표시 자재와 실제 자재 사진을 반드시 비교하세요.",
-    en: "60% of lowball quotes silently downgrade material grade. Compare specified materials against site photos.",
-  },
+  warning:
+    "60% of lowball quotes silently downgrade material grade. Compare specified materials against site photos.",
 };
 
-export const CONTRACT_CHECKLIST: { ko: string; en: string }[] = [
-  { ko: "선금은 총 공사비의 30%를 초과하지 않는다", en: "Down payment must not exceed 30% of total" },
-  { ko: "공정별 검수 후 단계별 지급 (4회 분할)", en: "Stage-based payment in 4 parts after inspection" },
-  { ko: "자재 변경 시 사전 서면 동의 필수", en: "Material substitution requires prior written consent" },
-  { ko: "지연 시 일 0.1% 위약금 명시", en: "Delay penalty: 0.1% per day clearly specified" },
-  { ko: "공사 중단 시 환불 산식 명시", en: "Refund formula in case of work suspension" },
-  { ko: "하자보증 1년 이상 명시", en: "Defect warranty of 1+ year specified" },
-  { ko: "시공자 업체명·사업자번호 정확 기재", en: "Exact contractor name and business number" },
-  { ko: "현장 사진 일일 업데이트 의무", en: "Daily site photo updates obligation" },
-  { ko: "폐기물 처리 비용 포함 여부", en: "Whether debris disposal is included" },
-  { ko: "공사 인부 안전보험 가입 확인", en: "Worker safety insurance confirmation" },
-  { ko: "이웃·관리실 사전 공지 책임 시공자", en: "Contractor responsible for notifying neighbors" },
-  { ko: "분쟁 시 한국소비자원 또는 Gather 중재 가능", en: "Mediation via Consumer Agency or Gather" },
-  { ko: "최종 검수 체크리스트 첨부", en: "Final inspection checklist attached" },
-  { ko: "잔금은 최종 검수 통과 이후 지급", en: "Final payment only after final inspection passes" },
+export type CostBenchmark = typeof COST_BENCHMARK;
+
+// ─── Per-style material breakdowns ────────────────────────────
+// Five Random scenario variants, in the same order as
+// IMAGES.scenarios.random.styles in src/lib/mock/images.ts.
+//
+// Each entry derives from analyzing the visual delta between the
+// W8 reference space and the AI-rendered style image:
+//   • Surface treatment (wall paint vs. paneling vs. textured)
+//   • Floor change (oak / walnut / laminate / bamboo)
+//   • Lighting density and warmth
+//   • Built-ins (kitchen, shelving, counter)
+//   • Finishing trim level
+
+const warmMinimalismMaterials: MaterialItem[] = [
+  {
+    id: "wm-walls",
+    category: "Walls",
+    name: "Low-VOC paint (warm beige)",
+    brand: "Benjamin Moore",
+    tier: "premium",
+    unit: "L",
+    qty: 22,
+    unitPrice: 28000,
+    alternatives: [
+      { name: "Eco paint (basic)", tier: "standard", unitPrice: 18000 },
+      { name: "Standard latex", tier: "basic", unitPrice: 9500 },
+    ],
+  },
+  {
+    id: "wm-floor",
+    category: "Floor",
+    name: "Engineered oak (light)",
+    brand: "Gujung Maru",
+    tier: "premium",
+    unit: "m²",
+    qty: 78,
+    unitPrice: 145000,
+    alternatives: [
+      { name: "Laminate oak", tier: "standard", unitPrice: 78000 },
+      { name: "Vinyl sheet", tier: "basic", unitPrice: 18000 },
+    ],
+  },
+  {
+    id: "wm-light",
+    category: "Lighting",
+    name: "Dimmable LED downlight 3000K",
+    brand: "Philips Hue",
+    tier: "premium",
+    unit: "ea",
+    qty: 14,
+    unitPrice: 38000,
+    alternatives: [
+      { name: "Standard LED downlight", tier: "standard", unitPrice: 18000 },
+      { name: "Generic LED", tier: "basic", unitPrice: 7500 },
+    ],
+  },
+  {
+    id: "wm-kitchen",
+    category: "Kitchen",
+    name: "Birch ply cabinets + quartz",
+    tier: "premium",
+    unit: "set",
+    qty: 1,
+    unitPrice: 5200000,
+    alternatives: [
+      { name: "MDF + laminate", tier: "standard", unitPrice: 3100000 },
+      { name: "PB + faux top", tier: "basic", unitPrice: 1800000 },
+    ],
+  },
+  {
+    id: "wm-finish",
+    category: "Finishing",
+    name: "Hidden minimal molding",
+    tier: "premium",
+    unit: "set",
+    qty: 1,
+    unitPrice: 2400000,
+    alternatives: [
+      { name: "Standard molding", tier: "standard", unitPrice: 1200000 },
+      { name: "Basic molding", tier: "basic", unitPrice: 600000 },
+    ],
+  },
+];
+
+const scandinavianMaterials: MaterialItem[] = [
+  {
+    id: "sc-walls",
+    category: "Walls",
+    name: "Low-VOC paint (snow white)",
+    brand: "Dulux",
+    tier: "standard",
+    unit: "L",
+    qty: 24,
+    unitPrice: 18000,
+    alternatives: [
+      { name: "Premium low-VOC", tier: "premium", unitPrice: 28000 },
+      { name: "Standard latex", tier: "basic", unitPrice: 9500 },
+    ],
+  },
+  {
+    id: "sc-floor",
+    category: "Floor",
+    name: "Laminate (light birch)",
+    brand: "Donghwa Natural",
+    tier: "standard",
+    unit: "m²",
+    qty: 78,
+    unitPrice: 78000,
+    alternatives: [
+      { name: "Engineered oak", tier: "premium", unitPrice: 145000 },
+      { name: "Vinyl sheet", tier: "basic", unitPrice: 18000 },
+    ],
+  },
+  {
+    id: "sc-light",
+    category: "Lighting",
+    name: "Pendant + downlight 4000K",
+    brand: "IKEA",
+    tier: "standard",
+    unit: "ea",
+    qty: 18,
+    unitPrice: 22000,
+    alternatives: [
+      { name: "Designer pendant", tier: "premium", unitPrice: 65000 },
+      { name: "Generic LED", tier: "basic", unitPrice: 7500 },
+    ],
+  },
+  {
+    id: "sc-kitchen",
+    category: "Kitchen",
+    name: "White doors + laminate top",
+    brand: "Hanssem",
+    tier: "standard",
+    unit: "set",
+    qty: 1,
+    unitPrice: 2900000,
+    alternatives: [
+      { name: "Birch ply + quartz", tier: "premium", unitPrice: 4800000 },
+      { name: "PB + faux top", tier: "basic", unitPrice: 1700000 },
+    ],
+  },
+  {
+    id: "sc-finish",
+    category: "Finishing",
+    name: "Simple molding + skirting",
+    tier: "standard",
+    unit: "set",
+    qty: 1,
+    unitPrice: 1100000,
+    alternatives: [
+      { name: "Hidden molding pkg", tier: "premium", unitPrice: 2400000 },
+      { name: "Basic molding", tier: "basic", unitPrice: 600000 },
+    ],
+  },
+];
+
+const modernVintageMaterials: MaterialItem[] = [
+  {
+    id: "mv-walls",
+    category: "Walls",
+    name: "Deep matte paint (forest)",
+    brand: "Farrow & Ball",
+    tier: "premium",
+    unit: "L",
+    qty: 26,
+    unitPrice: 42000,
+    alternatives: [
+      { name: "Premium low-VOC", tier: "standard", unitPrice: 28000 },
+      { name: "Standard latex", tier: "basic", unitPrice: 9500 },
+    ],
+  },
+  {
+    id: "mv-floor",
+    category: "Floor",
+    name: "Engineered walnut (dark)",
+    brand: "Gujung Maru",
+    tier: "premium",
+    unit: "m²",
+    qty: 78,
+    unitPrice: 168000,
+    alternatives: [
+      { name: "Laminate walnut", tier: "standard", unitPrice: 88000 },
+      { name: "Vinyl dark", tier: "basic", unitPrice: 22000 },
+    ],
+  },
+  {
+    id: "mv-light",
+    category: "Lighting",
+    name: "Brass pendants + dimming 2700K",
+    brand: "Mid-century Modern",
+    tier: "premium",
+    unit: "ea",
+    qty: 16,
+    unitPrice: 58000,
+    alternatives: [
+      { name: "Metal pendant", tier: "standard", unitPrice: 32000 },
+      { name: "Generic LED", tier: "basic", unitPrice: 7500 },
+    ],
+  },
+  {
+    id: "mv-kitchen",
+    category: "Kitchen",
+    name: "Walnut veneer + brass pulls",
+    tier: "premium",
+    unit: "set",
+    qty: 1,
+    unitPrice: 6400000,
+    alternatives: [
+      { name: "MDF + laminate", tier: "standard", unitPrice: 3200000 },
+      { name: "PB + faux top", tier: "basic", unitPrice: 1800000 },
+    ],
+  },
+  {
+    id: "mv-finish",
+    category: "Finishing",
+    name: "Detailed crown molding",
+    tier: "premium",
+    unit: "set",
+    qty: 1,
+    unitPrice: 2800000,
+    alternatives: [
+      { name: "Standard molding", tier: "standard", unitPrice: 1200000 },
+      { name: "Basic molding", tier: "basic", unitPrice: 600000 },
+    ],
+  },
+];
+
+const homeCafeMaterials: MaterialItem[] = [
+  {
+    id: "hc-walls",
+    category: "Walls",
+    name: "Textured plaster (latte)",
+    brand: "Rakeli",
+    tier: "premium",
+    unit: "L",
+    qty: 24,
+    unitPrice: 32000,
+    alternatives: [
+      { name: "Low-VOC paint", tier: "standard", unitPrice: 18000 },
+      { name: "Standard latex", tier: "basic", unitPrice: 9500 },
+    ],
+  },
+  {
+    id: "hc-floor",
+    category: "Floor",
+    name: "Engineered oak (warm)",
+    brand: "Gujung Maru",
+    tier: "premium",
+    unit: "m²",
+    qty: 78,
+    unitPrice: 152000,
+    alternatives: [
+      { name: "Laminate oak", tier: "standard", unitPrice: 78000 },
+      { name: "Vinyl sheet", tier: "basic", unitPrice: 18000 },
+    ],
+  },
+  {
+    id: "hc-light",
+    category: "Lighting",
+    name: "Pendant + wash light 2700K",
+    brand: "Modular",
+    tier: "premium",
+    unit: "ea",
+    qty: 18,
+    unitPrice: 42000,
+    alternatives: [
+      { name: "Standard LED downlight", tier: "standard", unitPrice: 18000 },
+      { name: "Generic LED", tier: "basic", unitPrice: 7500 },
+    ],
+  },
+  {
+    id: "hc-kitchen",
+    category: "Kitchen",
+    name: "Open shelving + cafe counter",
+    tier: "standard",
+    unit: "set",
+    qty: 1,
+    unitPrice: 3600000,
+    alternatives: [
+      { name: "Full birch ply kitchen", tier: "premium", unitPrice: 5400000 },
+      { name: "PB + faux top", tier: "basic", unitPrice: 1800000 },
+    ],
+  },
+  {
+    id: "hc-finish",
+    category: "Finishing",
+    name: "Chair rail + detail trim",
+    tier: "standard",
+    unit: "set",
+    qty: 1,
+    unitPrice: 1900000,
+    alternatives: [
+      { name: "Hidden molding pkg", tier: "premium", unitPrice: 2400000 },
+      { name: "Basic molding", tier: "basic", unitPrice: 600000 },
+    ],
+  },
+];
+
+const naturalPlanteriorMaterials: MaterialItem[] = [
+  {
+    id: "np-walls",
+    category: "Walls",
+    name: "Clay paint (off-white)",
+    brand: "Earthborn",
+    tier: "premium",
+    unit: "L",
+    qty: 24,
+    unitPrice: 26000,
+    alternatives: [
+      { name: "Low-VOC paint", tier: "standard", unitPrice: 18000 },
+      { name: "Standard latex", tier: "basic", unitPrice: 9500 },
+    ],
+  },
+  {
+    id: "np-floor",
+    category: "Floor",
+    name: "Bamboo flooring (light)",
+    brand: "Eco Maru",
+    tier: "standard",
+    unit: "m²",
+    qty: 78,
+    unitPrice: 95000,
+    alternatives: [
+      { name: "Engineered oak", tier: "premium", unitPrice: 145000 },
+      { name: "Vinyl wood", tier: "basic", unitPrice: 20000 },
+    ],
+  },
+  {
+    id: "np-light",
+    category: "Lighting",
+    name: "Full-spectrum LED + grow spot",
+    brand: "Sansi",
+    tier: "standard",
+    unit: "ea",
+    qty: 22,
+    unitPrice: 24000,
+    alternatives: [
+      { name: "Dimmable designer LED", tier: "premium", unitPrice: 42000 },
+      { name: "Generic LED", tier: "basic", unitPrice: 7500 },
+    ],
+  },
+  {
+    id: "np-kitchen",
+    category: "Kitchen",
+    name: "Natural wood + herb garden",
+    tier: "standard",
+    unit: "set",
+    qty: 1,
+    unitPrice: 3300000,
+    alternatives: [
+      { name: "Birch ply + quartz", tier: "premium", unitPrice: 4800000 },
+      { name: "PB + faux top", tier: "basic", unitPrice: 1700000 },
+    ],
+  },
+  {
+    id: "np-finish",
+    category: "Finishing",
+    name: "Natural wood trim + planter shelf",
+    tier: "standard",
+    unit: "set",
+    qty: 1,
+    unitPrice: 1500000,
+    alternatives: [
+      { name: "Hidden molding pkg", tier: "premium", unitPrice: 2400000 },
+      { name: "Basic molding", tier: "basic", unitPrice: 600000 },
+    ],
+  },
+];
+
+// Order matches IMAGES.scenarios.random.styles:
+// [warm, scandinavian, vintage, cafe, natural]
+export const RANDOM_STYLE_MATERIALS: MaterialItem[][] = [
+  warmMinimalismMaterials,
+  scandinavianMaterials,
+  modernVintageMaterials,
+  homeCafeMaterials,
+  naturalPlanteriorMaterials,
+];
+
+export function totalCost(items: MaterialItem[]): number {
+  return items.reduce((acc, m) => acc + m.unitPrice * m.qty, 0);
+}
+
+// Cost benchmarks per Random variant — derived from each style's
+// Habitus quote, with market avg ~36% above and lowball ~34% below.
+export const RANDOM_STYLE_BENCHMARKS: CostBenchmark[] =
+  RANDOM_STYLE_MATERIALS.map((items) => {
+    const ourQuote = totalCost(items);
+    return {
+      ourQuote,
+      marketAvg: Math.round((ourQuote * 1.36) / 10000) * 10000,
+      lowballQuote: Math.round((ourQuote * 0.66) / 10000) * 10000,
+      warning: COST_BENCHMARK.warning,
+    };
+  });
+
+export const CONTRACT_CHECKLIST: string[] = [
+  "Down payment must not exceed 30% of total",
+  "Stage-based payment in 4 parts after inspection",
+  "Material substitution requires prior written consent",
+  "Delay penalty: 0.1% per day clearly specified",
+  "Refund formula in case of work suspension",
+  "Exact contractor name and business number",
+  "Daily site photo updates obligation",
+  "Whether debris disposal is included",
+  "Worker safety insurance confirmation",
+  "Contractor responsible for notifying neighbors",
+  "Mediation via Consumer Agency or Habitus",
+  "Final inspection checklist attached",
+  "Final payment only after final inspection passes",
 ];

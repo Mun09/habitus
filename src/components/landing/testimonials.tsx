@@ -8,35 +8,26 @@ import { useLocale } from "@/lib/i18n/locale-provider";
 import { IMAGES } from "@/lib/mock/images";
 
 export function Testimonials() {
-  const { t, pick } = useLocale();
+  const { t } = useLocale();
 
   const items = [
     {
       avatar: IMAGES.testimonials[0],
-      name: { ko: "김민지", en: "Minji K." },
-      role: { ko: "마포 32평 거주", en: "Mapo, 105m²" },
-      body: {
-        ko: "사진 업데이트가 매일 와서 출장 중에도 안심됐어요. 견적 단계에서 시장가를 비교해주는 게 결정적이었습니다.",
-        en: "Daily photo updates kept me at ease even on business trips. The market price comparison sealed it.",
-      },
+      name: "Minji K.",
+      role: "Mapo, 105m²",
+      body: "Daily photo updates kept me at ease even on business trips. The market price comparison sealed it.",
     },
     {
       avatar: IMAGES.testimonials[1],
-      name: { ko: "박서준", en: "Seojun P." },
-      role: { ko: "송파 25평 신혼", en: "Songpa, 82m² newlyweds" },
-      body: {
-        ko: "다른 데서 4500만원 부른 공사를 합리적인 가격에 끝냈어요. AI가 자재 빼돌리기 위험을 미리 짚어줬어요.",
-        en: "Quoted ₩45M elsewhere — finished at a fair price here. The AI flagged material-swap risk upfront.",
-      },
+      name: "Seojun P.",
+      role: "Songpa, 82m² newlyweds",
+      body: "Quoted ₩45M elsewhere — finished at a fair price here. The AI flagged material-swap risk upfront.",
     },
     {
       avatar: IMAGES.testimonials[2],
-      name: { ko: "이하늘", en: "Haneul L." },
-      role: { ko: "성수 40평 카페", en: "Seongsu, 130m² cafe" },
-      body: {
-        ko: "분쟁이 한 번 있었는데 24시간 안에 PM이 개입해서 깔끔히 정리됐습니다. 이제 어디 인테리어 맡기든 Gather입니다.",
-        en: "Had one dispute. PM intervened within 24h and resolved it cleanly. Gather has my trust now.",
-      },
+      name: "Haneul L.",
+      role: "Seongsu, 130m² cafe",
+      body: "Had one dispute. PM intervened within 24h and resolved it cleanly. Habitus has my trust now.",
     },
   ];
 
@@ -60,14 +51,14 @@ export function Testimonials() {
                     <Star key={j} className="h-4 w-4 fill-primary" />
                   ))}
                 </div>
-                <p className="serif text-lg leading-snug mt-5">"{pick(it.body)}"</p>
+                <p className="serif text-lg leading-snug mt-5">&ldquo;{it.body}&rdquo;</p>
                 <div className="mt-7 flex items-center gap-3">
                   <div className="relative h-10 w-10 rounded-full overflow-hidden">
-                    <Image src={it.avatar} alt={pick(it.name)} fill sizes="40px" className="object-cover" />
+                    <Image src={it.avatar} alt={it.name} fill sizes="40px" className="object-cover" />
                   </div>
                   <div>
-                    <div className="text-sm font-medium">{pick(it.name)}</div>
-                    <div className="text-xs text-muted-foreground">{pick(it.role)}</div>
+                    <div className="text-sm font-medium">{it.name}</div>
+                    <div className="text-xs text-muted-foreground">{it.role}</div>
                   </div>
                 </div>
               </div>

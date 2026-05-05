@@ -8,11 +8,10 @@ import { useDesignPlan } from "@/lib/design-plan";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import { CATEGORIES } from "@/lib/mock/design-options";
 import { COST_BENCHMARK } from "@/lib/mock/materials";
-import { formatKRW } from "@/lib/utils";
 
 export function PlanSummaryBanner() {
   const { plan, hasPlan, clearPlan } = useDesignPlan();
-  const { t, pick, locale } = useLocale();
+  const { t } = useLocale();
   if (!hasPlan || !plan) return null;
 
   const estimate = COST_BENCHMARK.ourQuote;
@@ -20,9 +19,7 @@ export function PlanSummaryBanner() {
   const savings = market - estimate;
   const savingsPct = Math.round((savings / market) * 100);
   const fmtPrice = (v: number) =>
-    locale === "ko"
-      ? formatKRW(v)
-      : `$${Math.round(v / 1300).toLocaleString()}`;
+    `$${Math.round(v / 1300).toLocaleString()}`;
 
   return (
     <div className="rounded-3xl border border-primary/30 bg-primary/5 overflow-hidden">
@@ -46,7 +43,7 @@ export function PlanSummaryBanner() {
                 {t("matching.plan.title")}
               </div>
               <div className="serif text-xl font-medium mt-1">
-                {pick(plan.styleLabel)}
+                {plan.styleLabel}
               </div>
             </div>
             <button
@@ -78,14 +75,9 @@ export function PlanSummaryBanner() {
                       />
                     )}
                     <span className="text-muted-foreground text-[10px] uppercase tracking-wider">
-                      {pick(
-                        CATEGORIES.find((c) => c.key === o.category)?.label ?? {
-                          ko: "",
-                          en: "",
-                        }
-                      )}
+                      {CATEGORIES.find((c) => c.key === o.category)?.label ?? ""}
                     </span>
-                    {pick(o.name)}
+                    {o.name}
                   </span>
                 ))}
               </div>

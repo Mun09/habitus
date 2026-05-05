@@ -12,16 +12,13 @@ import type { ChatMessage, Project } from "@/lib/mock/projects";
 import { cn } from "@/lib/utils";
 
 export function ChatPanel({ project }: { project: Project }) {
-  const { t, pick, locale } = useLocale();
+  const { t } = useLocale();
   const [tab, setTab] = useState<"ai" | "pm">("ai");
   const [aiMessages, setAiMessages] = useState<ChatMessage[]>([
     {
       id: "ai-greet",
       sender: "ai",
-      body: {
-        ko: "안녕하세요, 프로젝트 도우미예요. 일정·비용·자재 무엇이든 물어보세요.",
-        en: "Hi, your project assistant. Ask about schedule, costs, materials anytime.",
-      },
+      body: "Hi, your project assistant. Ask about schedule, costs, materials anytime.",
       time: "now",
     },
   ]);
@@ -33,8 +30,8 @@ export function ChatPanel({ project }: { project: Project }) {
     const userMsg: ChatMessage = {
       id: `u-${Date.now()}`,
       sender: "user",
-      body: { ko: text, en: text },
-      time: locale === "ko" ? "방금" : "now",
+      body: text,
+      time: "now",
     };
     setAiMessages((m) => [...m, userMsg]);
     setInput("");
@@ -42,18 +39,18 @@ export function ChatPanel({ project }: { project: Project }) {
     setTimeout(() => {
       const lower = text.toLowerCase();
       const reply =
-        AI_QUICK_REPLIES.find((q) =>
-          ["schedule", "cost", "material", "next", "일정", "비용", "자재", "다음"].some(
-            (k) => lower.includes(k)
-          ) && q.tKey.includes(
-            lower.includes("cost") || lower.includes("비용")
-              ? "cost"
-              : lower.includes("material") || lower.includes("자재")
-              ? "material"
-              : lower.includes("next") || lower.includes("다음")
-              ? "next"
-              : "schedule"
-          )
+        AI_QUICK_REPLIES.find(
+          (q) =>
+            ["schedule", "cost", "material", "next"].some((k) => lower.includes(k)) &&
+            q.tKey.includes(
+              lower.includes("cost")
+                ? "cost"
+                : lower.includes("material")
+                ? "material"
+                : lower.includes("next")
+                ? "next"
+                : "schedule"
+            )
         ) ?? AI_QUICK_REPLIES[0];
       setAiMessages((m) => [
         ...m,
@@ -61,7 +58,7 @@ export function ChatPanel({ project }: { project: Project }) {
           id: `ai-${Date.now()}`,
           sender: "ai",
           body: reply.text,
-          time: locale === "ko" ? "방금" : "now",
+          time: "now",
         },
       ]);
     }, 700);
@@ -72,8 +69,8 @@ export function ChatPanel({ project }: { project: Project }) {
     const userMsg: ChatMessage = {
       id: `up-${Date.now()}`,
       sender: "user",
-      body: { ko: text, en: text },
-      time: locale === "ko" ? "방금" : "now",
+      body: text,
+      time: "now",
     };
     setPmMessages((m) => [...m, userMsg]);
     setInput("");
@@ -83,11 +80,8 @@ export function ChatPanel({ project }: { project: Project }) {
         {
           id: `pm-${Date.now()}`,
           sender: "pm",
-          body: {
-            ko: "메시지 확인했어요! 시공자분에게 바로 전달하고 회신드릴게요.",
-            en: "Got it! I'll relay this to the contractor and reply shortly.",
-          },
-          time: locale === "ko" ? "잠시 후" : "soon",
+          body: "Got it! I'll relay this to the contractor and reply shortly.",
+          time: "soon",
         },
       ]);
     }, 5000);
@@ -136,8 +130,8 @@ export function ChatPanel({ project }: { project: Project }) {
               <Image src={project.pm.avatar} alt="" fill sizes="40px" className="object-cover" />
             </div>
             <div>
-              <div className="text-sm font-medium">{pick(project.pm.name)}</div>
-              <div className="text-xs text-muted-foreground">{pick(project.pm.role)}</div>
+              <div className="text-sm font-medium">{project.pm.name}</div>
+              <div className="text-xs text-muted-foreground">{project.pm.role}</div>
             </div>
           </div>
           <MessageList messages={pmMessages} />
@@ -159,7 +153,6 @@ export function ChatPanel({ project }: { project: Project }) {
 
 function MessageList({ messages }: { messages: ChatMessage[] }) {
   const ref = useRef<HTMLDivElement>(null);
-  const { pick } = useLocale();
   useEffect(() => {
     ref.current?.scrollTo({ top: ref.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
@@ -183,7 +176,7 @@ function MessageList({ messages }: { messages: ChatMessage[] }) {
                 : "bg-muted text-foreground rounded-tl-md"
             )}
           >
-            {pick(m.body)}
+            {m.body}
           </div>
           <div className="text-[10px] text-muted-foreground mt-1 px-1">{m.time}</div>
         </div>

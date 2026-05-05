@@ -10,18 +10,14 @@ import { PROJECTS } from "@/lib/mock/projects";
 import { CONTRACTORS } from "@/lib/mock/contractors";
 
 export default function ProjectsPage() {
-  const { t, pick, locale } = useLocale();
+  const { t } = useLocale();
 
   return (
     <div className="mx-auto max-w-6xl px-5 md:px-8 py-10 md:py-14">
       <h1 className="serif text-3xl md:text-5xl font-medium leading-tight">
         {t("nav.projects")}
       </h1>
-      <p className="mt-3 text-muted-foreground">
-        {locale === "ko"
-          ? "진행 중·완료된 프로젝트를 한 곳에서 확인하세요."
-          : "All your projects in one place."}
-      </p>
+      <p className="mt-3 text-muted-foreground">All your projects in one place.</p>
 
       <div className="mt-10 grid md:grid-cols-2 gap-5">
         {PROJECTS.map((p) => {
@@ -48,29 +44,27 @@ export default function ProjectsPage() {
                   {p.status === "in_progress" && (
                     <Badge variant="primary">
                       <Clock className="h-3 w-3" />
-                      {locale === "ko" ? "진행 중" : "In progress"}
+                      In progress
                     </Badge>
                   )}
                   {p.status === "completed" && (
                     <Badge variant="success">
                       <CheckCircle2 className="h-3 w-3" />
-                      {locale === "ko" ? "완료" : "Completed"}
+                      Completed
                     </Badge>
                   )}
                   {p.status === "pending" && (
-                    <Badge variant="muted">
-                      {locale === "ko" ? "신청 대기" : "Pending"}
-                    </Badge>
+                    <Badge variant="muted">Pending</Badge>
                   )}
                 </div>
               </div>
               <div className="p-6">
                 <div className="serif text-xl font-medium leading-tight">
-                  {pick(p.title)}
+                  {p.title}
                 </div>
                 {contractor && (
                   <div className="text-sm text-muted-foreground mt-1">
-                    {pick(contractor.company)}
+                    {contractor.company}
                   </div>
                 )}
                 {p.status === "in_progress" && (
@@ -87,8 +81,7 @@ export default function ProjectsPage() {
                     {p.startDate} → {p.expectedEnd}
                   </span>
                   <span className="inline-flex items-center gap-1 text-primary group-hover:translate-x-0.5 transition">
-                    {locale === "ko" ? "열기" : "Open"}{" "}
-                    <ArrowRight className="h-3 w-3" />
+                    Open <ArrowRight className="h-3 w-3" />
                   </span>
                 </div>
               </div>

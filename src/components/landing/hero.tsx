@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, ShieldCheck, Clock, Users } from "lucide-react";
+import { ArrowRight, Sparkles, Clock, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import { IMAGES } from "@/lib/mock/images";
@@ -11,7 +11,7 @@ import { IMAGES } from "@/lib/mock/images";
 export function Hero() {
   const { t } = useLocale();
   return (
-    <section className="relative isolate overflow-hidden warm-grain">
+    <section className="relative isolate overflow-hidden warm-grain min-h-[calc(100vh-4rem-5rem)] md:min-h-[calc(100vh-4rem)] flex items-center">
       <div className="absolute inset-0 -z-10">
         <Image
           src={IMAGES.hero.landing}
@@ -24,7 +24,7 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-br from-background/96 via-background/85 to-background/40" />
       </div>
 
-      <div className="mx-auto max-w-7xl px-5 md:px-8 pt-16 pb-24 md:pt-28 md:pb-36">
+      <div className="mx-auto max-w-7xl w-full px-5 md:px-8 py-8 md:py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -56,7 +56,6 @@ export function Hero() {
             <Pill icon={<Sparkles className="h-3.5 w-3.5" />} text={t("landing.hero.badge.ai")} />
             <Pill icon={<Users className="h-3.5 w-3.5" />} text={t("landing.hero.badge.matching")} />
             <Pill icon={<Clock className="h-3.5 w-3.5" />} text={t("landing.hero.badge.tracking")} />
-            <Pill icon={<ShieldCheck className="h-3.5 w-3.5" />} text={t("landing.hero.badge.warranty")} />
           </div>
         </motion.div>
       </div>

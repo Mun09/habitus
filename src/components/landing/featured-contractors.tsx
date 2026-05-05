@@ -10,7 +10,7 @@ import { useLocale } from "@/lib/i18n/locale-provider";
 import { CONTRACTORS } from "@/lib/mock/contractors";
 
 export function FeaturedContractors() {
-  const { t, pick } = useLocale();
+  const { t } = useLocale();
   const featured = CONTRACTORS.slice(0, 4);
 
   return (
@@ -40,7 +40,7 @@ export function FeaturedContractors() {
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <Image
                     src={c.cover}
-                    alt={pick(c.name)}
+                    alt={c.name}
                     fill
                     sizes="(min-width: 768px) 22vw, 44vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -61,10 +61,10 @@ export function FeaturedContractors() {
                 </div>
                 <div className="p-4">
                   <div className="serif text-base md:text-lg font-medium leading-tight">
-                    {pick(c.company)}
+                    {c.company}
                   </div>
                   <div className="text-xs text-muted-foreground mt-1">
-                    {pick(c.name)} · {pick(c.region)}
+                    {c.name} · {c.region}
                   </div>
                   <div className="mt-3 flex items-center gap-3 text-xs">
                     <span className="inline-flex items-center gap-1">

@@ -3,14 +3,13 @@
 import Link from "next/link";
 import { use } from "react";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, CheckCircle2, Clock, Crown, ShieldCheck } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clock } from "lucide-react";
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLocale } from "@/lib/i18n/locale-provider";
-import { useDesignPlan } from "@/lib/design-plan";
 import { getProject } from "@/lib/mock/projects";
 import { CONTRACTORS } from "@/lib/mock/contractors";
 import { IMAGES } from "@/lib/mock/images";
@@ -25,14 +24,12 @@ export default function TrackingPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { t, pick } = useLocale();
-  const { plan } = useDesignPlan();
+  const { t } = useLocale();
   const project = getProject(id);
   if (!project) notFound();
 
   const contractor = CONTRACTORS.find((c) => c.id === project.contractorId);
   const isCompleted = project.status === "completed";
-  const aftercareEnrolled = !!plan?.aftercareUpgrade;
 
   const ProjectInfo = (
     <div className="space-y-4">
@@ -41,7 +38,7 @@ export default function TrackingPage({
           {t("tracking.column.info")}
         </div>
         <div className="serif text-lg font-medium leading-tight">
-          {pick(project.title)}
+          {project.title}
         </div>
         {contractor && (
           <Link
@@ -59,10 +56,10 @@ export default function TrackingPage({
             </div>
             <div className="min-w-0">
               <div className="text-sm font-medium truncate">
-                {pick(contractor.company)}
+                {contractor.company}
               </div>
               <div className="text-xs text-muted-foreground truncate">
-                {pick(contractor.name)}
+                {contractor.name}
               </div>
             </div>
           </Link>
@@ -89,13 +86,6 @@ export default function TrackingPage({
             </span>
           </div>
         )}
-        {aftercareEnrolled && (
-          <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-[10px] font-medium">
-            <Crown className="h-3 w-3" />
-            {t("aftercare.enrolled.activeBadge")} ·{" "}
-            {t("aftercare.warranty.premium")}
-          </div>
-        )}
       </div>
 
       <MiniGantt current={project.currentStage} />
@@ -115,17 +105,12 @@ export default function TrackingPage({
             />
           </div>
           <div>
-            <div className="text-sm font-medium">{pick(project.pm.name)}</div>
+            <div className="text-sm font-medium">{project.pm.name}</div>
             <div className="text-xs text-muted-foreground">
-              {pick(project.pm.role)}
+              {project.pm.role}
             </div>
           </div>
         </div>
-        <Button asChild variant="outline" size="sm" className="w-full mt-4">
-          <Link href={`/projects/${project.id}/aftercare`}>
-            {t("nav.aftercare")} <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </Button>
       </div>
     </div>
   );
@@ -154,7 +139,7 @@ export default function TrackingPage({
           </Badge>
         )}
       </div>
-      <p className="text-sm text-muted-foreground">{pick(project.title)}</p>
+      <p className="text-sm text-muted-foreground">{project.title}</p>
 
       {/* Mobile: Tabs */}
       <div className="md:hidden mt-6">
@@ -165,7 +150,7 @@ export default function TrackingPage({
               {isCompleted ? t("tracking.history") : t("tracking.column.timeline")}
             </TabsTrigger>
             <TabsTrigger value="chat" className="flex-1">
-              {isCompleted ? t("nav.aftercare") : t("tracking.column.chat")}
+              {t("tracking.column.chat")}
             </TabsTrigger>
           </TabsList>
           <TabsContent value="info">{ProjectInfo}</TabsContent>
@@ -174,7 +159,7 @@ export default function TrackingPage({
           </TabsContent>
           <TabsContent value="chat">
             {isCompleted ? (
-              <CompletedSidePanel projectId={project.id} aftercareEnrolled={aftercareEnrolled} />
+              <CompletedSidePanel />
             ) : (
               <ChatPanel project={project} />
             )}
@@ -192,7 +177,7 @@ export default function TrackingPage({
         </div>
         <div className="sticky top-24 self-start max-h-[calc(100vh-7rem)] overflow-y-auto no-scrollbar">
           {isCompleted ? (
-            <CompletedSidePanel projectId={project.id} aftercareEnrolled={aftercareEnrolled} />
+            <CompletedSidePanel />
           ) : (
             <ChatPanel project={project} />
           )}
@@ -202,20 +187,13 @@ export default function TrackingPage({
   );
 }
 
-function CompletedSidePanel({
-  projectId,
-  aftercareEnrolled,
-}: {
-  projectId: string;
-  aftercareEnrolled: boolean;
-}) {
-  const { t, locale } = useLocale();
+function CompletedSidePanel() {
   return (
     <div className="space-y-4">
       <div className="rounded-3xl border border-border bg-card overflow-hidden">
         <div className="px-5 py-4 border-b border-border flex items-center justify-between">
           <span className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
-            {locale === "ko" ? "완료 사진" : "Completed photos"}
+            Completed photos
           </span>
           <span className="text-xs text-muted-foreground">
             {IMAGES.projectCompleted.length}
@@ -231,65 +209,6 @@ function CompletedSidePanel({
             </div>
           ))}
         </div>
-      </div>
-
-      <div
-        className={
-          aftercareEnrolled
-            ? "rounded-3xl bg-primary text-primary-foreground p-5"
-            : "rounded-3xl bg-card border border-border p-5"
-        }
-      >
-        <div className="flex items-center gap-2">
-          {aftercareEnrolled ? (
-            <Crown className="h-4 w-4" />
-          ) : (
-            <ShieldCheck className="h-4 w-4 text-muted-foreground" />
-          )}
-          <span className="text-xs uppercase tracking-[0.16em] opacity-90">
-            {aftercareEnrolled
-              ? t("aftercare.enrolled.activeBadge")
-              : t("aftercare.warranty.basic")}
-          </span>
-        </div>
-        <div className="serif text-2xl mt-2">
-          {aftercareEnrolled
-            ? locale === "ko"
-              ? "365일 보증 활성"
-              : "365-day coverage active"
-            : locale === "ko"
-            ? "기본 30일 보증"
-            : "Basic 30-day coverage"}
-        </div>
-        <p
-          className={
-            aftercareEnrolled
-              ? "text-xs opacity-80 mt-2 leading-relaxed"
-              : "text-xs text-muted-foreground mt-2 leading-relaxed"
-          }
-        >
-          {aftercareEnrolled
-            ? locale === "ko"
-              ? "사후관리 탭에서 유효 기간과 보장 범위를 확인할 수 있어요."
-              : "View coverage period and scope in the aftercare tab."
-            : locale === "ko"
-            ? "프리미엄 옵션은 시공 전에만 가입 가능합니다."
-            : "Premium can only be enrolled before construction."}
-        </p>
-        <Button
-          asChild
-          variant={aftercareEnrolled ? "default" : "outline"}
-          size="sm"
-          className={`w-full mt-4 ${
-            aftercareEnrolled
-              ? "bg-primary-foreground text-primary hover:opacity-90"
-              : ""
-          }`}
-        >
-          <Link href={`/projects/${projectId}/aftercare`}>
-            {t("nav.aftercare")} <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </Button>
       </div>
     </div>
   );

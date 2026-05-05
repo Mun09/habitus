@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export default function OnboardingPage() {
-  const { t, locale } = useLocale();
+  const { t } = useLocale();
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [nickname, setNickname] = useState("");
@@ -26,17 +26,15 @@ export default function OnboardingPage() {
       setStep(step + 1);
     } else {
       if (typeof window !== "undefined") {
-        window.localStorage.setItem("gather.nickname", nickname || (locale === "ko" ? "고객" : "Guest"));
+        window.localStorage.setItem("habitus.nickname", nickname || "Guest");
       }
-      toast.success(`${t("onboarding.toast")}${nickname || (locale === "ko" ? "고객" : "Guest")}!`);
+      toast.success(`${t("onboarding.toast")}${nickname || "Guest"}!`);
       setTimeout(() => router.push("/design"), 400);
     }
   };
 
   const fmtBudget = (v: number) =>
-    locale === "ko"
-      ? `${(v / 10000).toLocaleString()}만`
-      : `$${Math.round(v / 1300).toLocaleString()}`;
+    `$${Math.round(v / 1300).toLocaleString()}`;
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-5 py-16">

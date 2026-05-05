@@ -13,7 +13,7 @@ import { useLocale } from "@/lib/i18n/locale-provider";
 import type { Notification } from "@/lib/mock/projects";
 
 export function NotificationSheet({ items }: { items: Notification[] }) {
-  const { t, pick } = useLocale();
+  const { t } = useLocale();
   const [open, setOpen] = useState(false);
   const unread = items.filter((i) => i.unread).length;
 
@@ -38,11 +38,11 @@ export function NotificationSheet({ items }: { items: Notification[] }) {
               className="rounded-2xl p-4 bg-muted/40 hover:bg-muted/60 cursor-pointer"
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="text-sm font-medium">{pick(n.title)}</span>
+                <span className="text-sm font-medium">{n.title}</span>
                 <span className="text-[10px] text-muted-foreground">{n.time}</span>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                {pick(n.body)}
+                {n.body}
               </p>
             </div>
           ))}

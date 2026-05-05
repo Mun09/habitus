@@ -1,55 +1,27 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useContext, useMemo } from "react";
 import { dictionaries, type Locale, type TKey } from "./dictionaries";
 
 type LocaleContextValue = {
   locale: Locale;
-  setLocale: (next: Locale) => void;
   t: (key: TKey) => string;
-  pick: <T>(value: { ko: T; en: T }) => T;
+  pick: <T>(value: T | { en: T }) => T;
 };
 
 const LocaleContext = createContext<LocaleContextValue | undefined>(undefined);
 
-const STORAGE_KEY = "gather.locale";
-
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("ko");
-
-  useEffect(() => {
-    const saved = window.localStorage.getItem(STORAGE_KEY) as Locale | null;
-    if (saved === "ko" || saved === "en") {
-      setLocaleState(saved);
-    }
-  }, []);
-
-  const setLocale = useCallback((next: Locale) => {
-    setLocaleState(next);
-    window.localStorage.setItem(STORAGE_KEY, next);
-    document.documentElement.lang = next;
-  }, []);
-
-  const t = useCallback(
-    (key: TKey) => dictionaries[locale][key] ?? dictionaries.ko[key] ?? key,
-    [locale]
-  );
-
-  const pick = useCallback(
-    <T,>(value: { ko: T; en: T }) => value[locale],
-    [locale]
-  );
-
-  const value = useMemo(
-    () => ({ locale, setLocale, t, pick }),
-    [locale, setLocale, t, pick]
+  const value = useMemo<LocaleContextValue>(
+    () => ({
+      locale: "en",
+      t: (key) => dictionaries.en[key] ?? key,
+      pick: <T,>(value: T | { en: T }) =>
+        value && typeof value === "object" && "en" in (value as object)
+          ? (value as { en: T }).en
+          : (value as T),
+    }),
+    []
   );
 
   return (

@@ -5,11 +5,9 @@ import { Download, Shield } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { CONTRACT_CHECKLIST } from "@/lib/mock/materials";
-import { useLocale } from "@/lib/i18n/locale-provider";
 import { toast } from "sonner";
 
 export function ContractChecklist() {
-  const { locale } = useLocale();
   const [checked, setChecked] = useState<Set<number>>(
     () => new Set(CONTRACT_CHECKLIST.map((_, i) => i))
   );
@@ -31,7 +29,7 @@ export function ContractChecklist() {
         <div className="flex items-center gap-2">
           <Shield className="h-4 w-4 text-primary" />
           <div className="serif text-base font-medium">
-            {locale === "ko" ? "필수 계약 조항" : "Must-have contract clauses"}
+            Must-have contract clauses
           </div>
         </div>
         <span className="text-xs text-muted-foreground">
@@ -56,7 +54,7 @@ export function ContractChecklist() {
                   isChecked ? "text-foreground" : "text-muted-foreground line-through"
                 }`}
               >
-                {locale === "ko" ? item.ko : item.en}
+                {item}
               </span>
             </label>
           );
@@ -69,21 +67,13 @@ export function ContractChecklist() {
           }`}
         >
           {allChecked
-            ? locale === "ko"
-              ? "✓ 모든 조항 포함된 계약서로 진행하세요"
-              : "✓ Sign only when all clauses are present"
-            : locale === "ko"
-            ? "체크 해제된 조항이 있습니다"
+            ? "✓ Sign only when all clauses are present"
             : "Some clauses missing"}
         </span>
         <Button
           size="sm"
           variant="outline"
-          onClick={() =>
-            toast.success(
-              locale === "ko" ? "PDF 다운로드 준비 완료 (모의)" : "PDF ready (mock)"
-            )
-          }
+          onClick={() => toast.success("PDF ready (mock)")}
         >
           <Download className="h-3.5 w-3.5" />
           PDF

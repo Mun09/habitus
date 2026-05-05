@@ -31,7 +31,7 @@ export function PlanSummaryRail({
   onGenerate: () => void;
   canGenerate: boolean;
 }) {
-  const { t, pick } = useLocale();
+  const { t } = useLocale();
 
   const findOpts = (cat: OptionCategory) =>
     selectedOptionIds
@@ -42,19 +42,20 @@ export function PlanSummaryRail({
   const toneOpts = findOpts("tone");
   const floorOpts = findOpts("flooring");
   const wallOpts = findOpts("wall");
+  const furnitureOpts = findOpts("furniture");
 
   const catLabel = (key: OptionCategory) =>
     CATEGORIES.find((c) => c.key === key)!.label;
 
   const rowDef: {
     key: RowKey;
-    label: { ko: string; en: string };
+    label: string;
     required: boolean;
     done: boolean;
   }[] = [
     {
       key: "space",
-      label: { ko: "공간", en: "Space" },
+      label: "Space",
       required: true,
       done: spacePhotos.length > 0,
     },
@@ -83,10 +84,10 @@ export function PlanSummaryRail({
       done: wallOpts.length > 0,
     },
     {
-      key: "references",
-      label: { ko: "레퍼런스", en: "References" },
+      key: "furniture",
+      label: catLabel("furniture"),
       required: false,
-      done: refUploaded.length > 0,
+      done: furnitureOpts.length > 0,
     },
   ];
 
@@ -95,7 +96,7 @@ export function PlanSummaryRail({
       <div className="rounded-2xl border border-border bg-card overflow-hidden">
         <div className="px-4 py-3 border-b border-border bg-muted/30">
           <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-            {pick({ ko: "내 디자인 요약", en: "Your design summary" })}
+            Your design summary
           </div>
         </div>
         <ul className="divide-y divide-border">
@@ -133,7 +134,7 @@ export function PlanSummaryRail({
                   </span>
                   <span className="flex-1 min-w-0">
                     <span className="block text-[11px] uppercase tracking-wider text-muted-foreground">
-                      {pick(row.label)}
+                      {row.label}
                       {row.required && (
                         <span className="text-[color:var(--danger)] ml-1">*</span>
                       )}
@@ -141,29 +142,26 @@ export function PlanSummaryRail({
                     <span className="block text-xs font-medium text-foreground truncate mt-0.5">
                       {row.key === "space" ? (
                         spacePhotos.length > 0 ? (
-                          pick({ ko: "사진 1장 선택됨", en: "1 photo selected" })
+                          "1 photo selected"
                         ) : (
                           <span className="text-muted-foreground/70 font-normal">
-                            {pick({ ko: "선택 안됨", en: "Not selected" })}
+                            Not selected
                           </span>
                         )
                       ) : row.key === "references" ? (
                         refUploaded.length > 0 ? (
-                          pick({
-                            ko: `${refUploaded.length}장`,
-                            en: `${refUploaded.length} photos`,
-                          })
+                          `${refUploaded.length} photos`
                         ) : (
                           <span className="text-muted-foreground/70 font-normal">
-                            {pick({ ko: "선택 안됨", en: "None" })}
+                            None
                           </span>
                         )
                       ) : row.key === "style" ? (
                         styleOpts[0] ? (
-                          pick(styleOpts[0].name)
+                          styleOpts[0].name
                         ) : (
                           <span className="text-muted-foreground/70 font-normal">
-                            {pick({ ko: "선택 안됨", en: "Not selected" })}
+                            Not selected
                           </span>
                         )
                       ) : row.key === "tone" ? (
@@ -182,36 +180,42 @@ export function PlanSummaryRail({
                           </span>
                         ) : (
                           <span className="text-muted-foreground/70 font-normal">
-                            {pick({ ko: "선택 안됨", en: "None" })}
+                            None
                           </span>
                         )
                       ) : row.key === "flooring" ? (
                         floorOpts.length > 0 ? (
                           floorOpts.length === 1 ? (
-                            pick(floorOpts[0].name)
+                            floorOpts[0].name
                           ) : (
-                            pick({
-                              ko: `${floorOpts.length}개 선택`,
-                              en: `${floorOpts.length} picks`,
-                            })
+                            `${floorOpts.length} picks`
                           )
                         ) : (
                           <span className="text-muted-foreground/70 font-normal">
-                            {pick({ ko: "선택 안됨", en: "None" })}
+                            None
                           </span>
                         )
-                      ) : wallOpts.length > 0 ? (
-                        wallOpts.length === 1 ? (
-                          pick(wallOpts[0].name)
+                      ) : row.key === "wall" ? (
+                        wallOpts.length > 0 ? (
+                          wallOpts.length === 1 ? (
+                            wallOpts[0].name
+                          ) : (
+                            `${wallOpts.length} picks`
+                          )
                         ) : (
-                          pick({
-                            ko: `${wallOpts.length}개 선택`,
-                            en: `${wallOpts.length} picks`,
-                          })
+                          <span className="text-muted-foreground/70 font-normal">
+                            None
+                          </span>
+                        )
+                      ) : furnitureOpts.length > 0 ? (
+                        furnitureOpts.length === 1 ? (
+                          furnitureOpts[0].name
+                        ) : (
+                          `${furnitureOpts.length} picks`
                         )
                       ) : (
                         <span className="text-muted-foreground/70 font-normal">
-                          {pick({ ko: "선택 안됨", en: "None" })}
+                          None
                         </span>
                       )}
                     </span>
@@ -255,10 +259,7 @@ export function PlanSummaryRail({
       </Button>
       {!canGenerate && (
         <p className="text-[11px] text-muted-foreground px-1">
-          {pick({
-            ko: "공간 사진과 스타일을 선택하면 생성할 수 있어요.",
-            en: "Pick a space photo and a style to generate.",
-          })}
+          Pick a space photo and a style to generate.
         </p>
       )}
     </aside>

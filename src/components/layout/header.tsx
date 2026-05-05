@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/common/logo";
-import { LanguageToggle } from "./language-toggle";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import { cn } from "@/lib/utils";
 
@@ -65,9 +64,6 @@ export function Header() {
             );
           })}
         </nav>
-        <div className="hidden md:flex items-center gap-3">
-          <LanguageToggle />
-        </div>
         <button
           type="button"
           aria-label="menu"
@@ -89,9 +85,6 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            <div className="flex items-center justify-between pt-3 mt-2 border-t border-border">
-              <LanguageToggle />
-            </div>
           </nav>
         </div>
       )}

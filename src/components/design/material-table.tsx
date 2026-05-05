@@ -2,9 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { useLocale } from "@/lib/i18n/locale-provider";
-import { MATERIALS } from "@/lib/mock/materials";
-import { formatKRW } from "@/lib/utils";
+import { MATERIALS, type MaterialItem } from "@/lib/mock/materials";
 import { cn } from "@/lib/utils";
 
 const TIER_COLORS: Record<string, string> = {
@@ -13,29 +11,24 @@ const TIER_COLORS: Record<string, string> = {
   premium: "bg-primary/10 text-primary",
 };
 
-export function MaterialTable() {
-  const { pick, locale, t } = useLocale();
+export function MaterialTable({ items }: { items?: MaterialItem[] } = {}) {
   const [expanded, setExpanded] = useState<string | null>(null);
+  const list = items ?? MATERIALS;
 
-  const fmt = (v: number) =>
-    locale === "ko"
-      ? formatKRW(v)
-      : `$${Math.round(v / 1300).toLocaleString()}`;
+  const fmt = (v: number) => `$${Math.round(v / 1300).toLocaleString()}`;
 
-  const total = MATERIALS.reduce((acc, m) => acc + m.unitPrice * m.qty, 0);
+  const total = list.reduce((acc, m) => acc + m.unitPrice * m.qty, 0);
 
   return (
     <div className="rounded-3xl border border-border bg-card overflow-hidden">
       <div className="px-5 py-4 border-b border-border flex items-center justify-between">
-        <div className="serif text-base font-medium">
-          {locale === "ko" ? "자재 리스트" : "Material list"}
-        </div>
+        <div className="serif text-base font-medium">Material list</div>
         <div className="text-xs text-muted-foreground">
-          {MATERIALS.length} {locale === "ko" ? "항목" : "items"}
+          {list.length} items
         </div>
       </div>
       <div>
-        {MATERIALS.map((m) => {
+        {list.map((m) => {
           const isOpen = expanded === m.id;
           return (
             <div key={m.id} className="border-b border-border last:border-b-0">
@@ -45,10 +38,10 @@ export function MaterialTable() {
               >
                 <div className="flex-1 min-w-0">
                   <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                    {pick(m.category)}
+                    {m.category}
                   </div>
                   <div className="text-sm font-medium mt-1 truncate">
-                    {pick(m.name)}
+                    {m.name}
                     {m.brand && (
                       <span className="text-muted-foreground font-normal">
                         {" · "}
@@ -67,7 +60,7 @@ export function MaterialTable() {
                 </span>
                 <div className="text-right">
                   <div className="text-xs text-muted-foreground">
-                    {m.qty} {pick(m.unit)}
+                    {m.qty} {m.unit}
                   </div>
                   <div className="text-sm font-semibold">
                     {fmt(m.unitPrice * m.qty)}
@@ -82,7 +75,7 @@ export function MaterialTable() {
               {isOpen && m.alternatives && (
                 <div className="bg-muted/30 px-5 py-3">
                   <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">
-                    {locale === "ko" ? "대안" : "Alternatives"}
+                    Alternatives
                   </div>
                   <div className="space-y-1.5">
                     {m.alternatives.map((alt, i) => (
@@ -99,7 +92,7 @@ export function MaterialTable() {
                           >
                             {alt.tier}
                           </span>
-                          {pick(alt.name)}
+                          {alt.name}
                         </span>
                         <span className="font-medium">
                           {fmt(alt.unitPrice * m.qty)}
@@ -113,9 +106,7 @@ export function MaterialTable() {
           );
         })}
         <div className="px-5 py-4 bg-muted/40 flex items-center justify-between">
-          <span className="text-sm font-medium">
-            {locale === "ko" ? "자재비 합계" : "Materials total"}
-          </span>
+          <span className="text-sm font-medium">Materials total</span>
           <span className="serif text-xl text-primary font-semibold">{fmt(total)}</span>
         </div>
       </div>

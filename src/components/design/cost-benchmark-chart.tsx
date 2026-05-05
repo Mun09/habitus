@@ -11,49 +11,42 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { useLocale } from "@/lib/i18n/locale-provider";
-import { COST_BENCHMARK } from "@/lib/mock/materials";
-import { formatKRW } from "@/lib/utils";
+import { COST_BENCHMARK, type CostBenchmark } from "@/lib/mock/materials";
 
-export function CostBenchmarkChart() {
-  const { pick, locale } = useLocale();
+export function CostBenchmarkChart({
+  benchmark,
+}: { benchmark?: CostBenchmark } = {}) {
+  const b = benchmark ?? COST_BENCHMARK;
 
   const data = [
     {
-      label: locale === "ko" ? "저가 견적" : "Lowball quote",
-      value: COST_BENCHMARK.lowballQuote,
+      label: "Lowball quote",
+      value: b.lowballQuote,
       color: "var(--danger)",
-      flag: locale === "ko" ? "⚠ 위험" : "⚠ risk",
+      flag: "⚠ risk",
     },
     {
-      label: locale === "ko" ? "Gather 견적" : "Gather quote",
-      value: COST_BENCHMARK.ourQuote,
+      label: "Habitus quote",
+      value: b.ourQuote,
       color: "var(--primary)",
-      flag: locale === "ko" ? "추천" : "best",
+      flag: "best",
     },
     {
-      label: locale === "ko" ? "시장 평균" : "Market avg",
-      value: COST_BENCHMARK.marketAvg,
+      label: "Market avg",
+      value: b.marketAvg,
       color: "var(--secondary)",
       flag: "",
     },
   ];
 
-  const fmt = (v: number) =>
-    locale === "ko"
-      ? formatKRW(v)
-      : `$${Math.round(v / 1300).toLocaleString()}`;
+  const fmt = (v: number) => `$${Math.round(v / 1300).toLocaleString()}`;
 
   return (
     <div className="rounded-3xl border border-border bg-card overflow-hidden">
       <div className="px-5 py-4 border-b border-border">
-        <div className="serif text-base font-medium">
-          {locale === "ko" ? "비용 벤치마크" : "Cost benchmark"}
-        </div>
+        <div className="serif text-base font-medium">Cost benchmark</div>
         <div className="text-xs text-muted-foreground mt-1">
-          {locale === "ko"
-            ? "동일 사양의 시장 견적 비교"
-            : "Same-spec quote comparison"}
+          Same-spec quote comparison
         </div>
       </div>
       <div className="p-2 md:p-4">
@@ -63,7 +56,7 @@ export function CostBenchmarkChart() {
               <CartesianGrid horizontal={false} stroke="var(--border)" strokeDasharray="3 3" />
               <XAxis
                 type="number"
-                tickFormatter={(v) => fmt(v as number).replace("₩", "")}
+                tickFormatter={(v) => fmt(v as number).replace("$", "")}
                 fontSize={11}
                 stroke="var(--muted-foreground)"
               />
@@ -97,9 +90,7 @@ export function CostBenchmarkChart() {
       <div className="px-5 pb-5">
         <div className="rounded-2xl bg-[color:var(--danger)]/8 border border-[color:var(--danger)]/30 p-4 flex gap-3">
           <AlertTriangle className="h-5 w-5 text-[color:var(--danger)] flex-shrink-0 mt-0.5" />
-          <p className="text-xs leading-relaxed text-foreground/80">
-            {pick(COST_BENCHMARK.warning)}
-          </p>
+          <p className="text-xs leading-relaxed text-foreground/80">{b.warning}</p>
         </div>
       </div>
     </div>

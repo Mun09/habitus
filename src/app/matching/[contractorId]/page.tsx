@@ -23,7 +23,7 @@ export default function ContractorDetailPage({
   params: Promise<{ contractorId: string }>;
 }) {
   const { contractorId } = use(params);
-  const { t, pick, locale } = useLocale();
+  const { t } = useLocale();
   const contractor = CONTRACTORS.find((c) => c.id === contractorId);
   if (!contractor) notFound();
 
@@ -63,7 +63,7 @@ export default function ContractorDetailPage({
             <div className="relative h-24 w-24 md:h-32 md:w-32 rounded-3xl overflow-hidden border-4 border-card shadow flex-shrink-0">
               <Image
                 src={contractor.profileImage}
-                alt={pick(contractor.name)}
+                alt={contractor.name}
                 fill
                 sizes="128px"
                 className="object-cover"
@@ -75,21 +75,21 @@ export default function ContractorDetailPage({
                 {contractor.badges.map((b) => (
                   <Badge key={b} variant="muted" className="text-xs">
                     <BadgeCheck className="h-3 w-3" />
-                    {pick(BADGE_LABELS[b])}
+                    {BADGE_LABELS[b]}
                   </Badge>
                 ))}
               </div>
               <h1 className="serif text-3xl md:text-4xl font-medium">
-                {pick(contractor.company)}
+                {contractor.company}
               </h1>
               <div className="text-sm text-muted-foreground mt-1">
-                {pick(contractor.name)} · {pick(contractor.region)}
+                {contractor.name} · {contractor.region}
               </div>
             </div>
           </div>
 
           <p className="mt-6 text-base text-foreground/80 leading-relaxed max-w-2xl">
-            {pick(contractor.bio)}
+            {contractor.bio}
           </p>
 
           <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -106,19 +106,11 @@ export default function ContractorDetailPage({
             <Stat
               icon={<Clock className="h-4 w-4 text-primary" />}
               label={t("matching.detail.responseTime")}
-              value={
-                locale === "ko"
-                  ? `${contractor.responseHours}시간`
-                  : `${contractor.responseHours}h`
-              }
+              value={`${contractor.responseHours}h`}
             />
             <Stat
               label={t("matching.detail.years")}
-              value={
-                locale === "ko"
-                  ? `${contractor.yearsExperience}년`
-                  : `${contractor.yearsExperience}y`
-              }
+              value={`${contractor.yearsExperience}y`}
             />
           </div>
         </div>
@@ -145,7 +137,7 @@ export default function ContractorDetailPage({
                   {contractor.rating}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  {contractor.reviewCount} {locale === "ko" ? "건" : "reviews"}
+                  {contractor.reviewCount} reviews
                 </div>
                 <div className="mt-4 space-y-1.5">
                   {ratingDist.map(({ star, count }) => (
@@ -170,7 +162,7 @@ export default function ContractorDetailPage({
               <div className="space-y-4">
                 {reviews.length === 0 ? (
                   <div className="text-sm text-muted-foreground">
-                    {locale === "ko" ? "아직 리뷰가 없습니다." : "No reviews yet."}
+                    No reviews yet.
                   </div>
                 ) : (
                   reviews.map((r) => <ReviewCard key={r.id} review={r} />)
@@ -196,28 +188,12 @@ export default function ContractorDetailPage({
                       label={t("matching.detail.businessNumber")}
                       value={contractor.businessNumber ?? ""}
                     />
-                    <Field
-                      label={t("matching.detail.warrantyInsurance")}
-                      value={pick(
-                        contractor.warrantyInsurance ?? { ko: "-", en: "-" }
-                      )}
-                    />
                   </>
                 ) : (
                   <div className="text-sm text-muted-foreground leading-relaxed">
-                    {locale === "ko" ? (
-                      <>
-                        무면허 시공자이지만 Gather의 자체 검증 절차를 통과했습니다.
-                        포트폴리오 검토, 검증된 리뷰 {contractor.reviewCount}건,
-                        신원 확인을 거쳤으며, 분쟁 시 Gather가 직접 보증합니다.
-                      </>
-                    ) : (
-                      <>
-                        Unlicensed but cleared through Gather's vetting:
-                        portfolio review, {contractor.reviewCount} verified reviews,
-                        identity check. Gather backs the warranty directly.
-                      </>
-                    )}
+                    Unlicensed but cleared through Habitus's vetting:
+                    portfolio review, {contractor.reviewCount} verified reviews,
+                    and identity check.
                   </div>
                 )}
               </div>
@@ -253,9 +229,7 @@ export default function ContractorDetailPage({
               {t("matching.startingPrice")}
             </div>
             <div className="text-lg md:text-xl font-semibold serif">
-              {locale === "ko"
-                ? formatKRW(contractor.startingPrice)
-                : `$${Math.round(contractor.startingPrice / 1300).toLocaleString()}`}
+              {`$${Math.round(contractor.startingPrice / 1300).toLocaleString()}`}
             </div>
           </div>
           <RequestDialog contractor={contractor} />

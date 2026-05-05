@@ -20,7 +20,6 @@ export type DesignPlan = {
   heroProposal?: string;
   proposals: string[];
   userReferences: string[];
-  aftercareUpgrade: boolean;
   createdAt: string;
 };
 
@@ -28,13 +27,12 @@ type Ctx = {
   plan: DesignPlan | null;
   hasPlan: boolean;
   savePlan: (p: Omit<DesignPlan, "id" | "createdAt">) => void;
-  setAftercareUpgrade: (v: boolean) => void;
   clearPlan: () => void;
 };
 
 const DesignPlanContext = createContext<Ctx | undefined>(undefined);
 
-const KEY = "gather.designPlan";
+const KEY = "habitus.designPlan";
 
 export function DesignPlanProvider({
   children,
@@ -78,15 +76,6 @@ export function DesignPlanProvider({
     []
   );
 
-  const setAftercareUpgrade = useCallback((v: boolean) => {
-    setPlan((prev) => {
-      if (!prev) return prev;
-      const next = { ...prev, aftercareUpgrade: v };
-      persist(next);
-      return next;
-    });
-  }, []);
-
   const clearPlan = useCallback(() => {
     setPlan(null);
     persist(null);
@@ -97,10 +86,9 @@ export function DesignPlanProvider({
       plan,
       hasPlan: !!plan,
       savePlan,
-      setAftercareUpgrade,
       clearPlan,
     }),
-    [plan, savePlan, setAftercareUpgrade, clearPlan]
+    [plan, savePlan, clearPlan]
   );
 
   return (

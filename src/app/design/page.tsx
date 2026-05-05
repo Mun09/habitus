@@ -9,6 +9,7 @@ import { GeneratingState } from "@/components/design/generating-state";
 import { ResultView } from "@/components/design/result-view";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import {
+  STYLE_RANDOM_ID,
   detectStyleFromOptions,
   getOptionImagesForGenerating,
 } from "@/lib/mock/design-options";
@@ -18,10 +19,12 @@ export default function DesignPage() {
   const [stage, setStage] = useState<DesignStage>("compose");
   const [spacePhotos, setSpacePhotos] = useState<UploadedPhoto[]>([]);
   const [refUploaded, setRefUploaded] = useState<UploadedPhoto[]>([]);
-  const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>([]);
+  const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>([
+    STYLE_RANDOM_ID,
+  ]);
   const [styleKey, setStyleKey] = useState<
-    "midcentury" | "minimalist" | "industrial" | "scandinavian"
-  >("midcentury");
+    "midcentury" | "minimalist" | "industrial" | "scandinavian" | "random"
+  >("random");
 
   const stageLabels: Record<DesignStage, string> = {
     compose: t("design.stage.compose"),

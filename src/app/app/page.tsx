@@ -12,7 +12,6 @@ import {
   MatchingScreen,
   DetailScreen,
   TrackingScreen,
-  AftercareScreen,
 } from "@/components/app-preview/mobile-screens";
 
 export default function AppPreviewPage() {
@@ -25,7 +24,6 @@ export default function AppPreviewPage() {
     { key: "matching", label: t("app.frame.matching"), Component: MatchingScreen },
     { key: "detail", label: t("app.frame.detail"), Component: DetailScreen },
     { key: "tracking", label: t("app.frame.tracking"), Component: TrackingScreen },
-    { key: "aftercare", label: t("app.frame.aftercare"), Component: AftercareScreen },
   ];
 
   const scroll = (dir: 1 | -1) => {

@@ -13,7 +13,7 @@ export default function SignInPage() {
 
   const proceed = () => {
     if (typeof window !== "undefined") {
-      window.localStorage.setItem("gather.auth", "1");
+      window.localStorage.setItem("habitus.auth", "1");
     }
     router.push("/onboarding");
   };

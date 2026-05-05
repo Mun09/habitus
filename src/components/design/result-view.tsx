@@ -10,48 +10,55 @@ import { useLocale } from "@/lib/i18n/locale-provider";
 import { useDesignPlan } from "@/lib/design-plan";
 import { IMAGES } from "@/lib/mock/images";
 import { DESIGN_OPTIONS } from "@/lib/mock/design-options";
+import {
+  RANDOM_STYLE_BENCHMARKS,
+  RANDOM_STYLE_MATERIALS,
+} from "@/lib/mock/materials";
 import { cn } from "@/lib/utils";
 import { BeforeAfter } from "./before-after";
 import { MaterialTable } from "./material-table";
 import { CostBenchmarkChart } from "./cost-benchmark-chart";
 import { ContractChecklist } from "./contract-checklist";
 
-const STYLE_LABELS: Record<string, { ko: string; en: string; summary: { ko: string; en: string } }> = {
+const STYLE_LABELS: Record<string, { name: string; summary: string }> = {
   midcentury: {
-    ko: "미드센추리 모던",
-    en: "Mid-century Modern",
-    summary: {
-      ko: "따뜻한 우드톤, 곡선 가구, 자연광. 거실에 톤 다운된 테라코타와 오크 마루를 적용했어요.",
-      en: "Warm woods, curved furniture, natural light. Living room in muted terracotta with oak flooring.",
-    },
+    name: "Mid-century Modern",
+    summary:
+      "Warm woods, curved furniture, natural light. Living room in muted terracotta with oak flooring.",
   },
   minimalist: {
-    ko: "미니멀 화이트",
-    en: "Minimalist White",
-    summary: {
-      ko: "정돈된 라인과 깨끗한 화이트톤. 친환경 자재로 알러지 친화적인 공간을 제안했어요.",
-      en: "Clean lines, white tones, allergy-friendly eco materials.",
-    },
+    name: "Minimalist White",
+    summary: "Clean lines, white tones, allergy-friendly eco materials.",
   },
   industrial: {
-    ko: "인더스트리얼",
-    en: "Industrial",
-    summary: {
-      ko: "노출 콘크리트와 메탈 디테일을 살린 빈티지 무드. 카페 같은 거실을 만들어요.",
-      en: "Exposed concrete and metal details — a cafe-like living space.",
-    },
+    name: "Industrial",
+    summary: "Exposed concrete and metal details — a cafe-like living space.",
   },
   scandinavian: {
-    ko: "스칸디나비안",
-    en: "Scandinavian",
-    summary: {
-      ko: "밝은 톤과 자연 소재로 가족 친화적인 따뜻함을 표현했어요.",
-      en: "Bright tones and natural materials — warm, family-friendly.",
-    },
+    name: "Scandinavian",
+    summary: "Bright tones and natural materials — warm, family-friendly.",
+  },
+  random: {
+    name: "Random — 5 styles",
+    summary:
+      "Placed your chair and lamp in the W8 space and rendered 5 different moods. Pick your favorite to proceed.",
   },
 };
 
-type StyleKey = "midcentury" | "minimalist" | "industrial" | "scandinavian";
+const RANDOM_STYLE_VARIANTS: string[] = [
+  "Warm minimalism",
+  "Nordic Scandinavian",
+  "Modern vintage",
+  "Cozy home cafe",
+  "Natural planterior",
+];
+
+type StyleKey =
+  | "midcentury"
+  | "minimalist"
+  | "industrial"
+  | "scandinavian"
+  | "random";
 
 export function ResultView({
   spaceImage,
@@ -68,22 +75,55 @@ export function ResultView({
   selectedOptionIds: string[];
   onRegenerate: () => void;
 }) {
-  const { t, pick } = useLocale();
+  const { t } = useLocale();
   const router = useRouter();
   const { savePlan } = useDesignPlan();
   const style = STYLE_LABELS[styleKey];
 
-  // AI proposals — user demo image first, then moodboard + completed gallery
-  const proposals = Array.from(
-    new Set([
-      IMAGES.designDemo.after,
-      ...IMAGES.moodboard[styleKey].slice(0, 4),
-      ...IMAGES.projectCompleted.slice(0, 2),
-    ])
-  ).slice(0, 5);
+  const isRandom = styleKey === "random";
+
+  // AI proposals — for Random, show all 5 specific style outputs;
+  // otherwise mix the demo "after" with moodboard + completed gallery.
+  const proposals = isRandom
+    ? IMAGES.scenarios.random.styles
+    : (() => {
+        const k = styleKey as Exclude<StyleKey, "random">;
+        return Array.from(
+          new Set([
+            IMAGES.designDemo.after,
+            ...IMAGES.moodboard[k].slice(0, 4),
+            ...IMAGES.projectCompleted.slice(0, 2),
+          ])
+        ).slice(0, 5);
+      })();
+
+  // For the Random scenario the 5 outputs are rendered onto the
+  // reference space — override "before" so the slider stays coherent.
+  const usedRandomReference = userReferences.includes(
+    IMAGES.scenarios.random.referenceSpace
+  );
+  const heroBefore =
+    isRandom && usedRandomReference
+      ? IMAGES.scenarios.random.referenceSpace
+      : spaceImage;
 
   const [activeProposal, setActiveProposal] = useState(proposals[0]);
   const heroAfter = activeProposal;
+
+  // For Random, the active proposal index selects the per-variant
+  // material list and cost benchmark — each style implies a distinct
+  // surface treatment, flooring, lighting and built-in spec.
+  const activeVariantIdx = isRandom
+    ? Math.max(0, proposals.indexOf(activeProposal))
+    : -1;
+  const activeMaterials =
+    activeVariantIdx >= 0
+      ? RANDOM_STYLE_MATERIALS[activeVariantIdx]
+      : undefined;
+  const activeBenchmark =
+    activeVariantIdx >= 0
+      ? RANDOM_STYLE_BENCHMARKS[activeVariantIdx]
+      : undefined;
 
   const proceedToMatching = () => {
     const options = selectedOptionIds
@@ -94,13 +134,12 @@ export function ResultView({
     const cleanSpace = spaceImage.startsWith("blob:") ? undefined : spaceImage;
     savePlan({
       styleKey,
-      styleLabel: style,
+      styleLabel: style.name,
       options,
       spaceImage: cleanSpace,
       heroProposal: activeProposal,
       proposals,
       userReferences: cleanUserRefs,
-      aftercareUpgrade: false,
     });
     router.push(`/matching?planId=${styleKey}`);
   };
@@ -123,10 +162,10 @@ export function ResultView({
               {t("design.result.style")}
             </div>
             <h2 className="serif text-3xl md:text-4xl font-medium mt-1">
-              {pick(style)}
+              {style.name}
             </h2>
             <p className="mt-3 text-sm text-foreground/80 leading-relaxed max-w-xl">
-              {pick(style.summary)}
+              {style.summary}
             </p>
             <div className="mt-5 flex items-center gap-3">
               <Button size="lg" onClick={proceedToMatching}>
@@ -161,7 +200,7 @@ export function ResultView({
 
         {/* Before/After slider */}
         <div className="p-3 md:p-5">
-          <BeforeAfter before={spaceImage} after={heroAfter} />
+          <BeforeAfter before={heroBefore} after={heroAfter} />
         </div>
 
         {/* Proposals grid */}
@@ -177,6 +216,7 @@ export function ResultView({
           <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
             {proposals.map((src, i) => {
               const active = src === activeProposal;
+              const variantLabel = isRandom ? RANDOM_STYLE_VARIANTS[i] : null;
               return (
                 <motion.button
                   type="button"
@@ -194,7 +234,7 @@ export function ResultView({
                 >
                   <Image
                     src={src}
-                    alt=""
+                    alt={variantLabel ?? ""}
                     fill
                     sizes="(min-width: 768px) 18vw, 50vw"
                     className="object-cover pointer-events-none"
@@ -204,6 +244,13 @@ export function ResultView({
                     <span className="absolute top-2 left-2 rounded-full bg-primary text-primary-foreground px-2 py-0.5 text-[10px] font-medium">
                       ●
                     </span>
+                  )}
+                  {variantLabel && (
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/85 to-transparent px-2 py-1.5">
+                      <span className="text-[11px] text-background font-medium leading-tight">
+                        {variantLabel}
+                      </span>
+                    </div>
                   )}
                 </motion.button>
               );
@@ -219,12 +266,19 @@ export function ResultView({
       {/* Materials, cost, contract */}
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="space-y-6">
-          <SectionLabel>{t("design.result.materials")}</SectionLabel>
-          <MaterialTable />
+          <SectionLabel>
+            {t("design.result.materials")}
+            {isRandom && (
+              <span className="ml-2 normal-case tracking-normal text-foreground/70">
+                · {RANDOM_STYLE_VARIANTS[activeVariantIdx]}
+              </span>
+            )}
+          </SectionLabel>
+          <MaterialTable items={activeMaterials} />
         </div>
         <div className="space-y-6">
           <SectionLabel>{t("design.result.cost")}</SectionLabel>
-          <CostBenchmarkChart />
+          <CostBenchmarkChart benchmark={activeBenchmark} />
         </div>
       </div>
       <div>
@@ -240,10 +294,7 @@ export function ResultView({
             {t("design.stage.matching")}
           </div>
           <div className="serif text-lg md:text-xl mt-1">
-            {pick({
-              ko: "이 디자인에 맞는 시공자를 찾아드릴게요.",
-              en: "Let's match a contractor who fits this design.",
-            })}
+            Let&apos;s match a contractor who fits this design.
           </div>
         </div>
         <Button size="lg" onClick={proceedToMatching}>

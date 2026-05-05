@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { IssueReportDialog } from "./issue-report-dialog";
 
 export function UpdateTimeline({ updates }: { updates: Update[] }) {
-  const { t, pick } = useLocale();
+  const { t } = useLocale();
   const [issueFor, setIssueFor] = useState<string | null>(null);
 
   return (
@@ -18,7 +18,7 @@ export function UpdateTimeline({ updates }: { updates: Update[] }) {
       <div className="flex items-center justify-between">
         <h3 className="serif text-xl font-medium">{t("tracking.timeline.title")}</h3>
         <span className="text-xs text-muted-foreground">
-          {updates.length} {pick({ ko: "건", en: "updates" })}
+          {updates.length} updates
         </span>
       </div>
       <div className="space-y-4">
@@ -36,9 +36,9 @@ export function UpdateTimeline({ updates }: { updates: Update[] }) {
                 <div className="text-xs uppercase tracking-wider text-primary">
                   {u.date}
                 </div>
-                <h4 className="serif text-lg font-medium mt-1">{pick(u.title)}</h4>
+                <h4 className="serif text-lg font-medium mt-1">{u.title}</h4>
                 <div className="text-xs text-muted-foreground mt-1">
-                  {pick(u.author)}
+                  {u.author}
                 </div>
               </div>
               <Button
@@ -69,7 +69,7 @@ export function UpdateTimeline({ updates }: { updates: Update[] }) {
               </div>
             )}
             <p className="text-sm text-foreground/80 leading-relaxed px-5 pt-4 pb-5">
-              {pick(u.body)}
+              {u.body}
             </p>
           </motion.article>
         ))}

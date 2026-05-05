@@ -1,31 +1,25 @@
 "use client";
 
-import { useLocale } from "@/lib/i18n/locale-provider";
 import { CONTRACTORS, type Contractor } from "@/lib/mock/contractors";
-import { formatKRW } from "@/lib/utils";
 
-const ITEMS: { ko: string; en: string; ratios: number[] }[] = [
-  { ko: "철거·폐기", en: "Demo & disposal", ratios: [1, 1.05, 0.92] },
-  { ko: "배관·전기", en: "Plumbing & elec", ratios: [1, 1.08, 0.94] },
-  { ko: "목공·도장", en: "Carpentry & paint", ratios: [1, 1.12, 0.88] },
-  { ko: "주방·욕실", en: "Kitchen & bath", ratios: [1, 1.15, 0.90] },
-  { ko: "마감·청소", en: "Finishing & cleanup", ratios: [1, 1.06, 0.95] },
+const ITEMS: { label: string; ratios: number[] }[] = [
+  { label: "Demo & disposal", ratios: [1, 1.05, 0.92] },
+  { label: "Plumbing & elec", ratios: [1, 1.08, 0.94] },
+  { label: "Carpentry & paint", ratios: [1, 1.12, 0.88] },
+  { label: "Kitchen & bath", ratios: [1, 1.15, 0.90] },
+  { label: "Finishing & cleanup", ratios: [1, 1.06, 0.95] },
 ];
 
 const BASE_PRICES = [3500000, 4200000, 6800000, 4800000, 1500000];
 
 export function QuoteComparison({ current }: { current: Contractor }) {
-  const { pick, locale } = useLocale();
   const others = CONTRACTORS.filter((c) => c.id !== current.id).slice(0, 2);
   const cols = [current, ...others];
 
   const total = (idx: number) =>
     BASE_PRICES.reduce((acc, p, i) => acc + p * ITEMS[i].ratios[idx], 0);
 
-  const fmt = (v: number) =>
-    locale === "ko"
-      ? formatKRW(Math.round(v))
-      : `$${Math.round(v / 1300).toLocaleString()}`;
+  const fmt = (v: number) => `$${Math.round(v / 1300).toLocaleString()}`;
 
   return (
     <div className="rounded-3xl border border-border bg-card overflow-x-auto">
@@ -33,15 +27,15 @@ export function QuoteComparison({ current }: { current: Contractor }) {
         <thead>
           <tr className="border-b border-border">
             <th className="text-left p-4 text-xs uppercase tracking-wider text-muted-foreground font-medium">
-              {locale === "ko" ? "항목" : "Item"}
+              Item
             </th>
             {cols.map((c, i) => (
               <th
                 key={c.id}
                 className={`p-4 text-left ${i === 0 ? "bg-primary/5" : ""}`}
               >
-                <div className="serif text-base font-medium">{pick(c.company)}</div>
-                <div className="text-xs text-muted-foreground">{pick(c.name)}</div>
+                <div className="serif text-base font-medium">{c.company}</div>
+                <div className="text-xs text-muted-foreground">{c.name}</div>
               </th>
             ))}
           </tr>
@@ -49,7 +43,7 @@ export function QuoteComparison({ current }: { current: Contractor }) {
         <tbody>
           {ITEMS.map((item, i) => (
             <tr key={i} className="border-b border-border last:border-b-0">
-              <td className="p-4 text-foreground/90">{pick(item)}</td>
+              <td className="p-4 text-foreground/90">{item.label}</td>
               {item.ratios.map((r, j) => (
                 <td
                   key={j}
@@ -61,7 +55,7 @@ export function QuoteComparison({ current }: { current: Contractor }) {
             </tr>
           ))}
           <tr className="bg-muted/40">
-            <td className="p-4 font-semibold">{locale === "ko" ? "합계" : "Total"}</td>
+            <td className="p-4 font-semibold">Total</td>
             {cols.map((_, j) => (
               <td
                 key={j}

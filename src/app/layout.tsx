@@ -23,9 +23,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Gather — 사기 없는 인테리어",
+  title: "Habitus — Interior, scam-free",
   description:
-    "AI 디자인부터 1개월 보증까지. 검증된 시공자만 매칭하는 안전한 인테리어 플랫폼.",
+    "AI design, verified contractor matching, and live tracking — all in one place.",
 };
 
 export default function RootLayout({
@@ -35,7 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="ko"
+      lang="en"
       className={`${fraunces.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">

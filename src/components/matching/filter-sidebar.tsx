@@ -57,7 +57,7 @@ export function FilterSidebar({
   setFilters: (f: Filters) => void;
   className?: string;
 }) {
-  const { t, pick, locale } = useLocale();
+  const { t } = useLocale();
   const [geoState, setGeoState] = useState<"idle" | "loading" | "error">("idle");
 
   const requestGeolocation = () => {
@@ -94,9 +94,7 @@ export function FilterSidebar({
   };
 
   const fmtBudget = (v: number) =>
-    locale === "ko"
-      ? `${Math.round(v / 10000).toLocaleString()}만`
-      : `$${Math.round(v / 1300).toLocaleString()}`;
+    `$${Math.round(v / 1300).toLocaleString()}`;
 
   return (
     <aside
@@ -106,9 +104,7 @@ export function FilterSidebar({
       )}
     >
       {/* User location */}
-      <FilterSection
-        title={pick({ ko: "내 위치", en: "Your location" })}
-      >
+      <FilterSection title="Your location">
         <div className="space-y-2">
           <div className="relative">
             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
@@ -123,10 +119,7 @@ export function FilterSidebar({
                   },
                 })
               }
-              placeholder={pick({
-                ko: "예: 서울 마포구 망원동",
-                en: "e.g. Mapo-gu, Seoul",
-              })}
+              placeholder="e.g. Mapo-gu, Seoul"
               className="pl-9 h-10"
             />
           </div>
@@ -143,21 +136,18 @@ export function FilterSidebar({
             ) : (
               <MapPin className="h-3.5 w-3.5" />
             )}
-            {pick({ ko: "현재 위치 사용", en: "Use current location" })}
+            Use current location
           </Button>
           {filters.userLocation.coords && (
             <p className="text-[11px] text-muted-foreground">
-              {pick({ ko: "좌표", en: "Coords" })}:{" "}
+              Coords:{" "}
               {filters.userLocation.coords.lat.toFixed(4)},{" "}
               {filters.userLocation.coords.lng.toFixed(4)}
             </p>
           )}
           {geoState === "error" && (
             <p className="text-[11px] text-[color:var(--danger)]">
-              {pick({
-                ko: "위치 권한을 확인해주세요.",
-                en: "Please check location permissions.",
-              })}
+              Please check location permissions.
             </p>
           )}
         </div>
@@ -200,7 +190,7 @@ export function FilterSidebar({
             <SelectItem value="all">{t("matching.filter.licenseAll")}</SelectItem>
             {REGIONS.map((r) => (
               <SelectItem key={r.key} value={r.key}>
-                {pick(r.label)}
+                {r.label}
               </SelectItem>
             ))}
           </SelectContent>
@@ -262,7 +252,7 @@ export function FilterSidebar({
                 checked={filters.badges.includes(b)}
                 onCheckedChange={() => toggleBadge(b)}
               />
-              <span>{pick(BADGE_LABELS[b])}</span>
+              <span>{BADGE_LABELS[b]}</span>
             </label>
           ))}
         </div>
