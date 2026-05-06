@@ -106,6 +106,7 @@ export default function DesignPage() {
           >
             <ResultView
               spaceImage={spacePhotos[0].url}
+              spaceImages={spacePhotos.map((p) => p.url)}
               styleKey={styleKey}
               userReferences={userReferenceUrls}
               optionImages={optionImages}

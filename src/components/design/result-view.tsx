@@ -2,13 +2,20 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { ArrowRight, Info, RotateCcw, Sparkles } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Info,
+  RotateCcw,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import { useDesignPlan } from "@/lib/design-plan";
-import { IMAGES } from "@/lib/mock/images";
+import { IMAGES, W8_AI_BY_URL } from "@/lib/mock/images";
 import { DESIGN_OPTIONS } from "@/lib/mock/design-options";
 import {
   RANDOM_STYLE_BENCHMARKS,
@@ -62,6 +69,7 @@ type StyleKey =
 
 export function ResultView({
   spaceImage,
+  spaceImages,
   styleKey,
   userReferences,
   optionImages,
@@ -69,6 +77,7 @@ export function ResultView({
   onRegenerate,
 }: {
   spaceImage: string;
+  spaceImages?: string[];
   styleKey: StyleKey;
   userReferences: string[];
   optionImages: string[];
@@ -81,10 +90,24 @@ export function ResultView({
   const style = STYLE_LABELS[styleKey];
 
   const isRandom = styleKey === "random";
+  const allSpaces = spaceImages && spaceImages.length > 0 ? spaceImages : [spaceImage];
+  const isMultiSpace = allSpaces.length > 1;
+
+  // For multi-space we slide through one AI render per space.
+  // Maps each chosen W8 sample URL to its AI render; falls back to a
+  // random style for spaces without a prebuilt AI image (e.g. uploads
+  // or the already-matched reference space).
+  const spaceProposals = allSpaces.map((src, i) => {
+    const ai = W8_AI_BY_URL[src];
+    if (ai) return ai;
+    return IMAGES.scenarios.random.styles[i % IMAGES.scenarios.random.styles.length];
+  });
 
   // AI proposals: for Random, show all 5 specific style outputs;
   // otherwise mix the demo "after" with moodboard + completed gallery.
-  const proposals = isRandom
+  const proposals = isMultiSpace
+    ? spaceProposals
+    : isRandom
     ? IMAGES.scenarios.random.styles
     : (() => {
         const k = styleKey as Exclude<StyleKey, "random">;
@@ -103,27 +126,59 @@ export function ResultView({
     IMAGES.scenarios.random.referenceSpace
   );
   const heroBefore =
-    isRandom && usedRandomReference
+    isRandom && !isMultiSpace && usedRandomReference
       ? IMAGES.scenarios.random.referenceSpace
       : spaceImage;
 
   const [activeProposal, setActiveProposal] = useState(proposals[0]);
+  const activeIdx = Math.max(0, proposals.indexOf(activeProposal));
+  // In multi-space mode the active "before" tracks the active space.
   const heroAfter = activeProposal;
+  const multiBefore = isMultiSpace ? allSpaces[activeIdx] ?? allSpaces[0] : heroBefore;
 
   // For Random, the active proposal index selects the per-variant
   // material list and cost benchmark. Each style implies a distinct
   // surface treatment, flooring, lighting and built-in spec.
-  const activeVariantIdx = isRandom
-    ? Math.max(0, proposals.indexOf(activeProposal))
-    : -1;
+  // In multi-space mode we cycle through the same lists by space idx.
+  const variantIdx =
+    isRandom || isMultiSpace ? activeIdx % RANDOM_STYLE_MATERIALS.length : -1;
+  const activeVariantIdx = variantIdx;
   const activeMaterials =
-    activeVariantIdx >= 0
-      ? RANDOM_STYLE_MATERIALS[activeVariantIdx]
-      : undefined;
+    variantIdx >= 0 ? RANDOM_STYLE_MATERIALS[variantIdx] : undefined;
   const activeBenchmark =
-    activeVariantIdx >= 0
-      ? RANDOM_STYLE_BENCHMARKS[activeVariantIdx]
-      : undefined;
+    variantIdx >= 0 ? RANDOM_STYLE_BENCHMARKS[variantIdx] : undefined;
+
+  const goPrev = () =>
+    setActiveProposal(proposals[(activeIdx - 1 + proposals.length) % proposals.length]);
+  const goNext = () =>
+    setActiveProposal(proposals[(activeIdx + 1) % proposals.length]);
+
+  // Keyboard navigation for the slider in multi-space mode.
+  useEffect(() => {
+    if (!isMultiSpace) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") goPrev();
+      else if (e.key === "ArrowRight") goNext();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMultiSpace, activeIdx, proposals.length]);
+
+  // Touch-swipe support for mobile users.
+  const swipeStartX = useRef<number | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    if (!isMultiSpace) return;
+    swipeStartX.current = e.touches[0]?.clientX ?? null;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (!isMultiSpace || swipeStartX.current == null) return;
+    const dx = (e.changedTouches[0]?.clientX ?? 0) - swipeStartX.current;
+    swipeStartX.current = null;
+    if (Math.abs(dx) < 40) return;
+    if (dx < 0) goNext();
+    else goPrev();
+  };
 
   const proceedToMatching = () => {
     const options = selectedOptionIds
@@ -164,6 +219,12 @@ export function ResultView({
             <h2 className="serif text-3xl md:text-4xl font-medium mt-1">
               {style.name}
             </h2>
+            {isMultiSpace && (
+              <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-medium text-primary">
+                <Sparkles className="h-3 w-3" />
+                {allSpaces.length} spaces · slide to compare
+              </div>
+            )}
             <p className="mt-3 text-sm text-foreground/80 leading-relaxed max-w-xl">
               {style.summary}
             </p>
@@ -199,24 +260,80 @@ export function ResultView({
         </div>
 
         {/* Before/After slider */}
-        <div className="p-3 md:p-5">
-          <BeforeAfter before={heroBefore} after={heroAfter} />
+        <div
+          className="p-3 md:p-5 relative"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={isMultiSpace ? `space-${activeIdx}` : "single"}
+              initial={{ opacity: 0, x: isMultiSpace ? 24 : 0 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: isMultiSpace ? -24 : 0 }}
+              transition={{ duration: 0.25 }}
+            >
+              <BeforeAfter
+                before={isMultiSpace ? multiBefore : heroBefore}
+                after={heroAfter}
+              />
+            </motion.div>
+          </AnimatePresence>
+          {isMultiSpace && (
+            <>
+              <button
+                type="button"
+                onClick={goPrev}
+                aria-label="Previous space"
+                className="absolute left-5 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-card/90 backdrop-blur border border-border shadow-md flex items-center justify-center cursor-pointer hover:bg-card transition"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={goNext}
+                aria-label="Next space"
+                className="absolute right-5 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-card/90 backdrop-blur border border-border shadow-md flex items-center justify-center cursor-pointer hover:bg-card transition"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+              <div className="absolute top-7 left-1/2 -translate-x-1/2 z-10 rounded-full bg-foreground/75 text-background px-2.5 py-1 text-[10px] font-medium tracking-wider uppercase pointer-events-none">
+                Space {activeIdx + 1} / {allSpaces.length}
+              </div>
+            </>
+          )}
         </div>
 
         {/* Proposals grid */}
         <div className="px-6 pb-6 md:px-8 md:pb-8">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs uppercase tracking-wider text-muted-foreground">
-              {t("design.result.proposalCount")} · {proposals.length}
+              {isMultiSpace
+                ? `Spaces · ${proposals.length}`
+                : `${t("design.result.proposalCount")} · ${proposals.length}`}
             </span>
             <span className="text-[11px] text-muted-foreground hidden md:inline">
-              {t("design.result.proposalHint")}
+              {isMultiSpace
+                ? "Tap a space, or swipe / arrow keys"
+                : t("design.result.proposalHint")}
             </span>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+          <div
+            className={cn(
+              "grid gap-2",
+              isMultiSpace
+                ? "grid-cols-2 md:grid-cols-4 lg:grid-cols-5"
+                : "grid-cols-2 md:grid-cols-5"
+            )}
+          >
             {proposals.map((src, i) => {
               const active = src === activeProposal;
-              const variantLabel = isRandom ? RANDOM_STYLE_VARIANTS[i] : null;
+              const variantLabel = isMultiSpace
+                ? `Space ${i + 1}`
+                : isRandom
+                ? RANDOM_STYLE_VARIANTS[i]
+                : null;
+              const thumbSrc = isMultiSpace ? allSpaces[i] : src;
               return (
                 <motion.button
                   type="button"
@@ -226,20 +343,31 @@ export function ResultView({
                   transition={{ delay: 0.1 + i * 0.05, duration: 0.4 }}
                   onClick={() => setActiveProposal(src)}
                   className={cn(
-                    "relative aspect-[4/5] rounded-2xl overflow-hidden bg-muted cursor-pointer transition group",
+                    "relative rounded-2xl overflow-hidden bg-muted cursor-pointer transition group",
+                    isMultiSpace ? "aspect-[4/3]" : "aspect-[4/5]",
                     active
                       ? "ring-3 ring-primary ring-offset-2 ring-offset-card"
                       : "hover:opacity-90"
                   )}
                 >
-                  <Image
-                    src={src}
-                    alt={variantLabel ?? ""}
-                    fill
-                    sizes="(min-width: 768px) 18vw, 50vw"
-                    className="object-cover pointer-events-none"
-                    draggable={false}
-                  />
+                  {isMultiSpace ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={thumbSrc}
+                      alt={variantLabel ?? ""}
+                      className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                      draggable={false}
+                    />
+                  ) : (
+                    <Image
+                      src={src}
+                      alt={variantLabel ?? ""}
+                      fill
+                      sizes="(min-width: 768px) 18vw, 50vw"
+                      className="object-cover pointer-events-none"
+                      draggable={false}
+                    />
+                  )}
                   {active && (
                     <span className="absolute top-2 left-2 rounded-full bg-primary text-primary-foreground px-2 py-0.5 text-[10px] font-medium">
                       ●
@@ -268,11 +396,15 @@ export function ResultView({
         <div className="space-y-6">
           <SectionLabel>
             {t("design.result.materials")}
-            {isRandom && (
+            {isMultiSpace ? (
+              <span className="ml-2 normal-case tracking-normal text-foreground/70">
+                · Space {activeIdx + 1}
+              </span>
+            ) : isRandom ? (
               <span className="ml-2 normal-case tracking-normal text-foreground/70">
                 · {RANDOM_STYLE_VARIANTS[activeVariantIdx]}
               </span>
-            )}
+            ) : null}
           </SectionLabel>
           <MaterialTable items={activeMaterials} />
         </div>

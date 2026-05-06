@@ -14,6 +14,17 @@ const u = (id: string, w = 1200) =>
 
 const local = (path: string) => `/images/${path}`;
 
+// Maps a W8 sample-space URL to its AI-rendered counterpart.
+// `null` means the space is already matched and has no AI render.
+const W8_AI_BY_URL_BUILDER = () => ({
+  [local("scenarios/w8/w8_2.jpg")]: local("scenarios/w8/w8_4_ai.png"),
+  [local("scenarios/w8/w8_3.jpg")]: local("scenarios/w8/w8_3_ai.png"),
+  [local("scenarios/w8/w8_4.jpg")]: local("scenarios/w8/w8_2_ai.png"),
+  [local("scenarios/w8/w8_5.jpg")]: local("scenarios/w8/w8_5_ai.png"),
+});
+
+export const W8_AI_BY_URL: Record<string, string> = W8_AI_BY_URL_BUILDER();
+
 export const IMAGES = {
   designDemo: {
     before: local("design-demo/before.webp"),
@@ -39,6 +50,12 @@ export const IMAGES = {
       meetingBay: local("scenarios/w8/w8_3.jpg"),
       tvLounge: local("scenarios/w8/w8_4.jpg"),
       openLounge: local("scenarios/w8/w8_5.jpg"),
+      ai: {
+        studioEntry: local("scenarios/w8/w8_2_ai.png"),
+        meetingBay: local("scenarios/w8/w8_3_ai.png"),
+        tvLounge: local("scenarios/w8/w8_4_ai.png"),
+        openLounge: local("scenarios/w8/w8_5_ai.png"),
+      },
     },
   },
   hero: {

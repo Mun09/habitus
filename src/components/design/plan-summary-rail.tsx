@@ -142,7 +142,9 @@ export function PlanSummaryRail({
                     <span className="block text-xs font-medium text-foreground truncate mt-0.5">
                       {row.key === "space" ? (
                         spacePhotos.length > 0 ? (
-                          "1 photo selected"
+                          spacePhotos.length === 1
+                            ? "1 space selected"
+                            : `${spacePhotos.length} spaces selected`
                         ) : (
                           <span className="text-muted-foreground/70 font-normal">
                             Not selected

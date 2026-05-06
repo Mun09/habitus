@@ -25,33 +25,46 @@ import { cn } from "@/lib/utils";
 import { PlanSummaryRail, type RowKey } from "./plan-summary-rail";
 import type { UploadedPhoto } from "./photo-uploader";
 
-const SAMPLE_SPACES: { id: string; url: string; label: string }[] = [
+const SAMPLE_SPACES: {
+  id: string;
+  url: string;
+  label: string;
+  aiUrl?: string;
+  matched?: boolean;
+}[] = [
   {
     id: "sample-w8-reference",
     url: IMAGES.scenarios.random.referenceSpace,
     label: "W8 · Reference",
+    matched: true,
   },
   {
     id: "sample-w8-studio-entry",
     url: IMAGES.scenarios.w8.studioEntry,
     label: "W8 · Studio entry",
+    aiUrl: IMAGES.scenarios.w8.ai.tvLounge,
   },
   {
     id: "sample-w8-meeting-bay",
     url: IMAGES.scenarios.w8.meetingBay,
     label: "W8 · Meeting bay",
+    aiUrl: IMAGES.scenarios.w8.ai.meetingBay,
   },
   {
     id: "sample-w8-tv-lounge",
     url: IMAGES.scenarios.w8.tvLounge,
     label: "W8 · TV lounge",
+    aiUrl: IMAGES.scenarios.w8.ai.studioEntry,
   },
   {
     id: "sample-w8-open-lounge",
     url: IMAGES.scenarios.w8.openLounge,
     label: "W8 · Open lounge",
+    aiUrl: IMAGES.scenarios.w8.ai.openLounge,
   },
 ];
+
+const MAX_SPACES = 5;
 
 type StepKey =
   | "space"
@@ -314,7 +327,7 @@ function isStepDone(
   });
 }
 
-// ─── Space step ──────────────────────────────────────────────
+// ─── Space step (multi-select) ───────────────────────────────
 function SpaceStep({
   photos,
   onChange,
@@ -337,132 +350,165 @@ function SpaceStep({
 
   const acceptFiles = useCallback(
     (files: FileList | null) => {
-      if (!files || files[0] == null) return;
-      const file = files[0];
-      if (!file.type.startsWith("image/")) return;
-      photos.forEach((p) => {
-        if (p.isFile) URL.revokeObjectURL(p.url);
+      if (!files) return;
+      const next = [...photos];
+      Array.from(files).forEach((file) => {
+        if (next.length >= MAX_SPACES) return;
+        if (!file.type.startsWith("image/")) return;
+        const url = URL.createObjectURL(file);
+        next.push({
+          id: `${file.name}-${Date.now()}-${Math.random()}`,
+          url,
+          isFile: true,
+        });
       });
-      const url = URL.createObjectURL(file);
-      onChange([
-        { id: `${file.name}-${Date.now()}`, url, isFile: true },
-      ]);
+      onChange(next);
     },
     [photos, onChange]
   );
 
-  const removeAll = () => {
-    photos.forEach((p) => {
-      if (p.isFile) URL.revokeObjectURL(p.url);
-    });
-    onChange([]);
+  const removeAt = (id: string) => {
+    const removed = photos.find((p) => p.id === id);
+    if (removed?.isFile) URL.revokeObjectURL(removed.url);
+    onChange(photos.filter((p) => p.id !== id));
   };
 
-  const current = photos[0];
+  const toggleSample = (s: (typeof SAMPLE_SPACES)[number]) => {
+    const used = photos.some((p) => p.id === s.id);
+    if (used) {
+      onChange(photos.filter((p) => p.id !== s.id));
+      return;
+    }
+    if (photos.length >= MAX_SPACES) return;
+    onChange([...photos, { id: s.id, url: s.url, isFile: false }]);
+  };
+
+  const isFull = photos.length >= MAX_SPACES;
 
   return (
     <div className="space-y-4">
-      {current ? (
-        <div className="flex items-start gap-4">
-          <div className="relative aspect-[4/3] w-48 rounded-xl overflow-hidden bg-muted flex-shrink-0">
-            {current.isFile ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={current.url}
-                alt=""
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <Image
-                src={current.url}
-                alt=""
-                fill
-                sizes="200px"
-                className="object-cover"
-              />
-            )}
+      <div
+        onDragEnter={(e) => {
+          e.preventDefault();
+          setDragActive(true);
+        }}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragActive(true);
+        }}
+        onDragLeave={() => setDragActive(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragActive(false);
+          acceptFiles(e.dataTransfer.files);
+        }}
+        onClick={() => !isFull && inputRef.current?.click()}
+        className={cn(
+          "rounded-2xl border-2 border-dashed bg-muted/30 px-6 py-7 text-center transition flex items-center gap-4",
+          dragActive
+            ? "border-primary bg-primary/5"
+            : isFull
+            ? "border-border opacity-60 cursor-not-allowed"
+            : "border-border hover:border-primary/50 hover:bg-muted/60 cursor-pointer"
+        )}
+      >
+        <div className="h-10 w-10 rounded-xl bg-card border border-border flex items-center justify-center flex-shrink-0">
+          <ImagePlus className="h-4 w-4 text-primary" />
+        </div>
+        <div className="text-left flex-1 min-w-0">
+          <div className="text-sm font-medium">
+            {t("design.upload.dropzone")}
           </div>
-          <div className="space-y-2 text-sm">
-            <div className="font-medium">Selected space</div>
-            <p className="text-xs text-muted-foreground">
-              Pick a sample below or upload a new photo to replace it.
-            </p>
-            <Button variant="ghost" size="sm" onClick={removeAll}>
-              <X className="h-3 w-3" /> Clear
-            </Button>
+          <div className="text-xs text-muted-foreground mt-0.5">
+            {t("design.upload.formats")} · {photos.length}/{MAX_SPACES} spaces
           </div>
         </div>
-      ) : (
-        <div
-          onDragEnter={(e) => {
-            e.preventDefault();
-            setDragActive(true);
-          }}
-          onDragOver={(e) => {
-            e.preventDefault();
-            setDragActive(true);
-          }}
-          onDragLeave={() => setDragActive(false)}
-          onDrop={(e) => {
-            e.preventDefault();
-            setDragActive(false);
-            acceptFiles(e.dataTransfer.files);
-          }}
-          onClick={() => inputRef.current?.click()}
-          className={cn(
-            "rounded-2xl border-2 border-dashed bg-muted/30 px-6 py-7 text-center cursor-pointer transition flex items-center gap-4",
-            dragActive
-              ? "border-primary bg-primary/5"
-              : "border-border hover:border-primary/50 hover:bg-muted/60"
-          )}
-        >
-          <div className="h-10 w-10 rounded-xl bg-card border border-border flex items-center justify-center flex-shrink-0">
-            <ImagePlus className="h-4 w-4 text-primary" />
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          className="hidden"
+          onChange={(e) => acceptFiles(e.target.files)}
+        />
+      </div>
+
+      {photos.length > 0 && (
+        <div>
+          <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground mb-2">
+            Selected · {photos.length}
           </div>
-          <div className="text-left">
-            <div className="text-sm font-medium">
-              {t("design.upload.dropzone")}
-            </div>
-            <div className="text-xs text-muted-foreground mt-0.5">
-              {t("design.upload.formats")}
-            </div>
+          <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
+            {photos.map((p, i) => (
+              <div
+                key={p.id}
+                className="relative aspect-[4/3] rounded-lg overflow-hidden bg-muted group"
+              >
+                {p.isFile ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={p.url}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <Image
+                    src={p.url}
+                    alt=""
+                    fill
+                    sizes="160px"
+                    className="object-cover"
+                  />
+                )}
+                {i === 0 && (
+                  <span className="absolute top-1.5 left-1.5 rounded-full bg-card/90 px-1.5 py-0.5 text-[9px] uppercase tracking-wider">
+                    Main
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeAt(p.id);
+                  }}
+                  className="absolute top-1.5 right-1.5 h-6 w-6 rounded-full bg-foreground/70 text-background backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition cursor-pointer"
+                  aria-label={t("design.upload.remove")}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </div>
+            ))}
           </div>
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => acceptFiles(e.target.files)}
-          />
         </div>
       )}
 
       <div className="rounded-xl bg-muted/40 border border-border px-3 py-3">
-        <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground mb-2">
-          {t("design.upload.demoNote")}
+        <div className="flex items-center justify-between mb-2">
+          <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+            {t("design.upload.demoNote")}
+          </div>
+          <div className="text-[10px] text-muted-foreground">
+            Pick one or several · {photos.length}/{MAX_SPACES}
+          </div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
           {SAMPLE_SPACES.map((s) => {
             const used = photos.some((p) => p.id === s.id);
+            const disabled = !used && isFull;
             return (
               <button
                 key={s.id}
                 type="button"
-                onClick={() => {
-                  if (used) {
-                    onChange([]);
-                  } else {
-                    photos.forEach((p) => {
-                      if (p.isFile) URL.revokeObjectURL(p.url);
-                    });
-                    onChange([{ id: s.id, url: s.url, isFile: false }]);
-                  }
-                }}
+                disabled={disabled}
+                onClick={() => toggleSample(s)}
                 className={cn(
-                  "relative aspect-[4/3] rounded-lg overflow-hidden cursor-pointer transition group",
+                  "relative aspect-[4/3] rounded-lg overflow-hidden transition group",
+                  disabled
+                    ? "opacity-40 cursor-not-allowed"
+                    : "cursor-pointer",
                   used
                     ? "ring-2 ring-primary ring-offset-2 ring-offset-card"
-                    : "hover:opacity-90"
+                    : !disabled && "hover:opacity-90"
                 )}
               >
                 <Image
@@ -473,6 +519,16 @@ function SpaceStep({
                   className="object-cover"
                   priority
                 />
+                {used && (
+                  <span className="absolute top-1.5 right-1.5 h-5 w-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+                    <Check className="h-3 w-3" />
+                  </span>
+                )}
+                {s.matched && (
+                  <span className="absolute top-1.5 left-1.5 rounded-full bg-card/95 backdrop-blur px-1.5 py-0.5 text-[9px] font-medium text-primary">
+                    Matched
+                  </span>
+                )}
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/85 to-transparent px-1.5 py-1">
                   <span className="text-[10px] text-background font-medium leading-none">
                     {s.label}
