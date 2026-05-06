@@ -2,23 +2,23 @@
 @import "tw-animate-css";
 
 :root {
-  /* cool blue palette */
-  --background: #e7eff6;
-  --foreground: #0f1e2c;
+  /* ocean luxury palette: 5-step blue scale */
+  --background: #ffffff;
+  --foreground: #03396c;
   --card: #ffffff;
-  --card-foreground: #0f1e2c;
+  --card-foreground: #03396c;
   --popover: #ffffff;
-  --popover-foreground: #0f1e2c;
+  --popover-foreground: #03396c;
   --primary: #005b96;
   --primary-foreground: #ffffff;
-  --secondary: #003f6b;
+  --secondary: #03396c;
   --secondary-foreground: #ffffff;
-  --muted: #d6e3ee;
-  --muted-foreground: #4a6478;
+  --muted: #e7eff6;
+  --muted-foreground: #3d5e80;
   --accent: #63ace5;
-  --accent-foreground: #003f6b;
-  --border: #c8d8e6;
-  --input: #c8d8e6;
+  --accent-foreground: #03396c;
+  --border: #adcbe3;
+  --input: #adcbe3;
   --ring: #005b96;
   --success: #6b8f4e;
   --warning: #d49a3f;
@@ -56,8 +56,8 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 0.5rem);
 
-  --shadow-warm: 0 8px 30px rgba(15, 30, 44, 0.06);
-  --shadow-warm-lg: 0 24px 60px rgba(15, 30, 44, 0.12);
+  --shadow-warm: 0 8px 30px rgba(3, 57, 108, 0.10);
+  --shadow-warm-lg: 0 24px 60px rgba(3, 57, 108, 0.18);
 }
 
 * {
@@ -101,7 +101,7 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: radial-gradient(rgba(15, 30, 44, 0.05) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(3, 57, 108, 0.05) 1px, transparent 1px);
   background-size: 3px 3px;
   mix-blend-mode: multiply;
   opacity: 0.4;
@@ -118,11 +118,11 @@ body {
   width: 320px;
   height: 660px;
   border-radius: 44px;
-  background: #0f1e2c;
+  background: #03396c;
   padding: 12px;
   box-shadow:
     0 0 0 2px rgba(255, 255, 255, 0.06),
-    0 30px 80px rgba(15, 30, 44, 0.35);
+    0 30px 80px rgba(3, 57, 108, 0.35);
   position: relative;
   flex-shrink: 0;
 }
@@ -134,7 +134,7 @@ body {
   transform: translateX(-50%);
   width: 100px;
   height: 24px;
-  background: #070d14;
+  background: #021f3d;
   border-radius: 999px;
   z-index: 2;
 }

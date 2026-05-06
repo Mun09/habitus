@@ -35,7 +35,7 @@ export function FeaturedContractors() {
             <FadeIn key={c.id} delay={i * 0.06}>
               <Link
                 href={`/matching/${c.id}`}
-                className="group block h-full rounded-3xl overflow-hidden border border-border bg-card transition-all hover:shadow-[0_18px_40px_rgba(15,30,44,0.1)] hover:-translate-y-0.5"
+                className="group block h-full rounded-3xl overflow-hidden border border-border bg-card transition-all hover:shadow-[0_18px_40px_rgba(3,57,108,0.12)] hover:-translate-y-0.5"
               >
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <Image

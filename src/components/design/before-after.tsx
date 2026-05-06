@@ -112,7 +112,7 @@ export function BeforeAfter({
         className="absolute inset-y-0 z-30 w-px bg-card/80 pointer-events-none"
         style={{ left: `${pos}%` }}
       >
-        <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-12 w-12 rounded-full bg-card border-2 border-primary shadow-[0_4px_14px_rgba(15,30,44,0.25)] flex items-center justify-center">
+        <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-12 w-12 rounded-full bg-card border-2 border-primary shadow-[0_4px_14px_rgba(3,57,108,0.28)] flex items-center justify-center">
           <span className="text-sm tracking-widest text-primary font-medium">
             ‹›
           </span>
