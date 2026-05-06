@@ -82,7 +82,7 @@ export const REVIEWS: Review[] = [
     "2026-03-02",
     3,
     "Truly eco materials",
-    "My child has allergies — they shared every eco-certification.",
+    "My child has allergies, and they shared every eco-certification.",
     [3, 4]
   ),
   r(
@@ -101,7 +101,7 @@ export const REVIEWS: Review[] = [
     "2026-03-19",
     5,
     "Exposed concrete finish is art",
-    "Years of cafe work shows — the details are on another level.",
+    "Years of cafe work shows. The details are on another level.",
     [5]
   ),
   r(
@@ -120,7 +120,7 @@ export const REVIEWS: Review[] = [
     "2026-03-25",
     1,
     "Family-friendly done right",
-    "Even the corner softening for the kids — incredibly thoughtful.",
+    "Even the corner softening for the kids. Incredibly thoughtful.",
     [0, 4]
   ),
   r(
@@ -158,7 +158,7 @@ export const REVIEWS: Review[] = [
     "2026-03-15",
     5,
     "Treated like a big project",
-    "30m² studio treated with the same care as a full home. Verified — peace of mind.",
+    "30m² studio treated with the same care as a full home. Verified, peace of mind.",
     [3]
   ),
   r(
@@ -187,7 +187,7 @@ export const REVIEWS: Review[] = [
     "2026-03-30",
     2,
     "Newlywed color tone, perfect",
-    "Terracotta + off-white combo — couldn't be happier.",
+    "Terracotta + off-white combo. Couldn't be happier.",
     [0]
   ),
 ];

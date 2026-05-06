@@ -20,7 +20,7 @@ export default function SignInPage() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-5 py-16">
-      <div className="w-full max-w-md rounded-3xl border border-border bg-card p-8 md:p-10 shadow-[0_24px_60px_rgba(42,39,36,0.08)]">
+      <div className="w-full max-w-md rounded-3xl border border-border bg-card p-8 md:p-10 shadow-[0_24px_60px_rgba(15,30,44,0.08)]">
         <Link href="/" className="inline-block mb-8">
           <Logo />
         </Link>

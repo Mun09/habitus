@@ -477,7 +477,7 @@ export function totalCost(items: MaterialItem[]): number {
   return items.reduce((acc, m) => acc + m.unitPrice * m.qty, 0);
 }
 
-// Cost benchmarks per Random variant — derived from each style's
+// Cost benchmarks per Random variant, derived from each style's
 // Habitus quote, with market avg ~36% above and lowball ~34% below.
 export const RANDOM_STYLE_BENCHMARKS: CostBenchmark[] =
   RANDOM_STYLE_MATERIALS.map((items) => {

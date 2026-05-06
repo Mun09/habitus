@@ -22,7 +22,7 @@ export const dictionaries = {
     "landing.hero.eyebrow": "AI Design · Matching · Tracking, all in one place",
     "landing.hero.title": "Vague dreams,\nsafe interiors.",
     "landing.hero.subtitle":
-      "AI turns vague ideas into clear plans, and we match you with verified pros — all in one place.",
+      "AI turns vague ideas into clear plans, and we match you with verified pros, all in one place.",
     "landing.hero.ctaPrimary": "Start AI Design",
     "landing.hero.ctaSecondary": "Browse Pros",
     "landing.hero.badge.ai": "AI Design",
@@ -79,7 +79,7 @@ export const dictionaries = {
 
     "design.title": "AI Interior Designer",
     "design.subtitle":
-      "Upload your space and reference photos — AI will generate a design for you.",
+      "Upload your space and reference photos. AI will generate a design for you.",
     "design.stage.compose": "Compose",
     "design.stage.generating": "AI Generating",
     "design.stage.result": "Result",
@@ -89,19 +89,19 @@ export const dictionaries = {
 
     "design.upload.title": "1. Which space do you want to transform?",
     "design.upload.body":
-      "Upload 1–4 photos of your current space — living room, kitchen, bedroom, anywhere.",
+      "Upload 1–4 photos of your current space: living room, kitchen, bedroom, anywhere.",
     "design.upload.dropzone": "Drag & drop, or click to upload",
     "design.upload.formats": "JPG · PNG · HEIC · max 10MB",
     "design.upload.add": "Add photo",
     "design.upload.remove": "Remove",
     "design.upload.next": "Next, pick references",
     "design.upload.demoNote":
-      "Demo — pick a sample space instead of a real upload.",
+      "Demo: pick a sample space instead of a real upload.",
     "design.upload.useSample": "Use sample space",
 
     "design.reference.title": "2. Pick the style and materials you want",
     "design.reference.body":
-      "Choose style, color, flooring, and wall finish — AI will design exactly with those. You can also add your own reference photos.",
+      "Choose style, color, flooring, and wall finish. AI will design exactly with those. You can also add your own reference photos.",
     "design.reference.your": "Your references (optional)",
     "design.reference.userUploads": "Your references",
     "design.reference.selectedOptions": "Selected style & materials",
@@ -130,7 +130,7 @@ export const dictionaries = {
     "design.result.cost": "Cost benchmark",
     "design.result.contract": "Safe contract",
     "design.result.warning":
-      "AI-generated images are illustrative — actual results may vary based on contractor execution.",
+      "AI-generated images are illustrative. Actual results may vary based on contractor execution.",
 
     "matching.title": "Verified contractors",
     "matching.subtitle": "Only pros who pass license, portfolio, and review checks.",
@@ -235,7 +235,7 @@ export const dictionaries = {
     "auth.kakao": "Continue with Kakao",
     "auth.naver": "Continue with Naver",
     "auth.email": "Continue with email",
-    "auth.note": "Prototype demo — your input is not stored.",
+    "auth.note": "Prototype demo. Your input is not stored.",
 
     "onboarding.step1.title": "What should we call you?",
     "onboarding.step1.label": "Nickname",
@@ -254,7 +254,7 @@ export const dictionaries = {
     "trust.layers.title": "Four safety layers",
     "trust.reports.title": "Quarterly trust reports",
     "trust.reports.body":
-      "We anonymize and publish every banned contractor and reason — every quarter.",
+      "We anonymize and publish every banned contractor and reason, every quarter.",
     "trust.faq.title": "Safety FAQ",
 
     "app.title": "Safe interior in your pocket.",

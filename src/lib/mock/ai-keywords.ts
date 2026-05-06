@@ -33,7 +33,7 @@ const KEYWORD_MAP: { match: string[]; brief: DesignBrief }[] = [
       styleKey: "industrial",
       styleLabel: "Industrial",
       moodImages: IMAGES.moodboard.industrial,
-      intro: "Exposed concrete and metal details — an industrial mood board for you.",
+      intro: "Exposed concrete and metal details. An industrial mood board for you.",
     },
   },
   {
@@ -42,7 +42,7 @@ const KEYWORD_MAP: { match: string[]; brief: DesignBrief }[] = [
       styleKey: "scandinavian",
       styleLabel: "Scandinavian",
       moodImages: IMAGES.moodboard.scandinavian,
-      intro: "Bright tones and natural materials — Scandinavian, distilled.",
+      intro: "Bright tones and natural materials. Scandinavian, distilled.",
     },
   },
 ];

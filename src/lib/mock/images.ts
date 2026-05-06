@@ -1,6 +1,6 @@
 /**
  * All image paths are managed in this single file.
- * To swap in real photos, replace only the URLs here — the rest of the
+ * To swap in real photos, replace only the URLs here. The rest of the
  * site picks them up automatically.
  *
  * - `u(id)`     Unsplash placeholder helper

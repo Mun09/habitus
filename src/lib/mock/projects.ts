@@ -88,7 +88,7 @@ export const PROJECTS: Project[] = [
         stage: "painting",
         author: "Site lead Junghoon Park",
         title: "First paint coat done, tone check",
-        body: "First coat finished. The tone reads slightly warm under afternoon light — within the agreed beige spec. Second coat scheduled in 2 days.",
+        body: "First coat finished. The tone reads slightly warm under afternoon light, within the agreed beige spec. Second coat scheduled in 2 days.",
         photos: [IMAGES.projectUpdates[0], IMAGES.projectUpdates[1], IMAGES.projectUpdates[2]],
       },
       {
@@ -141,7 +141,7 @@ export const PROJECTS: Project[] = [
       {
         id: "pm-1",
         sender: "pm",
-        body: "Hi! I'm Seoyeong, your dedicated PM for the Mapo project. I'll send daily summaries — message me anytime.",
+        body: "Hi! I'm Seoyeong, your dedicated PM for the Mapo project. I'll send daily summaries. Message me anytime.",
         time: "2026-04-01 09:12",
       },
       {
@@ -234,7 +234,7 @@ export const PROJECTS: Project[] = [
         stage: "painting",
         author: "Painting lead Junghoon Park",
         title: "Second paint coat done",
-        body: "Second coat in the agreed white tone — even and consistent.",
+        body: "Second coat in the agreed white tone, even and consistent.",
         photos: [IMAGES.projectCompleted[5], IMAGES.projectCompleted[0]],
       },
       {

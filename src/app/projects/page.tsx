@@ -27,7 +27,7 @@ export default function ProjectsPage() {
             <Link
               key={p.id}
               href={href}
-              className="group rounded-3xl border border-border bg-card overflow-hidden hover:shadow-[0_18px_40px_rgba(42,39,36,0.1)] transition"
+              className="group rounded-3xl border border-border bg-card overflow-hidden hover:shadow-[0_18px_40px_rgba(15,30,44,0.1)] transition"
             >
               <div className="relative aspect-[16/9] overflow-hidden">
                 {contractor && (

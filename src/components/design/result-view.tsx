@@ -32,14 +32,14 @@ const STYLE_LABELS: Record<string, { name: string; summary: string }> = {
   },
   industrial: {
     name: "Industrial",
-    summary: "Exposed concrete and metal details — a cafe-like living space.",
+    summary: "Exposed concrete and metal details, a cafe-like living space.",
   },
   scandinavian: {
     name: "Scandinavian",
-    summary: "Bright tones and natural materials — warm, family-friendly.",
+    summary: "Bright tones and natural materials. Warm, family-friendly.",
   },
   random: {
-    name: "Random — 5 styles",
+    name: "Random · 5 styles",
     summary:
       "Placed your chair and lamp in the W8 space and rendered 5 different moods. Pick your favorite to proceed.",
   },
@@ -82,7 +82,7 @@ export function ResultView({
 
   const isRandom = styleKey === "random";
 
-  // AI proposals — for Random, show all 5 specific style outputs;
+  // AI proposals: for Random, show all 5 specific style outputs;
   // otherwise mix the demo "after" with moodboard + completed gallery.
   const proposals = isRandom
     ? IMAGES.scenarios.random.styles
@@ -98,7 +98,7 @@ export function ResultView({
       })();
 
   // For the Random scenario the 5 outputs are rendered onto the
-  // reference space — override "before" so the slider stays coherent.
+  // reference space, so override "before" so the slider stays coherent.
   const usedRandomReference = userReferences.includes(
     IMAGES.scenarios.random.referenceSpace
   );
@@ -111,7 +111,7 @@ export function ResultView({
   const heroAfter = activeProposal;
 
   // For Random, the active proposal index selects the per-variant
-  // material list and cost benchmark — each style implies a distinct
+  // material list and cost benchmark. Each style implies a distinct
   // surface treatment, flooring, lighting and built-in spec.
   const activeVariantIdx = isRandom
     ? Math.max(0, proposals.indexOf(activeProposal))

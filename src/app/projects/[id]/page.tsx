@@ -167,7 +167,7 @@ export default function TrackingPage({
         </Tabs>
       </div>
 
-      {/* Desktop: 3 columns — left + right sticky */}
+      {/* Desktop: 3 columns, left + right sticky */}
       <div className="hidden md:grid mt-8 grid-cols-[260px_1fr_360px] gap-6 items-start">
         <div className="sticky top-24 self-start max-h-[calc(100vh-7rem)] overflow-y-auto no-scrollbar">
           {ProjectInfo}

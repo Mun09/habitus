@@ -233,7 +233,7 @@ export const DESIGN_OPTIONS: DesignOption[] = [
 ];
 
 export function detectStyleFromOptions(selectedIds: string[]): StyleKey {
-  // explicit Random pick short-circuits — produce 5 styles at once
+  // explicit Random pick short-circuits and produces 5 styles at once
   if (selectedIds.includes(STYLE_RANDOM_ID)) return "random";
 
   const counts: Record<Exclude<StyleKey, "random">, number> = {

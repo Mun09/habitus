@@ -29,27 +29,27 @@ const SAMPLE_SPACES: { id: string; url: string; label: string }[] = [
   {
     id: "sample-w8-reference",
     url: IMAGES.scenarios.random.referenceSpace,
-    label: "W8 — Reference",
+    label: "W8 · Reference",
   },
   {
     id: "sample-w8-studio-entry",
     url: IMAGES.scenarios.w8.studioEntry,
-    label: "W8 — Studio entry",
+    label: "W8 · Studio entry",
   },
   {
     id: "sample-w8-meeting-bay",
     url: IMAGES.scenarios.w8.meetingBay,
-    label: "W8 — Meeting bay",
+    label: "W8 · Meeting bay",
   },
   {
     id: "sample-w8-tv-lounge",
     url: IMAGES.scenarios.w8.tvLounge,
-    label: "W8 — TV lounge",
+    label: "W8 · TV lounge",
   },
   {
     id: "sample-w8-open-lounge",
     url: IMAGES.scenarios.w8.openLounge,
-    label: "W8 — Open lounge",
+    label: "W8 · Open lounge",
   },
 ];
 
@@ -73,14 +73,14 @@ const STEP_DEFS: {
     key: "space",
     rowKey: "space",
     label: "Space",
-    hint: "Upload one photo of your current space — living, kitchen, bedroom.",
+    hint: "Upload one photo of your current space: living, kitchen, bedroom.",
     required: true,
   },
   {
     key: "style",
     rowKey: "style",
     label: "Style",
-    hint: "Pick the overall mood — exactly one.",
+    hint: "Pick the overall mood. Exactly one.",
     required: true,
   },
   {
@@ -471,6 +471,7 @@ function SpaceStep({
                   fill
                   sizes="160px"
                   className="object-cover"
+                  priority
                 />
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/85 to-transparent px-1.5 py-1">
                   <span className="text-[10px] text-background font-medium leading-none">
@@ -518,7 +519,7 @@ function StyleStep({
             className={cn(
               "group rounded-xl border bg-card overflow-hidden text-left cursor-pointer transition relative",
               isSel
-                ? "border-primary shadow-[0_0_0_2px_rgba(201,123,90,0.18)]"
+                ? "border-primary shadow-[0_0_0_2px_rgba(0,91,150,0.18)]"
                 : "border-border hover:border-primary/40"
             )}
           >
@@ -644,7 +645,7 @@ function CategoryStep({
                 className={cn(
                   "group rounded-lg border bg-card overflow-hidden text-left cursor-pointer transition flex items-center gap-2.5 p-1.5",
                   isSel
-                    ? "border-primary shadow-[0_0_0_2px_rgba(201,123,90,0.15)]"
+                    ? "border-primary shadow-[0_0_0_2px_rgba(0,91,150,0.15)]"
                     : "border-border hover:border-primary/40"
                 )}
               >
@@ -872,7 +873,7 @@ function ReferencesStep({
       </div>
 
       <p className="text-[11px] text-muted-foreground">
-        It&apos;s OK to leave this empty — more refs improve accuracy.
+        It&apos;s OK to leave this empty. More refs improve accuracy.
       </p>
     </div>
   );

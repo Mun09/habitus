@@ -26,7 +26,7 @@ export function ContractorCard({
     >
       <Link
         href={`/matching/${contractor.id}`}
-        className="group block h-full rounded-3xl overflow-hidden border border-border bg-card transition-all hover:shadow-[0_18px_40px_rgba(42,39,36,0.1)] hover:-translate-y-0.5"
+        className="group block h-full rounded-3xl overflow-hidden border border-border bg-card transition-all hover:shadow-[0_18px_40px_rgba(15,30,44,0.1)] hover:-translate-y-0.5"
       >
         <div className="relative aspect-[5/4] overflow-hidden">
           <Image

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { AlertTriangle } from "lucide-react";
 import {
   Bar,
@@ -17,6 +18,10 @@ export function CostBenchmarkChart({
   benchmark,
 }: { benchmark?: CostBenchmark } = {}) {
   const b = benchmark ?? COST_BENCHMARK;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const data = [
     {
@@ -50,41 +55,43 @@ export function CostBenchmarkChart({
         </div>
       </div>
       <div className="p-2 md:p-4">
-        <div className="h-64 md:h-72">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} layout="vertical" margin={{ left: 0, right: 50, top: 10, bottom: 10 }}>
-              <CartesianGrid horizontal={false} stroke="var(--border)" strokeDasharray="3 3" />
-              <XAxis
-                type="number"
-                tickFormatter={(v) => fmt(v as number).replace("$", "")}
-                fontSize={11}
-                stroke="var(--muted-foreground)"
-              />
-              <YAxis
-                type="category"
-                dataKey="label"
-                width={110}
-                fontSize={12}
-                stroke="var(--foreground)"
-              />
-              <Tooltip
-                cursor={{ fill: "rgba(42,39,36,0.04)" }}
-                contentStyle={{
-                  background: "var(--card)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 12,
-                  boxShadow: "0 8px 30px rgba(42,39,36,0.06)",
-                }}
-                formatter={(v) => fmt(Number(v))}
-                labelStyle={{ fontSize: 12, color: "var(--muted-foreground)" }}
-              />
-              <Bar dataKey="value" radius={[8, 8, 8, 8]} barSize={28}>
-                {data.map((d, i) => (
-                  <Cell key={i} fill={d.color} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+        <div className="h-64 md:h-72 min-w-0">
+          {mounted && (
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
+              <BarChart data={data} layout="vertical" margin={{ left: 0, right: 50, top: 10, bottom: 10 }}>
+                <CartesianGrid horizontal={false} stroke="var(--border)" strokeDasharray="3 3" />
+                <XAxis
+                  type="number"
+                  tickFormatter={(v) => fmt(v as number).replace("$", "")}
+                  fontSize={11}
+                  stroke="var(--muted-foreground)"
+                />
+                <YAxis
+                  type="category"
+                  dataKey="label"
+                  width={110}
+                  fontSize={12}
+                  stroke="var(--foreground)"
+                />
+                <Tooltip
+                  cursor={{ fill: "rgba(15,30,44,0.04)" }}
+                  contentStyle={{
+                    background: "var(--card)",
+                    border: "1px solid var(--border)",
+                    borderRadius: 12,
+                    boxShadow: "0 8px 30px rgba(15,30,44,0.06)",
+                  }}
+                  formatter={(v) => fmt(Number(v))}
+                  labelStyle={{ fontSize: 12, color: "var(--muted-foreground)" }}
+                />
+                <Bar dataKey="value" radius={[8, 8, 8, 8]} barSize={28}>
+                  {data.map((d, i) => (
+                    <Cell key={i} fill={d.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
       <div className="px-5 pb-5">

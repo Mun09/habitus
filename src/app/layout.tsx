@@ -23,9 +23,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Habitus — Interior, scam-free",
+  title: "Habitus: Interior, scam-free",
   description:
-    "AI design, verified contractor matching, and live tracking — all in one place.",
+    "AI design, verified contractor matching, and live tracking, all in one place.",
 };
 
 export default function RootLayout({

@@ -2,24 +2,24 @@
 @import "tw-animate-css";
 
 :root {
-  /* warm interior palette */
-  --background: #faf7f2;
-  --foreground: #2a2724;
+  /* cool blue palette */
+  --background: #e7eff6;
+  --foreground: #0f1e2c;
   --card: #ffffff;
-  --card-foreground: #2a2724;
+  --card-foreground: #0f1e2c;
   --popover: #ffffff;
-  --popover-foreground: #2a2724;
-  --primary: #c97b5a;
-  --primary-foreground: #fffaf3;
-  --secondary: #3f4a3c;
-  --secondary-foreground: #f5f1e8;
-  --muted: #efe8dd;
-  --muted-foreground: #6b6258;
-  --accent: #e8b89a;
-  --accent-foreground: #2a2724;
-  --border: #e2d9cb;
-  --input: #e2d9cb;
-  --ring: #c97b5a;
+  --popover-foreground: #0f1e2c;
+  --primary: #005b96;
+  --primary-foreground: #ffffff;
+  --secondary: #003f6b;
+  --secondary-foreground: #ffffff;
+  --muted: #d6e3ee;
+  --muted-foreground: #4a6478;
+  --accent: #63ace5;
+  --accent-foreground: #003f6b;
+  --border: #c8d8e6;
+  --input: #c8d8e6;
+  --ring: #005b96;
   --success: #6b8f4e;
   --warning: #d49a3f;
   --danger: #b5483a;
@@ -56,8 +56,8 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 0.5rem);
 
-  --shadow-warm: 0 8px 30px rgba(42, 39, 36, 0.06);
-  --shadow-warm-lg: 0 24px 60px rgba(42, 39, 36, 0.12);
+  --shadow-warm: 0 8px 30px rgba(15, 30, 44, 0.06);
+  --shadow-warm-lg: 0 24px 60px rgba(15, 30, 44, 0.12);
 }
 
 * {
@@ -101,7 +101,7 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: radial-gradient(rgba(42, 39, 36, 0.05) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(15, 30, 44, 0.05) 1px, transparent 1px);
   background-size: 3px 3px;
   mix-blend-mode: multiply;
   opacity: 0.4;
@@ -118,11 +118,11 @@ body {
   width: 320px;
   height: 660px;
   border-radius: 44px;
-  background: #1a1714;
+  background: #0f1e2c;
   padding: 12px;
   box-shadow:
     0 0 0 2px rgba(255, 255, 255, 0.06),
-    0 30px 80px rgba(42, 39, 36, 0.35);
+    0 30px 80px rgba(15, 30, 44, 0.35);
   position: relative;
   flex-shrink: 0;
 }
@@ -134,7 +134,7 @@ body {
   transform: translateX(-50%);
   width: 100px;
   height: 24px;
-  background: #0d0c0b;
+  background: #070d14;
   border-radius: 999px;
   z-index: 2;
 }

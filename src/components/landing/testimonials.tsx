@@ -21,7 +21,7 @@ export function Testimonials() {
       avatar: IMAGES.testimonials[1],
       name: "Seojun P.",
       role: "Songpa, 82m² newlyweds",
-      body: "Quoted ₩45M elsewhere — finished at a fair price here. The AI flagged material-swap risk upfront.",
+      body: "Quoted ₩45M elsewhere. Finished at a fair price here. The AI flagged material-swap risk upfront.",
     },
     {
       avatar: IMAGES.testimonials[2],
