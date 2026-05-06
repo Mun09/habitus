@@ -33,7 +33,7 @@ export default function AppPreviewPage() {
   };
 
   return (
-    <div className="bg-[#0f1e2c] text-white min-h-screen">
+    <div className="bg-[#03396c] text-white min-h-screen">
       <div className="mx-auto max-w-7xl px-5 md:px-8 pt-10 pb-20">
         <Link
           href="/"

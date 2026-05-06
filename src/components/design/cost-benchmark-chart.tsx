@@ -74,12 +74,12 @@ export function CostBenchmarkChart({
                   stroke="var(--foreground)"
                 />
                 <Tooltip
-                  cursor={{ fill: "rgba(15,30,44,0.04)" }}
+                  cursor={{ fill: "rgba(3,57,108,0.05)" }}
                   contentStyle={{
                     background: "var(--card)",
                     border: "1px solid var(--border)",
                     borderRadius: 12,
-                    boxShadow: "0 8px 30px rgba(15,30,44,0.06)",
+                    boxShadow: "0 8px 30px rgba(3,57,108,0.08)",
                   }}
                   formatter={(v) => fmt(Number(v))}
                   labelStyle={{ fontSize: 12, color: "var(--muted-foreground)" }}

@@ -57,7 +57,7 @@ export function ProcessSteps() {
             const Icon = step.icon;
             return (
               <FadeIn key={step.n} delay={i * 0.08}>
-                <div className="group relative h-full rounded-3xl border border-border bg-card overflow-hidden transition-all duration-300 hover:shadow-[0_24px_60px_rgba(15,30,44,0.12)] hover:-translate-y-1">
+                <div className="group relative h-full rounded-3xl border border-border bg-card overflow-hidden transition-all duration-300 hover:shadow-[0_24px_60px_rgba(3,57,108,0.14)] hover:-translate-y-1">
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <Image
                       src={step.image}
