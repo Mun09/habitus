@@ -5,8 +5,11 @@ import "./globals.css";
 import { LocaleProvider } from "@/lib/i18n/locale-provider";
 import { DesignPlanProvider } from "@/lib/design-plan";
 import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
+import {
+  ConditionalFooter,
+  ConditionalMain,
+  ConditionalMobileBottomNav,
+} from "@/components/layout/conditional-chrome";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -42,9 +45,9 @@ export default function RootLayout({
         <LocaleProvider>
           <DesignPlanProvider>
             <Header />
-            <main className="flex-1 pb-20 md:pb-0">{children}</main>
-            <Footer />
-            <MobileBottomNav />
+            <ConditionalMain>{children}</ConditionalMain>
+            <ConditionalFooter />
+            <ConditionalMobileBottomNav />
           </DesignPlanProvider>
           <Toaster
             position="top-center"
