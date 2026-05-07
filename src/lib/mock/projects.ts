@@ -76,7 +76,7 @@ export const PROJECTS: Project[] = [
     expectedEnd: "2026-05-16",
     daysLeft: 9,
     pm: {
-      name: "Seoyeong Lee, PM",
+      name: "이서영, PM",
       role: "W2-1 space project manager",
       avatar: IMAGES.contractors.profiles[1],
       responseHours: 1,
@@ -148,7 +148,7 @@ export const PROJECTS: Project[] = [
       {
         id: "w8-pm-1",
         sender: "pm",
-        body: "Hi, I am Seoyeong, your PM for the W2-1 Space Lounge Renewal. I will keep the AI proposal, materials, and site updates aligned here.",
+        body: "Hi, I am 이서영, your PM for the W2-1 Space Lounge Renewal. I will keep the AI proposal, materials, and site updates aligned here.",
         time: "2026-04-29 09:12",
       },
       {
