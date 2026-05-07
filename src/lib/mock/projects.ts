@@ -67,7 +67,7 @@ export const PROJECT_STAGES: { key: ProjectStage; tKey: string }[] = [
 export const PROJECTS: Project[] = [
   {
     id: "proj-w8-space",
-    title: "W8 Space Lounge Renewal",
+    title: "W2-1 Space Lounge Renewal",
     contractorId: "park-rough",
     status: "in_progress",
     progress: 58,
@@ -77,7 +77,7 @@ export const PROJECTS: Project[] = [
     daysLeft: 9,
     pm: {
       name: "Seoyeong Lee, PM",
-      role: "W8 space project manager",
+      role: "W2-1 space project manager",
       avatar: IMAGES.contractors.profiles[1],
       responseHours: 1,
     },
@@ -86,9 +86,9 @@ export const PROJECTS: Project[] = [
         id: "w8-up-1",
         date: "2026-05-07",
         stage: "carpentry",
-        author: "Site lead Junghoon Park",
+        author: "Site lead 박정훈",
         title: "TV lounge millwork alignment check",
-        body: "The lounge wall line was checked against the AI proposal. Cable paths are hidden inside the new frame, and the display wall depth matches the approved W8 plan.",
+        body: "The lounge wall line was checked against the AI proposal. Cable paths are hidden inside the new frame, and the display wall depth matches the approved W2-1 plan.",
         photos: [
           IMAGES.scenarios.w8.tvLounge,
           IMAGES.scenarios.w8.ai.tvLounge,
@@ -99,7 +99,7 @@ export const PROJECTS: Project[] = [
         id: "w8-up-2",
         date: "2026-05-05",
         stage: "carpentry",
-        author: "Carpentry lead Doyun Kim",
+        author: "Carpentry lead 김도윤",
         title: "Meeting bay partition frame installed",
         body: "The meeting bay frame is in place. We kept the open sightline from the studio entry while adding enough structure for acoustic panels.",
         photos: [
@@ -111,7 +111,7 @@ export const PROJECTS: Project[] = [
         id: "w8-up-3",
         date: "2026-05-03",
         stage: "electrical",
-        author: "Electrical lead Sangmin Han",
+        author: "Electrical lead 한상민",
         title: "Lighting routes marked for lounge scenes",
         body: "Track lighting and indirect strips were marked for the studio entry, TV lounge, and open lounge. No extra fixture count was added beyond the confirmed plan.",
         photos: [
@@ -123,7 +123,7 @@ export const PROJECTS: Project[] = [
         id: "w8-up-4",
         date: "2026-05-01",
         stage: "plumbing",
-        author: "Site lead Junghoon Park",
+        author: "Site lead 박정훈",
         title: "Cafe counter utility route confirmed",
         body: "Utility access around the Home Cafe zone was checked before closing the wall. The route remains serviceable from the staff side.",
         photos: [
@@ -135,9 +135,9 @@ export const PROJECTS: Project[] = [
         id: "w8-up-5",
         date: "2026-04-30",
         stage: "demolition",
-        author: "Demo lead Jaeho Yoon",
+        author: "Demo lead 윤재호",
         title: "Loose fixtures and old finishes removed",
-        body: "Existing loose fixtures were removed from the W8 lounge area. Floor protection is down, and reusable furniture was tagged before storage.",
+        body: "Existing loose fixtures were removed from the W2-1 lounge area. Floor protection is down, and reusable furniture was tagged before storage.",
         photos: [
           IMAGES.scenarios.w8.openLounge,
           IMAGES.scenarios.w8.meetingBay,
@@ -148,7 +148,7 @@ export const PROJECTS: Project[] = [
       {
         id: "w8-pm-1",
         sender: "pm",
-        body: "Hi, I am Seoyeong, your PM for the W8 Space Lounge Renewal. I will keep the AI proposal, materials, and site updates aligned here.",
+        body: "Hi, I am Seoyeong, your PM for the W2-1 Space Lounge Renewal. I will keep the AI proposal, materials, and site updates aligned here.",
         time: "2026-04-29 09:12",
       },
       {
@@ -174,7 +174,7 @@ export const PROJECTS: Project[] = [
       {
         id: "w8-n-1",
         time: "2 hours ago",
-        title: "W8 update posted",
+        title: "W2-1 update posted",
         body: "TV lounge millwork alignment photos are ready.",
         unread: true,
       },

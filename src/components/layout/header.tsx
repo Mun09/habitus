@@ -24,6 +24,7 @@ export function Header() {
   const links = [
     { href: "/design", label: t("nav.design") },
     { href: "/matching", label: t("nav.matching") },
+    { href: "/contractor", label: t("nav.contractor") },
     { href: "/projects", label: t("nav.projects") },
     { href: "/trust", label: t("nav.trust") },
   ];

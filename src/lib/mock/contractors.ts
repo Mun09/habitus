@@ -50,7 +50,7 @@ export const REGIONS: { key: Contractor["regionKey"]; label: Bilingual }[] = [
 export const CONTRACTORS: Contractor[] = [
   {
     id: "kim-warm",
-    name: "Doyun Kim",
+    name: "김도윤",
     company: "Warm Atelier",
     licensed: true,
     licenseNumber: "Interior Design Lic. 2018-1142",
@@ -72,7 +72,7 @@ export const CONTRACTORS: Contractor[] = [
   },
   {
     id: "lee-haus",
-    name: "Seoyun Lee",
+    name: "이서윤",
     company: "Haus Labo",
     licensed: true,
     licenseNumber: "Interior Design Lic. 2020-2231",
@@ -94,7 +94,7 @@ export const CONTRACTORS: Contractor[] = [
   },
   {
     id: "park-rough",
-    name: "Junghoon Park",
+    name: "박정훈",
     company: "Rough Studio",
     licensed: true,
     licenseNumber: "Interior Design Lic. 2017-0813",
@@ -116,7 +116,7 @@ export const CONTRACTORS: Contractor[] = [
   },
   {
     id: "han-skandi",
-    name: "Sua Han",
+    name: "한수아",
     company: "Skandi Home",
     licensed: true,
     licenseNumber: "Interior Design Lic. 2019-1771",
@@ -138,7 +138,7 @@ export const CONTRACTORS: Contractor[] = [
   },
   {
     id: "jung-classic",
-    name: "Yujin Jung",
+    name: "정유진",
     company: "Classic Mood",
     licensed: true,
     licenseNumber: "Interior Design Lic. 2016-0392",
@@ -161,7 +161,7 @@ export const CONTRACTORS: Contractor[] = [
   // Unlicensed Verified
   {
     id: "min-craft",
-    name: "Jaeho Min",
+    name: "민재호",
     company: "Craft Room",
     licensed: false,
     region: "Eunpyeong, Seoul",
@@ -181,7 +181,7 @@ export const CONTRACTORS: Contractor[] = [
   },
   {
     id: "oh-natural",
-    name: "Haneul Oh",
+    name: "오하늘",
     company: "Natural Core",
     licensed: false,
     region: "Goyang, Gyeonggi",
@@ -201,7 +201,7 @@ export const CONTRACTORS: Contractor[] = [
   },
   {
     id: "seo-bold",
-    name: "Jian Seo",
+    name: "서지안",
     company: "Bold Concept",
     licensed: false,
     region: "Haeundae, Busan",

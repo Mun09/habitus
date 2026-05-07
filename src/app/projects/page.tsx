@@ -22,7 +22,7 @@ export default function ProjectsPage() {
           {t("nav.projects")}
         </h1>
         <p className="mt-3 text-muted-foreground">
-          W8 space design, contractor handoff, and site progress in one place.
+          W2-1 space design, contractor handoff, and site progress in one place.
         </p>
       </div>
 

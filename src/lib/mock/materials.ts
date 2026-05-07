@@ -100,7 +100,7 @@ export type CostBenchmark = typeof COST_BENCHMARK;
 // IMAGES.scenarios.random.styles in src/lib/mock/images.ts.
 //
 // Each entry derives from analyzing the visual delta between the
-// W8 reference space and the AI-rendered style image:
+// W2-1 reference space and the AI-rendered style image:
 //   • Surface treatment (wall paint vs. paneling vs. textured)
 //   • Floor change (oak / walnut / laminate / bamboo)
 //   • Lighting density and warmth

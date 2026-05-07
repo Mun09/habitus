@@ -48,7 +48,7 @@ const STYLE_LABELS: Record<string, { name: string; summary: string }> = {
   random: {
     name: "Random · 5 styles",
     summary:
-      "Placed your chair and lamp in the W8 space and rendered 5 different moods. Pick your favorite to proceed.",
+      "Placed your chair and lamp in the W2-1 space and rendered 5 different moods. Pick your favorite to proceed.",
   },
 };
 
@@ -94,7 +94,7 @@ export function ResultView({
   const isMultiSpace = allSpaces.length > 1;
 
   // For multi-space we slide through one AI render per space.
-  // Maps each chosen W8 sample URL to its AI render; falls back to a
+  // Maps each chosen W2-1 sample URL to its AI render; falls back to a
   // random style for spaces without a prebuilt AI image (e.g. uploads
   // or the already-matched reference space).
   const spaceProposals = allSpaces.map((src, i) => {

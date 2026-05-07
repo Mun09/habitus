@@ -35,31 +35,31 @@ const SAMPLE_SPACES: {
   {
     id: "sample-w8-reference",
     url: IMAGES.scenarios.random.referenceSpace,
-    label: "W8 / Reference",
+    label: "W2-1 / Reference",
     matched: true,
   },
   {
     id: "sample-w8-studio-entry",
     url: IMAGES.scenarios.w8.studioEntry,
-    label: "W8 / Studio entry",
+    label: "W2-1 / Studio entry",
     aiUrl: IMAGES.scenarios.w8.ai.tvLounge,
   },
   {
     id: "sample-w8-meeting-bay",
     url: IMAGES.scenarios.w8.meetingBay,
-    label: "W8 / Meeting bay",
+    label: "W2-1 / Meeting bay",
     aiUrl: IMAGES.scenarios.w8.ai.meetingBay,
   },
   {
     id: "sample-w8-tv-lounge",
     url: IMAGES.scenarios.w8.tvLounge,
-    label: "W8 / TV lounge",
+    label: "W2-1 / TV lounge",
     aiUrl: IMAGES.scenarios.w8.ai.studioEntry,
   },
   {
     id: "sample-w8-open-lounge",
     url: IMAGES.scenarios.w8.openLounge,
-    label: "W8 / Open lounge",
+    label: "W2-1 / Open lounge",
     aiUrl: IMAGES.scenarios.w8.ai.openLounge,
   },
 ];
@@ -740,7 +740,7 @@ const SAMPLE_REFERENCES: { id: string; url: string; label: string }[] = [
   {
     id: "ref-random-space",
     url: IMAGES.scenarios.random.referenceSpace,
-    label: "W8 space",
+    label: "W2-1 space",
   },
 ];
 

@@ -14,7 +14,7 @@ const u = (id: string, w = 1200) =>
 
 const local = (path: string) => `/images/${path}`;
 
-// Maps a W8 sample-space URL to its AI-rendered counterpart.
+// Maps a W2-1 sample-space URL to its AI-rendered counterpart.
 // `null` means the space is already matched and has no AI render.
 const W8_AI_BY_URL_BUILDER = () => ({
   [local("scenarios/w8/w8_2.jpg")]: local("scenarios/w8/w8_4_ai.png"),
