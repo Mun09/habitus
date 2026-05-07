@@ -51,15 +51,18 @@ function MatchingContent() {
   }, [filters]);
 
   return (
-    <div className="mx-auto max-w-7xl px-5 md:px-8 py-10 md:py-14">
-      <div className="mb-8 md:mb-10">
-        <h1 className="serif text-3xl md:text-5xl font-medium leading-tight">
+    <div className="mx-auto max-w-7xl px-5 py-8 md:px-8 md:py-10">
+      <div className="mb-6 border-b border-border pb-6 md:mb-8">
+        <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">
+          Contractor Desk
+        </div>
+        <h1 className="serif text-3xl font-medium leading-tight text-secondary md:text-5xl">
           {t("matching.title")}
         </h1>
-        <p className="mt-3 text-muted-foreground max-w-xl">{t("matching.subtitle")}</p>
+        <p className="mt-3 max-w-xl leading-6 text-muted-foreground">{t("matching.subtitle")}</p>
 
         {(fromPlan || continueProject) && (
-          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-primary">
+          <div className="mt-5 inline-flex items-center gap-2 border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-primary">
             <Sparkles className="h-4 w-4" />
             {fromPlan ? t("matching.fromPlan") : t("matching.continueProject")}
           </div>
@@ -92,16 +95,16 @@ function MatchingContent() {
         </Dialog>
       </div>
 
-      <div className="grid md:grid-cols-[260px_1fr] lg:grid-cols-[280px_1fr] gap-6 md:gap-8">
+      <div className="grid gap-6 md:grid-cols-[260px_1fr] md:gap-8 lg:grid-cols-[280px_1fr]">
         <FilterSidebar
           filters={filters}
           setFilters={setFilters}
           className="hidden md:block"
         />
         <div>
-          <div className="hidden md:flex items-center justify-between mb-5">
+          <div className="mb-5 hidden items-center justify-between border-b border-border pb-3 md:flex">
             <div className="text-sm text-muted-foreground">
-              {t("matching.filter.results")} · {results.length}
+              {t("matching.filter.results")} / {results.length}
             </div>
             {filters.userLocation.address && (
               <div className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -116,13 +119,13 @@ function MatchingContent() {
             )}
           </div>
           {results.length === 0 ? (
-            <div className="rounded-3xl border border-dashed border-border p-16 text-center text-muted-foreground">
+            <div className="border border-dashed border-border bg-card p-16 text-center text-muted-foreground">
               {t("matching.empty")}
             </div>
           ) : (
             <motion.div
               layout
-              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"
+              className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
             >
               <AnimatePresence>
                 {results.map((c, i) => (

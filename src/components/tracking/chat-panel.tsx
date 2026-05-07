@@ -94,7 +94,7 @@ export function ChatPanel({ project }: { project: Project }) {
   };
 
   return (
-    <div className="rounded-3xl border border-border bg-card flex flex-col h-[640px] md:h-[720px] overflow-hidden">
+    <div className="flex h-[640px] flex-col overflow-hidden border border-border bg-card shadow-[var(--shadow-warm)] md:h-[720px]">
       <Tabs value={tab} onValueChange={(v) => setTab(v as "ai" | "pm")}>
         <div className="px-4 pt-4">
           <TabsList className="w-full">
@@ -116,7 +116,7 @@ export function ChatPanel({ project }: { project: Project }) {
                 <button
                   key={k}
                   onClick={() => sendAi(t(`tracking.chat.aiQuick.${k}` as any))}
-                  className="flex-shrink-0 rounded-full bg-muted px-3 py-1.5 text-xs hover:bg-accent/30 cursor-pointer"
+                  className="flex-shrink-0 cursor-pointer rounded-md bg-muted px-3 py-1.5 text-xs hover:bg-accent/30"
                 >
                   {t(`tracking.chat.aiQuick.${k}` as any)}
                 </button>
@@ -126,7 +126,7 @@ export function ChatPanel({ project }: { project: Project }) {
         </TabsContent>
         <TabsContent value="pm" className="mt-0 flex-1 flex flex-col min-h-0">
           <div className="px-4 py-3 border-b border-border flex items-center gap-3">
-            <div className="relative h-10 w-10 rounded-full overflow-hidden">
+            <div className="relative h-10 w-10 overflow-hidden rounded-md">
               <Image src={project.pm.avatar} alt="" fill sizes="40px" className="object-cover" />
             </div>
             <div>
@@ -168,7 +168,7 @@ function MessageList({ messages }: { messages: ChatMessage[] }) {
         >
           <div
             className={cn(
-              "rounded-3xl px-4 py-2.5 text-sm leading-relaxed",
+              "rounded-lg px-4 py-2.5 text-sm leading-relaxed",
               m.sender === "user"
                 ? "bg-primary text-primary-foreground rounded-br-md"
                 : m.sender === "ai"

@@ -13,27 +13,35 @@ export default function ProjectsPage() {
   const { t } = useLocale();
 
   return (
-    <div className="mx-auto max-w-6xl px-5 md:px-8 py-10 md:py-14">
-      <h1 className="serif text-3xl md:text-5xl font-medium leading-tight">
-        {t("nav.projects")}
-      </h1>
-      <p className="mt-3 text-muted-foreground">All your projects in one place.</p>
+    <div className="mx-auto max-w-6xl px-5 py-8 md:px-8 md:py-10">
+      <div className="border-b border-border pb-6">
+        <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">
+          Tracking Room
+        </div>
+        <h1 className="serif text-3xl font-medium leading-tight text-secondary md:text-5xl">
+          {t("nav.projects")}
+        </h1>
+        <p className="mt-3 text-muted-foreground">
+          W8 space design, contractor handoff, and site progress in one place.
+        </p>
+      </div>
 
-      <div className="mt-10 grid md:grid-cols-2 gap-5">
+      <div className="mt-8 grid gap-5 md:grid-cols-2">
         {PROJECTS.map((p) => {
           const contractor = CONTRACTORS.find((c) => c.id === p.contractorId);
           const href = `/projects/${p.id}`;
+          const cover = p.updates[0]?.photos[0] ?? contractor?.cover;
           return (
             <Link
               key={p.id}
               href={href}
-              className="group rounded-3xl border border-border bg-card overflow-hidden hover:shadow-[0_18px_40px_rgba(3,57,108,0.12)] transition"
+              className="group overflow-hidden border border-border bg-card transition hover:shadow-[var(--shadow-warm)]"
             >
               <div className="relative aspect-[16/9] overflow-hidden">
-                {contractor && (
+                {cover && (
                   <Image
-                    src={contractor.cover}
-                    alt=""
+                    src={cover}
+                    alt={p.title}
                     fill
                     sizes="(min-width: 768px) 50vw, 100vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -78,7 +86,7 @@ export default function ProjectsPage() {
                 )}
                 <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
                   <span>
-                    {p.startDate} → {p.expectedEnd}
+                    {p.startDate} / {p.expectedEnd}
                   </span>
                   <span className="inline-flex items-center gap-1 text-primary group-hover:translate-x-0.5 transition">
                     Open <ArrowRight className="h-3 w-3" />

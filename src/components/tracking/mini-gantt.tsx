@@ -10,8 +10,8 @@ export function MiniGantt({ current }: { current: ProjectStage }) {
   const idx = PROJECT_STAGES.findIndex((s) => s.key === current);
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-5">
-      <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground mb-4">
+    <div className="border border-border bg-card p-5 shadow-[var(--shadow-warm)]">
+      <div className="mb-4 text-xs uppercase tracking-[0.16em] text-muted-foreground">
         {t("tracking.gantt.title")}
       </div>
       <ol className="space-y-3">
@@ -22,7 +22,7 @@ export function MiniGantt({ current }: { current: ProjectStage }) {
             <li key={s.key} className="flex items-center gap-3">
               <span
                 className={cn(
-                  "h-7 w-7 rounded-full flex items-center justify-center text-[11px] font-medium flex-shrink-0",
+                  "flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md text-[11px] font-medium",
                   active
                     ? "bg-primary text-primary-foreground"
                     : done
@@ -45,9 +45,8 @@ export function MiniGantt({ current }: { current: ProjectStage }) {
                 {t(s.tKey as any)}
               </span>
               {active && (
-                <span className="ml-auto text-[10px] text-primary uppercase tracking-wider">
-                  {/* current */}
-                  ●
+                <span className="ml-auto text-[10px] uppercase tracking-wider text-primary">
+                  Current
                 </span>
               )}
             </li>

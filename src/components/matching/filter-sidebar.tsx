@@ -99,7 +99,7 @@ export function FilterSidebar({
   return (
     <aside
       className={cn(
-        "rounded-3xl border border-border bg-card p-5 md:p-6 space-y-6 h-fit",
+        "h-fit space-y-6 border border-border bg-card p-5 shadow-[var(--shadow-warm)] md:p-6",
         className
       )}
     >
@@ -161,7 +161,7 @@ export function FilterSidebar({
               key={opt}
               onClick={() => setFilters({ ...filters, license: opt })}
               className={cn(
-                "rounded-full px-2 py-2 text-[11px] font-medium transition cursor-pointer border",
+                "cursor-pointer rounded-md border px-2 py-2 text-[11px] font-medium transition",
                 filters.license === opt
                   ? "bg-primary text-primary-foreground border-primary"
                   : "bg-card border-border text-muted-foreground hover:text-foreground"
@@ -222,7 +222,7 @@ export function FilterSidebar({
               key={r}
               onClick={() => setFilters({ ...filters, minRating: r as 0 | 4 | 4.5 })}
               className={cn(
-                "flex-1 rounded-full px-3 py-2 text-xs font-medium border transition cursor-pointer inline-flex items-center justify-center gap-1",
+                "inline-flex flex-1 cursor-pointer items-center justify-center gap-1 rounded-md border px-3 py-2 text-xs font-medium transition",
                 filters.minRating === r
                   ? "bg-primary/10 border-primary text-primary"
                   : "bg-card border-border text-muted-foreground"

@@ -35,7 +35,7 @@ export function FeaturedContractors() {
             <FadeIn key={c.id} delay={i * 0.06}>
               <Link
                 href={`/matching/${c.id}`}
-                className="group block h-full rounded-3xl overflow-hidden border border-border bg-card transition-all hover:shadow-[0_18px_40px_rgba(3,57,108,0.12)] hover:-translate-y-0.5"
+                className="group block h-full overflow-hidden rounded-lg border border-border bg-card transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-warm)]"
               >
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <Image
@@ -47,12 +47,12 @@ export function FeaturedContractors() {
                   />
                   <div className="absolute top-3 left-3">
                     {c.licensed ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-card/95 px-2.5 py-1 text-[10px] font-medium text-[color:var(--success)]">
+                      <span className="inline-flex items-center gap-1 bg-card/95 px-2.5 py-1 text-[10px] font-medium text-[color:var(--success)]">
                         <ShieldCheck className="h-3 w-3" />
                         {t("matching.filter.licensed")}
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-card/95 px-2.5 py-1 text-[10px] font-medium text-secondary">
+                      <span className="inline-flex items-center gap-1 bg-card/95 px-2.5 py-1 text-[10px] font-medium text-secondary">
                         <ShieldCheck className="h-3 w-3" />
                         {t("matching.filter.unlicensed")}
                       </span>

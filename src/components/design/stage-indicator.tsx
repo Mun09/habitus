@@ -16,7 +16,7 @@ export function StageIndicator({
 }) {
   const idx = ORDER.indexOf(current);
   return (
-    <div className="rounded-full bg-card border border-border p-1.5 flex items-center gap-1 overflow-x-auto no-scrollbar w-fit max-w-full">
+    <div className="flex w-fit max-w-full items-center gap-1 overflow-x-auto border border-border bg-card p-1.5 shadow-[var(--shadow-warm)] no-scrollbar">
       {ORDER.map((s, i) => {
         const done = i < idx;
         const active = i === idx;
@@ -24,7 +24,7 @@ export function StageIndicator({
           <div
             key={s}
             className={cn(
-              "flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-all",
+              "flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-all",
               active
                 ? "bg-primary text-primary-foreground"
                 : done
@@ -34,7 +34,7 @@ export function StageIndicator({
           >
             <span
               className={cn(
-                "h-5 w-5 rounded-full inline-flex items-center justify-center text-[10px]",
+                "inline-flex h-5 w-5 items-center justify-center rounded-md text-[10px]",
                 active
                   ? "bg-primary-foreground text-primary"
                   : done

@@ -21,8 +21,6 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => setOpen(false), [pathname]);
-
   const links = [
     { href: "/design", label: t("nav.design") },
     { href: "/matching", label: t("nav.matching") },
@@ -68,7 +66,7 @@ export function Header() {
           type="button"
           aria-label="menu"
           onClick={() => setOpen((v) => !v)}
-          className="md:hidden p-2 rounded-full hover:bg-muted cursor-pointer"
+          className="cursor-pointer rounded-md p-2 hover:bg-muted md:hidden"
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -80,7 +78,8 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="px-3 py-3 text-sm rounded-xl hover:bg-muted"
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-3 text-sm hover:bg-muted"
               >
                 {link.label}
               </Link>

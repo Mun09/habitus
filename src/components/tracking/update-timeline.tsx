@@ -17,9 +17,7 @@ export function UpdateTimeline({ updates }: { updates: Update[] }) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="serif text-xl font-medium">{t("tracking.timeline.title")}</h3>
-        <span className="text-xs text-muted-foreground">
-          {updates.length} updates
-        </span>
+        <span className="text-xs text-muted-foreground">{updates.length} updates</span>
       </div>
       <div className="space-y-4">
         {updates.map((u, i) => (
@@ -29,7 +27,7 @@ export function UpdateTimeline({ updates }: { updates: Update[] }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.4, delay: i * 0.05 }}
-            className="rounded-3xl border border-border bg-card overflow-hidden"
+            className="overflow-hidden border border-border bg-card shadow-[var(--shadow-warm)]"
           >
             <div className="px-5 pt-5 pb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
@@ -61,7 +59,7 @@ export function UpdateTimeline({ updates }: { updates: Update[] }) {
                     <Image src={p} alt="" fill sizes="240px" className="object-cover" />
                     {j === 0 && (
                       <div className="absolute top-2 left-2 rounded-full bg-card/80 backdrop-blur p-1">
-                        <Camera className="h-3 w-3" />
+                        <Camera className="h-3 w-3 text-primary" />
                       </div>
                     )}
                   </div>

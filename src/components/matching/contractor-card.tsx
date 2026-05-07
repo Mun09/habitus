@@ -26,7 +26,7 @@ export function ContractorCard({
     >
       <Link
         href={`/matching/${contractor.id}`}
-        className="group block h-full rounded-3xl overflow-hidden border border-border bg-card transition-all hover:shadow-[0_18px_40px_rgba(3,57,108,0.12)] hover:-translate-y-0.5"
+        className="group block h-full overflow-hidden border border-border bg-card transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-warm)]"
       >
         <div className="relative aspect-[5/4] overflow-hidden">
           <Image
@@ -39,9 +39,9 @@ export function ContractorCard({
           <div className="absolute top-3 left-3">
             <VerificationBadge licensed={contractor.licensed} />
           </div>
-          <div className="absolute bottom-3 right-3 inline-flex items-center gap-1 rounded-full bg-card/95 backdrop-blur px-2.5 py-1 text-xs font-medium">
+          <div className="absolute bottom-3 right-3 inline-flex items-center gap-1 bg-card/95 px-2.5 py-1 text-xs font-medium backdrop-blur">
             <Star className="h-3 w-3 fill-primary text-primary" />
-            {contractor.rating} · {contractor.reviewCount}
+            {contractor.rating} / {contractor.reviewCount}
           </div>
         </div>
         <div className="p-5">
@@ -49,7 +49,7 @@ export function ContractorCard({
             {contractor.company}
           </div>
           <div className="text-xs text-muted-foreground mt-1">
-            {contractor.name} · {contractor.region}
+            {contractor.name} / {contractor.region}
           </div>
           <p className="mt-3 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
             {contractor.bio}

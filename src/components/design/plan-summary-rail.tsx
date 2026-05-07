@@ -92,9 +92,9 @@ export function PlanSummaryRail({
   ];
 
   return (
-    <aside className="lg:sticky lg:top-4 self-start space-y-3">
-      <div className="rounded-2xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border bg-muted/30">
+    <aside className="self-start space-y-3 lg:sticky lg:top-20">
+      <div className="overflow-hidden border border-border bg-card shadow-[var(--shadow-warm)]">
+        <div className="border-b border-border bg-muted/55 px-4 py-3">
           <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
             Your design summary
           </div>
@@ -116,7 +116,7 @@ export function PlanSummaryRail({
                 >
                   <span
                     className={cn(
-                      "h-5 w-5 rounded-full inline-flex items-center justify-center text-[10px] flex-shrink-0",
+                      "inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md text-[10px]",
                       row.done
                         ? "bg-primary text-primary-foreground"
                         : isActive
@@ -223,7 +223,7 @@ export function PlanSummaryRail({
                     </span>
                   </span>
                   {spacePhotos.length > 0 && row.key === "space" && (
-                    <span className="relative h-9 w-9 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                    <span className="relative h-9 w-9 flex-shrink-0 overflow-hidden rounded-md bg-muted">
                       {spacePhotos[0].isFile ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img

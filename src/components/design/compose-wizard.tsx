@@ -35,31 +35,31 @@ const SAMPLE_SPACES: {
   {
     id: "sample-w8-reference",
     url: IMAGES.scenarios.random.referenceSpace,
-    label: "W8 · Reference",
+    label: "W8 / Reference",
     matched: true,
   },
   {
     id: "sample-w8-studio-entry",
     url: IMAGES.scenarios.w8.studioEntry,
-    label: "W8 · Studio entry",
+    label: "W8 / Studio entry",
     aiUrl: IMAGES.scenarios.w8.ai.tvLounge,
   },
   {
     id: "sample-w8-meeting-bay",
     url: IMAGES.scenarios.w8.meetingBay,
-    label: "W8 · Meeting bay",
+    label: "W8 / Meeting bay",
     aiUrl: IMAGES.scenarios.w8.ai.meetingBay,
   },
   {
     id: "sample-w8-tv-lounge",
     url: IMAGES.scenarios.w8.tvLounge,
-    label: "W8 · TV lounge",
+    label: "W8 / TV lounge",
     aiUrl: IMAGES.scenarios.w8.ai.studioEntry,
   },
   {
     id: "sample-w8-open-lounge",
     url: IMAGES.scenarios.w8.openLounge,
-    label: "W8 · Open lounge",
+    label: "W8 / Open lounge",
     aiUrl: IMAGES.scenarios.w8.ai.openLounge,
   },
 ];
@@ -182,7 +182,7 @@ export function ComposeWizard({
         canGenerate={canGenerate}
       />
 
-      <div className="rounded-2xl border border-border bg-card overflow-hidden">
+      <div className="overflow-hidden border border-border bg-card shadow-[var(--shadow-warm)]">
         {/* Step tabs */}
         <div className="flex border-b border-border bg-muted/30">
           {STEP_DEFS.map((s, i) => {
@@ -206,7 +206,7 @@ export function ComposeWizard({
               >
                 <span
                   className={cn(
-                    "h-4 w-4 rounded-full inline-flex items-center justify-center text-[9px] flex-shrink-0",
+                    "inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-md text-[9px]",
                     isDone
                       ? "bg-primary text-primary-foreground"
                       : isActive
@@ -404,7 +404,7 @@ function SpaceStep({
         }}
         onClick={() => !isFull && inputRef.current?.click()}
         className={cn(
-          "rounded-2xl border-2 border-dashed bg-muted/30 px-6 py-7 text-center transition flex items-center gap-4",
+          "flex items-center gap-4 border-2 border-dashed bg-muted/35 px-6 py-7 text-center transition",
           dragActive
             ? "border-primary bg-primary/5"
             : isFull
@@ -412,7 +412,7 @@ function SpaceStep({
             : "border-border hover:border-primary/50 hover:bg-muted/60 cursor-pointer"
         )}
       >
-        <div className="h-10 w-10 rounded-xl bg-card border border-border flex items-center justify-center flex-shrink-0">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md border border-border bg-card">
           <ImagePlus className="h-4 w-4 text-primary" />
         </div>
         <div className="text-left flex-1 min-w-0">
@@ -420,7 +420,7 @@ function SpaceStep({
             {t("design.upload.dropzone")}
           </div>
           <div className="text-xs text-muted-foreground mt-0.5">
-            {t("design.upload.formats")} · {photos.length}/{MAX_SPACES} spaces
+            {t("design.upload.formats")} / {photos.length}/{MAX_SPACES} spaces
           </div>
         </div>
         <input
@@ -436,7 +436,7 @@ function SpaceStep({
       {photos.length > 0 && (
         <div>
           <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground mb-2">
-            Selected · {photos.length}
+            Selected / {photos.length}
           </div>
           <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
             {photos.map((p, i) => (
@@ -482,13 +482,13 @@ function SpaceStep({
         </div>
       )}
 
-      <div className="rounded-xl bg-muted/40 border border-border px-3 py-3">
+      <div className="border border-border bg-muted/40 px-3 py-3">
         <div className="flex items-center justify-between mb-2">
           <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
             {t("design.upload.demoNote")}
           </div>
           <div className="text-[10px] text-muted-foreground">
-            Pick one or several · {photos.length}/{MAX_SPACES}
+            Pick one or several / {photos.length}/{MAX_SPACES}
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
@@ -573,7 +573,7 @@ function StyleStep({
             type="button"
             onClick={() => pickStyle(o.id)}
             className={cn(
-              "group rounded-xl border bg-card overflow-hidden text-left cursor-pointer transition relative",
+              "group relative cursor-pointer overflow-hidden rounded-md border bg-card text-left transition",
               isSel
                 ? "border-primary shadow-[0_0_0_2px_rgba(0,91,150,0.18)]"
                 : "border-border hover:border-primary/40"
@@ -591,7 +591,7 @@ function StyleStep({
               )}
               <span
                 className={cn(
-                  "absolute top-2 right-2 h-5 w-5 rounded-full flex items-center justify-center transition border-2",
+                  "absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-md border-2 transition",
                   isSel
                     ? "bg-primary text-primary-foreground border-primary"
                     : "bg-card/90 text-transparent border-border group-hover:border-primary/40"
@@ -673,7 +673,7 @@ function CategoryStep({
                 type="button"
                 onClick={() => toggle(o.id)}
                 className={cn(
-                  "inline-flex items-center gap-2 rounded-full pl-1.5 pr-3 py-1.5 border text-xs cursor-pointer transition",
+                  "inline-flex cursor-pointer items-center gap-2 rounded-md border py-1.5 pl-1.5 pr-3 text-xs transition",
                   isSel
                     ? "border-primary bg-primary/8 text-foreground"
                     : "border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/40"
@@ -699,7 +699,7 @@ function CategoryStep({
                 type="button"
                 onClick={() => toggle(o.id)}
                 className={cn(
-                  "group rounded-lg border bg-card overflow-hidden text-left cursor-pointer transition flex items-center gap-2.5 p-1.5",
+                  "group flex cursor-pointer items-center gap-2.5 overflow-hidden rounded-md border bg-card p-1.5 text-left transition",
                   isSel
                     ? "border-primary shadow-[0_0_0_2px_rgba(0,91,150,0.15)]"
                     : "border-border hover:border-primary/40"
@@ -812,7 +812,7 @@ function ReferencesStep({
         }}
         onClick={() => !isFull && inputRef.current?.click()}
         className={cn(
-          "rounded-xl border-2 border-dashed px-4 py-4 text-center transition cursor-pointer flex items-center gap-3",
+          "flex cursor-pointer items-center gap-3 border-2 border-dashed px-4 py-4 text-center transition",
           dragActive
             ? "border-primary bg-primary/5"
             : isFull
@@ -828,7 +828,7 @@ function ReferencesStep({
             {t("design.upload.dropzone")}
           </div>
           <div className="text-[11px] text-muted-foreground">
-            {t("design.upload.formats")} · {photos.length}/{maxCount}
+            {t("design.upload.formats")} / {photos.length}/{maxCount}
           </div>
         </div>
         <input
@@ -880,7 +880,7 @@ function ReferencesStep({
         </div>
       )}
 
-      <div className="rounded-xl bg-muted/40 border border-border px-3 py-3">
+      <div className="border border-border bg-muted/40 px-3 py-3">
         <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground mb-2">
           Sample references
         </div>

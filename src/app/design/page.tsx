@@ -46,17 +46,22 @@ export default function DesignPage() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-5 md:px-8 py-6 md:py-8">
-      <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+    <div className="mx-auto max-w-7xl px-5 py-6 md:px-8 md:py-8">
+      <div className="mb-5 border-b border-border pb-5 md:flex md:items-end md:justify-between">
         <div>
-          <h1 className="serif text-2xl md:text-3xl font-medium leading-tight">
+          <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">
+            Design Studio
+          </div>
+          <h1 className="serif text-3xl font-medium leading-tight text-secondary md:text-5xl">
             {t("design.title")}
           </h1>
-          <p className="text-xs md:text-sm text-muted-foreground mt-1 max-w-2xl">
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground md:text-base">
             {t("design.subtitle")}
           </p>
         </div>
-        <StageIndicator current={stage} labels={stageLabels} />
+        <div className="mt-4 md:mt-0">
+          <StageIndicator current={stage} labels={stageLabels} />
+        </div>
       </div>
 
       <AnimatePresence mode="wait">

@@ -12,8 +12,7 @@ export function CtaStrip() {
     <section className="py-20 md:py-24">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <FadeIn>
-          <div className="rounded-[2rem] bg-secondary text-secondary-foreground p-10 md:p-16 flex flex-col md:flex-row md:items-center md:justify-between gap-8 overflow-hidden relative">
-            <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-primary/30 blur-3xl pointer-events-none" />
+          <div className="relative flex flex-col gap-8 overflow-hidden rounded-lg bg-secondary p-10 text-secondary-foreground md:flex-row md:items-center md:justify-between md:p-16">
             <div className="relative">
               <h2 className="serif text-3xl md:text-5xl leading-tight max-w-xl">
                 {t("landing.cta.title")}

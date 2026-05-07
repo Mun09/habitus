@@ -33,7 +33,7 @@ export default function TrackingPage({
 
   const ProjectInfo = (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-border bg-card p-5">
+      <div className="border border-border bg-card p-5 shadow-[var(--shadow-warm)]">
         <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground mb-1">
           {t("tracking.column.info")}
         </div>
@@ -45,7 +45,7 @@ export default function TrackingPage({
             href={`/matching/${contractor.id}`}
             className="mt-3 flex items-center gap-3 hover:opacity-80"
           >
-            <div className="relative h-10 w-10 rounded-full overflow-hidden">
+            <div className="relative h-10 w-10 overflow-hidden rounded-md">
               <Image
                 src={contractor.profileImage}
                 alt=""
@@ -90,12 +90,12 @@ export default function TrackingPage({
 
       <MiniGantt current={project.currentStage} />
 
-      <div className="rounded-2xl border border-border bg-card p-5">
+      <div className="border border-border bg-card p-5 shadow-[var(--shadow-warm)]">
         <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground mb-3">
           {t("tracking.pm.title")}
         </div>
         <div className="flex items-center gap-3">
-          <div className="relative h-12 w-12 rounded-full overflow-hidden">
+          <div className="relative h-12 w-12 overflow-hidden rounded-md">
             <Image
               src={project.pm.avatar}
               alt=""
@@ -116,7 +116,7 @@ export default function TrackingPage({
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-5 md:px-8 py-8 md:py-12">
+    <div className="mx-auto max-w-7xl px-5 py-8 md:px-8 md:py-10">
       <div className="flex items-center justify-between mb-6">
         <Link
           href="/projects"
@@ -128,8 +128,11 @@ export default function TrackingPage({
         <NotificationSheet items={project.notifications} />
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 mb-2">
-        <h1 className="serif text-3xl md:text-4xl font-medium leading-tight">
+      <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">
+        Tracking Room
+      </div>
+      <div className="mb-2 flex flex-wrap items-center gap-3">
+        <h1 className="serif text-3xl font-medium leading-tight text-secondary md:text-5xl">
           {isCompleted ? t("tracking.history") : t("tracking.title")}
         </h1>
         {isCompleted && (
@@ -139,7 +142,7 @@ export default function TrackingPage({
           </Badge>
         )}
       </div>
-      <p className="text-sm text-muted-foreground">{project.title}</p>
+      <p className="border-b border-border pb-6 text-sm text-muted-foreground">{project.title}</p>
 
       {/* Mobile: Tabs */}
       <div className="md:hidden mt-6">
@@ -168,7 +171,7 @@ export default function TrackingPage({
       </div>
 
       {/* Desktop: 3 columns, left + right sticky */}
-      <div className="hidden md:grid mt-8 grid-cols-[260px_1fr_360px] gap-6 items-start">
+      <div className="mt-8 hidden items-start gap-6 md:grid md:grid-cols-[260px_1fr_360px]">
         <div className="sticky top-24 self-start max-h-[calc(100vh-7rem)] overflow-y-auto no-scrollbar">
           {ProjectInfo}
         </div>
@@ -188,19 +191,26 @@ export default function TrackingPage({
 }
 
 function CompletedSidePanel() {
+  const completedPhotos = [
+    IMAGES.scenarios.w8.ai.tvLounge,
+    IMAGES.scenarios.w8.ai.meetingBay,
+    IMAGES.scenarios.w8.ai.studioEntry,
+    IMAGES.scenarios.w8.ai.openLounge,
+  ];
+
   return (
     <div className="space-y-4">
-      <div className="rounded-3xl border border-border bg-card overflow-hidden">
+      <div className="overflow-hidden border border-border bg-card shadow-[var(--shadow-warm)]">
         <div className="px-5 py-4 border-b border-border flex items-center justify-between">
           <span className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
             Completed photos
           </span>
           <span className="text-xs text-muted-foreground">
-            {IMAGES.projectCompleted.length}
+            {completedPhotos.length}
           </span>
         </div>
         <div className="grid grid-cols-2 gap-1 p-1">
-          {IMAGES.projectCompleted.slice(0, 4).map((src, i) => (
+          {completedPhotos.map((src, i) => (
             <div
               key={i}
               className="relative aspect-square overflow-hidden bg-muted"

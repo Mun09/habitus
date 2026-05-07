@@ -57,7 +57,7 @@ export function ProcessSteps() {
             const Icon = step.icon;
             return (
               <FadeIn key={step.n} delay={i * 0.08}>
-                <div className="group relative h-full rounded-3xl border border-border bg-card overflow-hidden transition-all duration-300 hover:shadow-[0_24px_60px_rgba(3,57,108,0.14)] hover:-translate-y-1">
+                <div className="group relative h-full overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-warm-lg)]">
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <Image
                       src={step.image}
@@ -66,8 +66,8 @@ export function ProcessSteps() {
                       sizes="(min-width: 1024px) 22vw, 44vw"
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 to-transparent" />
-                    <div className="absolute top-4 left-4 inline-flex items-center gap-2 rounded-full bg-card/95 backdrop-blur px-3 py-1 text-xs font-medium">
+                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/28 to-transparent" />
+                    <div className="absolute left-4 top-4 inline-flex items-center gap-2 bg-card/95 px-3 py-1 text-xs font-medium backdrop-blur">
                       <Icon className="h-3.5 w-3.5 text-primary" />
                       <span className="serif">{step.n}</span>
                     </div>
