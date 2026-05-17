@@ -14,6 +14,7 @@ import { MiniGantt } from "@/components/tracking/mini-gantt";
 import { UpdateTimeline } from "@/components/tracking/update-timeline";
 import { ChatPanel } from "@/components/tracking/chat-panel";
 import { NotificationSheet } from "@/components/tracking/notification-sheet";
+import { ReviewDialog } from "@/components/tracking/review-dialog";
 
 export function TrackingClient({
   project,
@@ -156,7 +157,10 @@ export function TrackingClient({
           </TabsContent>
           <TabsContent value="chat">
             {isCompleted ? (
-              <CompletedSidePanel />
+              <CompletedSidePanel
+                projectId={project.id}
+                contractorId={project.contractorId}
+              />
             ) : (
               <ChatPanel project={project} />
             )}
@@ -174,7 +178,10 @@ export function TrackingClient({
         </div>
         <div className="sticky top-24 self-start max-h-[calc(100vh-7rem)] overflow-y-auto no-scrollbar">
           {isCompleted ? (
-            <CompletedSidePanel />
+            <CompletedSidePanel
+              projectId={project.id}
+              contractorId={project.contractorId}
+            />
           ) : (
             <ChatPanel project={project} />
           )}
@@ -184,7 +191,13 @@ export function TrackingClient({
   );
 }
 
-function CompletedSidePanel() {
+function CompletedSidePanel({
+  projectId,
+  contractorId,
+}: {
+  projectId: string;
+  contractorId: string;
+}) {
   const completedPhotos = [...PROJECT_W2_PHOTOS.after, PROJECT_W2_PHOTOS.before[0]];
 
   return (
@@ -209,6 +222,7 @@ function CompletedSidePanel() {
           ))}
         </div>
       </div>
+      <ReviewDialog projectId={projectId} contractorId={contractorId} />
     </div>
   );
 }

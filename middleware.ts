@@ -2,21 +2,38 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 const PROTECTED_PREFIXES = ["/onboarding", "/design", "/matching", "/projects", "/app"];
+const ADMIN_PREFIX = "/admin";
 
 function isProtected(pathname: string) {
   return PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
+function isAdmin(pathname: string) {
+  return pathname === ADMIN_PREFIX || pathname.startsWith(`${ADMIN_PREFIX}/`);
+}
+
+function getAdminEmails(): string[] {
+  return (process.env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (!isProtected(pathname)) {
+  const adminRoute = isAdmin(pathname);
+  if (!adminRoute && !isProtected(pathname)) {
     return NextResponse.next({ request });
   }
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !anon) {
-    // No Supabase configured yet — let the request through so local dev without keys still renders.
+    // No Supabase configured yet. Let regular protected routes through for
+    // local dev convenience, but never expose /admin without auth.
+    if (adminRoute) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
     return NextResponse.next({ request });
   }
 
@@ -46,17 +63,19 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(signInUrl);
   }
 
+  if (adminRoute) {
+    const allowed = getAdminEmails();
+    const email = user.email?.toLowerCase();
+    if (allowed.length === 0 || !email || !allowed.includes(email)) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+  }
+
   return response;
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static, _next/image (build assets)
-     * - favicon and image files in /public
-     * - the public sign-in and root pages
-     */
     "/((?!_next/static|_next/image|favicon.ico|images/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 };
