@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import "./globals.css";
 import { LocaleProvider } from "@/lib/i18n/locale-provider";
 import { DesignPlanProvider } from "@/lib/design-plan";
+import { UserProvider } from "@/lib/supabase/user-provider";
 import { Header } from "@/components/layout/header";
 import {
   ConditionalFooter,
@@ -43,12 +44,14 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <LocaleProvider>
-          <DesignPlanProvider>
-            <Header />
-            <ConditionalMain>{children}</ConditionalMain>
-            <ConditionalFooter />
-            <ConditionalMobileBottomNav />
-          </DesignPlanProvider>
+          <UserProvider>
+            <DesignPlanProvider>
+              <Header />
+              <ConditionalMain>{children}</ConditionalMain>
+              <ConditionalFooter />
+              <ConditionalMobileBottomNav />
+            </DesignPlanProvider>
+          </UserProvider>
           <Toaster
             position="top-center"
             toastOptions={{

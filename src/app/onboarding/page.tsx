@@ -8,29 +8,50 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { useLocale } from "@/lib/i18n/locale-provider";
+import { useUser } from "@/lib/supabase/user-provider";
+import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export default function OnboardingPage() {
   const { t } = useLocale();
   const router = useRouter();
+  const { user } = useUser();
   const [step, setStep] = useState(0);
   const [nickname, setNickname] = useState("");
   const [address, setAddress] = useState("");
   const [budget, setBudget] = useState<[number, number]>([15000000, 30000000]);
+  const [saving, setSaving] = useState(false);
 
   const totalSteps = 3;
 
-  const next = () => {
+  const next = async () => {
     if (step < totalSteps - 1) {
       setStep(step + 1);
-    } else {
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem("habitus.nickname", nickname || "Guest");
-      }
-      toast.success(`${t("onboarding.toast")}${nickname || "Guest"}!`);
-      setTimeout(() => router.push("/design"), 400);
+      return;
     }
+    if (!user) {
+      toast.error("Sign in first.");
+      router.push("/sign-in?next=/onboarding");
+      return;
+    }
+    setSaving(true);
+    const supabase = createClient();
+    const { error } = await supabase.from("user_profiles").upsert({
+      id: user.id,
+      nickname: nickname || "Guest",
+      address: address || null,
+      budget_min: budget[0],
+      budget_max: budget[1],
+      onboarded_at: new Date().toISOString(),
+    });
+    setSaving(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success(`${t("onboarding.toast")}${nickname || "Guest"}!`);
+    setTimeout(() => router.push("/design"), 400);
   };
 
   const fmtBudget = (v: number) =>
@@ -134,17 +155,17 @@ export default function OnboardingPage() {
 
           <div className="mt-8 flex items-center justify-between">
             {step > 0 ? (
-              <Button variant="ghost" onClick={() => setStep(step - 1)}>
+              <Button variant="ghost" onClick={() => setStep(step - 1)} disabled={saving}>
                 <ArrowLeft className="h-4 w-4" />
                 {t("common.back")}
               </Button>
             ) : (
               <span />
             )}
-            <Button onClick={next}>
+            <Button onClick={next} disabled={saving}>
               {step === totalSteps - 1 ? (
                 <>
-                  {t("onboarding.complete")} <Check className="h-4 w-4" />
+                  {saving ? "Saving..." : t("onboarding.complete")} <Check className="h-4 w-4" />
                 </>
               ) : (
                 <>
