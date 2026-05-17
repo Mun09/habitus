@@ -136,10 +136,44 @@ npm run dev      # next dev (http://localhost:3000)
 npm run build    # next build
 npm run start    # next start (production)
 npm run lint     # eslint (eslint-config-next)
+npm run types:gen # regenerate src/lib/db/types.ts from your Supabase schema
 ```
 
 No test runner is configured. Shell is **PowerShell on Windows**; use
 PS syntax or invoke `bash` explicitly inside scripts.
+
+### There is no separate "frontend" and "backend" process
+
+This is a single Next.js App Router app, so `npm run dev` boots both at
+once on port 3000. The split is logical, not procedural:
+
+| Layer | Lives in | What it does |
+|-------|----------|--------------|
+| **Frontend** | Client components (`"use client"`), client hooks, browser-side state | Renders React, manages local UI, subscribes to Supabase Realtime |
+| **Backend** | Server Components, Server Actions (`"use server"`), [src/app/api/](src/app/api/) Route Handlers, [middleware.ts](middleware.ts) | Reads/writes Postgres, signs URLs, calls OpenAI, gates protected routes |
+| **External services** | supabase.com (Postgres + Auth + Storage + Realtime), api.openai.com (gpt-image-1) | Always-on cloud. Configured once, no local process |
+
+```
+Browser ───HTTP/WS──▶ Next.js dev server (port 3000)
+                          │
+                          ├──▶ Supabase project
+                          └──▶ OpenAI API
+```
+
+If you ever feel the need to "run backend only" you probably want one of:
+
+- **Inspect data**: open Supabase Studio (Table editor / Auth / Storage).
+- **Hit an API route in isolation**: `curl http://localhost:3000/api/notifications` after `npm run dev` (auth cookies needed for protected routes).
+- **Verify DB / RLS**: SQL editor in Supabase Studio.
+
+### Where logs live
+
+| What you want to see | Where to look |
+|----------------------|---------------|
+| Browser UI errors, client console | Browser DevTools |
+| Server Actions, API routes, middleware logs | The terminal running `npm run dev` |
+| Supabase queries, RLS rejections | Supabase Studio → Logs |
+| OpenAI billing & request history | platform.openai.com → Usage |
 
 ## End-to-end smoke test
 
