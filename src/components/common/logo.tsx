@@ -3,16 +3,23 @@ import { cn } from "@/lib/utils";
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <div className={cn("flex items-center gap-2", className)}>
+    <div
+      className={cn(
+        "serif flex items-center text-xl font-semibold tracking-tight",
+        className,
+      )}
+      aria-label="Habitus"
+    >
       <Image
         src="/logo.png"
-        alt="Habitus"
-        width={28}
-        height={28}
+        alt=""
+        width={40}
+        height={40}
         priority
-        className="h-7 w-7 object-contain"
+        aria-hidden
+        className="-mr-0.5 inline-block h-[1.15em] w-auto object-contain"
       />
-      <span className="serif text-xl font-semibold tracking-tight">Habitus</span>
+      <span aria-hidden>abitus</span>
     </div>
   );
 }

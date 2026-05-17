@@ -136,7 +136,7 @@ export const DESIGN_OPTIONS: DesignOption[] = [
     name: "Oak hardwood",
     description: "Premium · $109/m²",
     image:
-      "https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1737098192036-34ab3642e1c6?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "floor-walnut",
@@ -145,7 +145,7 @@ export const DESIGN_OPTIONS: DesignOption[] = [
     name: "Walnut hardwood",
     description: "Premium · deep tone",
     image:
-      "https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1736506159893-22cca29b8018?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "floor-laminate-oak",
@@ -154,7 +154,7 @@ export const DESIGN_OPTIONS: DesignOption[] = [
     name: "Laminate (oak)",
     description: "Standard · $59/m²",
     image:
-      "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1617262869711-2f5006b61073?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "floor-concrete",
@@ -163,7 +163,7 @@ export const DESIGN_OPTIONS: DesignOption[] = [
     name: "Polished concrete",
     description: "Premium · industrial",
     image:
-      "https://images.unsplash.com/photo-1517414622240-71b45a5d8e36?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1515895309288-a3815ab7cf81?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "floor-white-tile",
@@ -172,7 +172,7 @@ export const DESIGN_OPTIONS: DesignOption[] = [
     name: "White tile",
     description: "Kitchen · bath",
     image:
-      "https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1706629503586-2731f65587ae?auto=format&fit=crop&w=800&q=80",
   },
 
   // ── Wall ──────────────────────────────────────────────────

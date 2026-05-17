@@ -38,7 +38,7 @@ export function RequestDialog({ contractor }: { contractor: Contractor }) {
         ? t("matching.request.toastWithPlan")
         : t("matching.request.toast")
     );
-    setTimeout(() => router.push("/projects/proj-mapo-32"), 600);
+    setTimeout(() => router.push("/projects/proj-w2-space"), 600);
   };
 
   return (

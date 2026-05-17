@@ -15,15 +15,31 @@ const u = (id: string, w = 1200) =>
 const local = (path: string) => `/images/${path}`;
 
 // Maps a W2-1 sample-space URL to its AI-rendered counterpart.
-// `null` means the space is already matched and has no AI render.
-const W8_AI_BY_URL_BUILDER = () => ({
-  [local("scenarios/w8/w8_2.jpg")]: local("scenarios/w8/w8_4_ai.png"),
-  [local("scenarios/w8/w8_3.jpg")]: local("scenarios/w8/w8_3_ai.png"),
-  [local("scenarios/w8/w8_4.jpg")]: local("scenarios/w8/w8_2_ai.png"),
-  [local("scenarios/w8/w8_5.jpg")]: local("scenarios/w8/w8_5_ai.png"),
+const W2_AI_BY_URL_BUILDER = () => ({
+  [local("scenarios/w2/w2_1.jpg")]: local("scenarios/w2/w2_1_ai.png"),
+  [local("scenarios/w2/w2_2.jpg")]: local("scenarios/w2/w2_2_ai.png"),
+  [local("scenarios/w2/w2_3.jpg")]: local("scenarios/w2/w2_3_ai.png"),
+  [local("scenarios/w2/w2_4.jpg")]: local("scenarios/w2/w2_4_ai.png"),
+  [local("scenarios/w2/w2_5.jpg")]: local("scenarios/w2/w2_5_ai.png"),
 });
 
-export const W8_AI_BY_URL: Record<string, string> = W8_AI_BY_URL_BUILDER();
+export const W2_AI_BY_URL: Record<string, string> = W2_AI_BY_URL_BUILDER();
+
+// Isolated copy of W2-1 photos used ONLY by My Projects history.
+// Kept separate from `scenarios/w2/` (Design Studio AI results) so the
+// two surfaces never share assets.
+export const PROJECT_W2_PHOTOS = {
+  before: [
+    local("projects/w2-1/w2_1.jpg"),
+    local("projects/w2-1/w2_2.jpg"),
+    local("projects/w2-1/w2_3.jpg"),
+  ],
+  after: [
+    local("projects/w2-1/w2_1_ai.png"),
+    local("projects/w2-1/w2_2_ai.png"),
+    local("projects/w2-1/w2_3_ai.png"),
+  ],
+};
 
 export const IMAGES = {
   designDemo: {
@@ -45,16 +61,18 @@ export const IMAGES = {
         local("scenarios/random/style-natural.webp"),
       ],
     },
-    w8: {
-      studioEntry: local("scenarios/w8/w8_2.jpg"),
-      meetingBay: local("scenarios/w8/w8_3.jpg"),
-      tvLounge: local("scenarios/w8/w8_4.jpg"),
-      openLounge: local("scenarios/w8/w8_5.jpg"),
+    w2: {
+      reference: local("scenarios/w2/w2_1.jpg"),
+      studioEntry: local("scenarios/w2/w2_2.jpg"),
+      meetingBay: local("scenarios/w2/w2_3.jpg"),
+      tvLounge: local("scenarios/w2/w2_4.jpg"),
+      openLounge: local("scenarios/w2/w2_5.jpg"),
       ai: {
-        studioEntry: local("scenarios/w8/w8_2_ai.png"),
-        meetingBay: local("scenarios/w8/w8_3_ai.png"),
-        tvLounge: local("scenarios/w8/w8_4_ai.png"),
-        openLounge: local("scenarios/w8/w8_5_ai.png"),
+        reference: local("scenarios/w2/w2_1_ai.png"),
+        studioEntry: local("scenarios/w2/w2_2_ai.png"),
+        meetingBay: local("scenarios/w2/w2_3_ai.png"),
+        tvLounge: local("scenarios/w2/w2_4_ai.png"),
+        openLounge: local("scenarios/w2/w2_5_ai.png"),
       },
     },
   },

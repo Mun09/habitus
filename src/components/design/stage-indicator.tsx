@@ -10,9 +10,13 @@ const ORDER: DesignStage[] = ["compose", "generating", "result"];
 export function StageIndicator({
   current,
   labels,
+  onSelect,
+  enabledStages,
 }: {
   current: DesignStage;
   labels: Record<DesignStage, string>;
+  onSelect?: (stage: DesignStage) => void;
+  enabledStages?: DesignStage[];
 }) {
   const idx = ORDER.indexOf(current);
   return (
@@ -20,15 +24,23 @@ export function StageIndicator({
       {ORDER.map((s, i) => {
         const done = i < idx;
         const active = i === idx;
+        const enabled =
+          !!onSelect && (enabledStages ? enabledStages.includes(s) : true);
         return (
-          <div
+          <button
             key={s}
+            type="button"
+            onClick={() => enabled && onSelect?.(s)}
+            disabled={!enabled}
             className={cn(
               "flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-all",
+              enabled ? "cursor-pointer" : "cursor-default",
               active
                 ? "bg-primary text-primary-foreground"
                 : done
-                ? "text-foreground/80"
+                ? "text-foreground/80 hover:bg-muted"
+                : enabled
+                ? "text-muted-foreground hover:bg-muted hover:text-foreground"
                 : "text-muted-foreground"
             )}
           >
@@ -45,7 +57,7 @@ export function StageIndicator({
               {done ? <Check className="h-3 w-3" /> : i + 1}
             </span>
             {labels[s]}
-          </div>
+          </button>
         );
       })}
     </div>

@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import { useDesignPlan } from "@/lib/design-plan";
-import { IMAGES, W8_AI_BY_URL } from "@/lib/mock/images";
+import { IMAGES, W2_AI_BY_URL } from "@/lib/mock/images";
 import { DESIGN_OPTIONS } from "@/lib/mock/design-options";
 import {
   RANDOM_STYLE_BENCHMARKS,
@@ -90,35 +90,37 @@ export function ResultView({
   const style = STYLE_LABELS[styleKey];
 
   const isRandom = styleKey === "random";
-  const allSpaces = spaceImages && spaceImages.length > 0 ? spaceImages : [spaceImage];
-  const isMultiSpace = allSpaces.length > 1;
 
-  // For multi-space we slide through one AI render per space.
-  // Maps each chosen W2-1 sample URL to its AI render; falls back to a
-  // random style for spaces without a prebuilt AI image (e.g. uploads
-  // or the already-matched reference space).
-  const spaceProposals = allSpaces.map((src, i) => {
-    const ai = W8_AI_BY_URL[src];
-    if (ai) return ai;
-    return IMAGES.scenarios.random.styles[i % IMAGES.scenarios.random.styles.length];
-  });
+  // The Result stage always presents the full set of 5 W2-1 sample
+  // spaces with their AI renders, regardless of what the user picked
+  // upstream. The reference space has no AI render so it pairs with
+  // itself (already-matched). This keeps the Result shape consistent
+  // and shows the full W2-1 walkthrough.
+  const W2_BEFORES: string[] = [
+    IMAGES.scenarios.w2.reference,
+    IMAGES.scenarios.w2.studioEntry,
+    IMAGES.scenarios.w2.meetingBay,
+    IMAGES.scenarios.w2.tvLounge,
+    IMAGES.scenarios.w2.openLounge,
+  ];
+  const W2_AFTERS: string[] = [
+    IMAGES.scenarios.w2.ai.reference,
+    IMAGES.scenarios.w2.ai.studioEntry,
+    IMAGES.scenarios.w2.ai.meetingBay,
+    IMAGES.scenarios.w2.ai.tvLounge,
+    IMAGES.scenarios.w2.ai.openLounge,
+  ];
+  const W2_LABELS: string[] = [
+    "Reference",
+    "Studio entry",
+    "Meeting bay",
+    "TV lounge",
+    "Open lounge",
+  ];
 
-  // AI proposals: for Random, show all 5 specific style outputs;
-  // otherwise mix the demo "after" with moodboard + completed gallery.
-  const proposals = isMultiSpace
-    ? spaceProposals
-    : isRandom
-    ? IMAGES.scenarios.random.styles
-    : (() => {
-        const k = styleKey as Exclude<StyleKey, "random">;
-        return Array.from(
-          new Set([
-            IMAGES.designDemo.after,
-            ...IMAGES.moodboard[k].slice(0, 4),
-            ...IMAGES.projectCompleted.slice(0, 2),
-          ])
-        ).slice(0, 5);
-      })();
+  const allSpaces = W2_BEFORES;
+  const isMultiSpace = true;
+  const proposals: string[] = W2_AFTERS;
 
   // For the Random scenario the 5 outputs are rendered onto the
   // reference space, so override "before" so the slider stays coherent.
@@ -132,9 +134,13 @@ export function ResultView({
 
   const [activeProposal, setActiveProposal] = useState(proposals[0]);
   const activeIdx = Math.max(0, proposals.indexOf(activeProposal));
-  // In multi-space mode the active "before" tracks the active space.
+  // In multi-space mode the active "before" tracks the active space; for
+  // padded variation slots beyond the chosen spaces, fall back to the
+  // first space so the slider still has a meaningful before image.
   const heroAfter = activeProposal;
-  const multiBefore = isMultiSpace ? allSpaces[activeIdx] ?? allSpaces[0] : heroBefore;
+  const multiBefore = isMultiSpace
+    ? allSpaces[activeIdx] ?? allSpaces[0]
+    : heroBefore;
 
   // For Random, the active proposal index selects the per-variant
   // material list and cost benchmark. Each style implies a distinct
@@ -298,7 +304,7 @@ export function ResultView({
                 <ChevronRight className="h-4 w-4" />
               </button>
               <div className="absolute top-7 left-1/2 -translate-x-1/2 z-10 rounded-full bg-foreground/75 text-background px-2.5 py-1 text-[10px] font-medium tracking-wider uppercase pointer-events-none">
-                Space {activeIdx + 1} / {allSpaces.length}
+                {W2_LABELS[activeIdx] ?? `Space ${activeIdx + 1}`} · {activeIdx + 1} / {allSpaces.length}
               </div>
             </>
           )}
@@ -308,9 +314,7 @@ export function ResultView({
         <div className="px-6 pb-6 md:px-8 md:pb-8">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs uppercase tracking-wider text-muted-foreground">
-              {isMultiSpace
-                ? `Spaces · ${proposals.length}`
-                : `${t("design.result.proposalCount")} · ${proposals.length}`}
+              {`${t("design.result.proposalCount")} · ${proposals.length}`}
             </span>
             <span className="text-[11px] text-muted-foreground hidden md:inline">
               {isMultiSpace
@@ -328,12 +332,8 @@ export function ResultView({
           >
             {proposals.map((src, i) => {
               const active = src === activeProposal;
-              const variantLabel = isMultiSpace
-                ? `Space ${i + 1}`
-                : isRandom
-                ? RANDOM_STYLE_VARIANTS[i]
-                : null;
-              const thumbSrc = isMultiSpace ? allSpaces[i] : src;
+              const variantLabel = W2_LABELS[i] ?? `Space ${i + 1}`;
+              const thumbSrc = allSpaces[i] ?? src;
               return (
                 <motion.button
                   type="button"
@@ -398,7 +398,7 @@ export function ResultView({
             {t("design.result.materials")}
             {isMultiSpace ? (
               <span className="ml-2 normal-case tracking-normal text-foreground/70">
-                · Space {activeIdx + 1}
+                · {W2_LABELS[activeIdx] ?? `Space ${activeIdx + 1}`}
               </span>
             ) : isRandom ? (
               <span className="ml-2 normal-case tracking-normal text-foreground/70">

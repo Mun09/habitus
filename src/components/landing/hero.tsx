@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
@@ -26,9 +27,19 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="serif text-6xl font-medium leading-none tracking-tight text-secondary md:text-8xl"
+          className="serif flex items-center justify-center text-6xl font-medium leading-none tracking-tight text-secondary md:text-8xl"
+          aria-label="Habitus"
         >
-          Habitus
+          <Image
+            src="/logo.png"
+            alt=""
+            width={160}
+            height={160}
+            priority
+            aria-hidden
+            className="-mr-1 inline-block h-[1.15em] w-auto object-contain md:-mr-2"
+          />
+          <span aria-hidden>abitus</span>
         </motion.h1>
 
         <div className="flex flex-col items-center gap-3 md:gap-5">
@@ -58,6 +69,7 @@ export function Hero() {
           >
             {Array.from(PUNCHLINE).map((ch, i) => {
               const isHabitus = i >= HABITUS_START && i <= HABITUS_END;
+              const isHabitusH = i === HABITUS_START;
               return (
                 <motion.span
                   key={i}
@@ -79,7 +91,20 @@ export function Hero() {
                     ease: [0.42, 0, 0.2, 1],
                   }}
                 >
-                  {ch === " " ? " " : ch}
+                  {isHabitusH ? (
+                    <Image
+                      src="/logo.png"
+                      alt=""
+                      width={48}
+                      height={48}
+                      aria-hidden
+                      className="-mr-[0.18em] inline-block h-[1.2em] w-auto -translate-y-[0.1em] object-contain"
+                    />
+                  ) : ch === " " ? (
+                    " "
+                  ) : (
+                    ch
+                  )}
                 </motion.span>
               );
             })}

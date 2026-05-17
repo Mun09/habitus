@@ -33,34 +33,34 @@ const SAMPLE_SPACES: {
   matched?: boolean;
 }[] = [
   {
-    id: "sample-w8-reference",
-    url: IMAGES.scenarios.random.referenceSpace,
+    id: "sample-w2-reference",
+    url: IMAGES.scenarios.w2.reference,
     label: "W2-1 / Reference",
-    matched: true,
+    aiUrl: IMAGES.scenarios.w2.ai.reference,
   },
   {
-    id: "sample-w8-studio-entry",
-    url: IMAGES.scenarios.w8.studioEntry,
+    id: "sample-w2-studio-entry",
+    url: IMAGES.scenarios.w2.studioEntry,
     label: "W2-1 / Studio entry",
-    aiUrl: IMAGES.scenarios.w8.ai.tvLounge,
+    aiUrl: IMAGES.scenarios.w2.ai.studioEntry,
   },
   {
-    id: "sample-w8-meeting-bay",
-    url: IMAGES.scenarios.w8.meetingBay,
+    id: "sample-w2-meeting-bay",
+    url: IMAGES.scenarios.w2.meetingBay,
     label: "W2-1 / Meeting bay",
-    aiUrl: IMAGES.scenarios.w8.ai.meetingBay,
+    aiUrl: IMAGES.scenarios.w2.ai.meetingBay,
   },
   {
-    id: "sample-w8-tv-lounge",
-    url: IMAGES.scenarios.w8.tvLounge,
+    id: "sample-w2-tv-lounge",
+    url: IMAGES.scenarios.w2.tvLounge,
     label: "W2-1 / TV lounge",
-    aiUrl: IMAGES.scenarios.w8.ai.studioEntry,
+    aiUrl: IMAGES.scenarios.w2.ai.tvLounge,
   },
   {
-    id: "sample-w8-open-lounge",
-    url: IMAGES.scenarios.w8.openLounge,
+    id: "sample-w2-open-lounge",
+    url: IMAGES.scenarios.w2.openLounge,
     label: "W2-1 / Open lounge",
-    aiUrl: IMAGES.scenarios.w8.ai.openLounge,
+    aiUrl: IMAGES.scenarios.w2.ai.openLounge,
   },
 ];
 

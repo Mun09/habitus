@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import { getProject } from "@/lib/mock/projects";
 import { CONTRACTORS } from "@/lib/mock/contractors";
-import { IMAGES } from "@/lib/mock/images";
+import { PROJECT_W2_PHOTOS } from "@/lib/mock/images";
 import { MiniGantt } from "@/components/tracking/mini-gantt";
 import { UpdateTimeline } from "@/components/tracking/update-timeline";
 import { ChatPanel } from "@/components/tracking/chat-panel";
@@ -191,12 +191,7 @@ export default function TrackingPage({
 }
 
 function CompletedSidePanel() {
-  const completedPhotos = [
-    IMAGES.scenarios.w8.ai.tvLounge,
-    IMAGES.scenarios.w8.ai.meetingBay,
-    IMAGES.scenarios.w8.ai.studioEntry,
-    IMAGES.scenarios.w8.ai.openLounge,
-  ];
+  const completedPhotos = [...PROJECT_W2_PHOTOS.after, PROJECT_W2_PHOTOS.before[0]];
 
   return (
     <div className="space-y-4">

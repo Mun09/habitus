@@ -13,6 +13,7 @@ import {
   detectStyleFromOptions,
   getOptionImagesForGenerating,
 } from "@/lib/mock/design-options";
+import { IMAGES } from "@/lib/mock/images";
 
 export default function DesignPage() {
   const { t } = useLocale();
@@ -45,6 +46,13 @@ export default function DesignPage() {
     setStage("compose");
   };
 
+  const jumpToStage = (next: DesignStage) => {
+    if (next === "result") {
+      setStyleKey(detectStyleFromOptions(selectedOptionIds));
+    }
+    setStage(next);
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-5 py-6 md:px-8 md:py-8">
       <div className="mb-5 border-b border-border pb-5 md:flex md:items-end md:justify-between">
@@ -60,7 +68,11 @@ export default function DesignPage() {
           </p>
         </div>
         <div className="mt-4 md:mt-0">
-          <StageIndicator current={stage} labels={stageLabels} />
+          <StageIndicator
+            current={stage}
+            labels={stageLabels}
+            onSelect={jumpToStage}
+          />
         </div>
       </div>
 
@@ -94,14 +106,14 @@ export default function DesignPage() {
             transition={{ duration: 0.3 }}
           >
             <GeneratingState
-              spaceImage={spacePhotos[0]?.url}
+              spaceImage={spacePhotos[0]?.url ?? IMAGES.scenarios.w2.studioEntry}
               referenceImages={generatingInputs}
               onDone={() => setStage("result")}
             />
           </motion.section>
         )}
 
-        {stage === "result" && spacePhotos[0] && (
+        {stage === "result" && (
           <motion.section
             key="result"
             initial={{ opacity: 0, y: 12 }}
@@ -110,8 +122,14 @@ export default function DesignPage() {
             transition={{ duration: 0.3 }}
           >
             <ResultView
-              spaceImage={spacePhotos[0].url}
-              spaceImages={spacePhotos.map((p) => p.url)}
+              spaceImage={
+                spacePhotos[0]?.url ?? IMAGES.scenarios.w2.studioEntry
+              }
+              spaceImages={
+                spacePhotos.length > 0
+                  ? spacePhotos.map((p) => p.url)
+                  : [IMAGES.scenarios.w2.studioEntry]
+              }
               styleKey={styleKey}
               userReferences={userReferenceUrls}
               optionImages={optionImages}
