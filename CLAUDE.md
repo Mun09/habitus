@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Habitus — interior design + verified contractor matching + live project tracking, packaged as a single Next.js demo. There is no backend; every domain object (contractors, projects, design options, materials, reviews, image URLs) is defined under `src/lib/mock/` and consumed by client components. Treat this as a clickable prototype, not a real app.
+Habitus — interior design + verified contractor matching + live project tracking, packaged as a single Next.js app. Supabase (Postgres + Auth + Storage + Realtime) is the source of truth for every domain object. The files under `src/lib/mock/` are kept as **seed sources** for `supabase/migrations/007_seed_data.sql` and as TypeScript type holders; runtime data is read from the DB.
+
+Every protected route (`/onboarding`, `/design`, `/matching`, `/projects`, `/app`, `/admin`) requires a Supabase session — `middleware.ts` redirects to `/sign-in` when Supabase env vars are absent or no user is present. The `/app` route is the one exception: a marketing-only carousel of flow screenshots that still hard-codes preview data; treat it as a brochure, not a data surface.
 
 ## Heads-up: Next.js version
 
@@ -41,7 +43,7 @@ Three stages tracked by `DesignStage = "compose" | "generating" | "result"`:
 2. `GeneratingState` — animated placeholder.
 3. `ResultView` — before/after slider, materials table, cost benchmark, contract checklist.
 
-The top `StageIndicator` is **clickable** — users can jump to any stage at any time. The Result stage **always shows the 5 W2-1 sample spaces** regardless of upstream selection (hard-coded `W2_BEFORES` / `W2_AFTERS` arrays in `result-view.tsx`). Any change that breaks this assumption needs to be intentional.
+The top `StageIndicator` is **clickable** — users can jump to any stage at any time. Result stage proposals come from the rows in `design_plans.proposal_urls` produced by `/api/design/generate`. When the user picks "Random (5 styles)" the route fans out to five parallel `gpt-image-1` calls and writes five `generated_images` rows under one plan; the slider walks through them in order.
 
 State that needs to survive the transition to `/matching` is persisted via `DesignPlanProvider` (`src/lib/design-plan.tsx`) into `localStorage` key `habitus.designPlan`.
 
@@ -65,4 +67,4 @@ When adding photos to one surface, do not reach into the other folder. The histo
 ## Conventions
 
 - **No em dashes** in copy, comments, or chat output (reads as AI-generated). En dashes for numeric ranges are fine.
-- Mock data is the source of truth for IDs and shapes. When adding a domain field, update the type in `src/lib/mock/*.ts` first, then consumers.
+- DB is the source of truth. When adding a domain field: write a new `supabase/migrations/0XX_*.sql` migration first, then update the TypeScript stub in `src/lib/db/types.ts` (or regenerate with `npm run types:gen`), then the seed mock in `src/lib/mock/*.ts`, then consumers.

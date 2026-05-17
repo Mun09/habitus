@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/common/logo";
+import { NotificationsBell } from "@/components/layout/notifications-bell";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import { cn } from "@/lib/utils";
 
@@ -63,14 +64,17 @@ export function Header() {
             );
           })}
         </nav>
-        <button
-          type="button"
-          aria-label="menu"
-          onClick={() => setOpen((v) => !v)}
-          className="cursor-pointer rounded-md p-2 hover:bg-muted md:hidden"
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-1">
+          <NotificationsBell />
+          <button
+            type="button"
+            aria-label="menu"
+            onClick={() => setOpen((v) => !v)}
+            className="cursor-pointer rounded-md p-2 hover:bg-muted md:hidden"
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
       {open && (
         <div className="md:hidden border-t border-border bg-card/95 backdrop-blur">

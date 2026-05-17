@@ -1,6 +1,6 @@
 "use client";
 
-import { CONTRACTORS, type Contractor } from "@/lib/mock/contractors";
+import { type Contractor } from "@/lib/mock/contractors";
 
 const ITEMS: { label: string; ratios: number[] }[] = [
   { label: "Demo & disposal", ratios: [1, 1.05, 0.92] },
@@ -12,9 +12,14 @@ const ITEMS: { label: string; ratios: number[] }[] = [
 
 const BASE_PRICES = [3500000, 4200000, 6800000, 4800000, 1500000];
 
-export function QuoteComparison({ current }: { current: Contractor }) {
-  const others = CONTRACTORS.filter((c) => c.id !== current.id).slice(0, 2);
-  const cols = [current, ...others];
+export function QuoteComparison({
+  current,
+  comparison,
+}: {
+  current: Contractor;
+  comparison: Contractor[];
+}) {
+  const cols = [current, ...comparison.slice(0, 2)];
 
   const total = (idx: number) =>
     BASE_PRICES.reduce((acc, p, i) => acc + p * ITEMS[i].ratios[idx], 0);

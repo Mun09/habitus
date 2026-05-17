@@ -1,7 +1,8 @@
 import { createBrowserClient } from "@supabase/ssr";
 
-// Note: once `supabase gen types typescript` produces a fresh schema for
-// src/lib/db/types.ts, re-add the <Database> generic here.
+// Once `npm run types:gen` produces authoritative types from your live
+// schema, swap to `createBrowserClient<Database>(...)` by re-importing
+// Database from "@/lib/db/types".
 export function createClient() {
   return createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

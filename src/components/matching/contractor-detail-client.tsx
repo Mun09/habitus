@@ -17,9 +17,11 @@ import { useLocale } from "@/lib/i18n/locale-provider";
 export function ContractorDetailClient({
   contractor,
   reviews,
+  comparison,
 }: {
   contractor: Contractor;
   reviews: Review[];
+  comparison: Contractor[];
 }) {
   const { t } = useLocale();
 
@@ -167,7 +169,7 @@ export function ContractorDetailClient({
           </TabsContent>
 
           <TabsContent value="quote" className="mt-6">
-            <QuoteComparison current={contractor} />
+            <QuoteComparison current={contractor} comparison={comparison} />
           </TabsContent>
 
           <TabsContent value="license" className="mt-6">

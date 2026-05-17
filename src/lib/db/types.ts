@@ -1,5 +1,6 @@
-// Replace this stub with `supabase gen types typescript --project-id <id> > src/lib/db/types.ts`
-// once a Supabase project exists. Until then the Supabase client falls back to `any`.
+// Hand-written stub kept in sync with supabase/migrations/001..009. Run
+// `npm run types:gen` to replace this file with authoritative types pulled
+// from your Supabase project (requires `SUPABASE_PROJECT_ID` env).
 
 export type Database = {
   public: {
@@ -215,17 +216,149 @@ export type Database = {
       reviews: {
         Row: {
           id: string;
-          project_id: string;
-          user_id: string;
+          project_id: string | null;
+          user_id: string | null;
           contractor_id: string;
           rating: number;
           title: string | null;
           body: string | null;
           photos: string[];
+          display_name: string | null;
+          avatar_url: string | null;
           created_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["reviews"]["Row"], "id" | "created_at">;
+        Insert: Omit<
+          Database["public"]["Tables"]["reviews"]["Row"],
+          "id" | "created_at" | "display_name" | "avatar_url"
+        > & {
+          display_name?: string | null;
+          avatar_url?: string | null;
+        };
         Update: Partial<Database["public"]["Tables"]["reviews"]["Insert"]>;
+      };
+      material_catalog: {
+        Row: {
+          id: string;
+          code: string;
+          style_key: string;
+          slot_key: "walls" | "floor" | "lighting" | "kitchen" | "finishing";
+          category: string;
+          name: string;
+          brand: string | null;
+          tier: "basic" | "standard" | "premium";
+          unit: string;
+          qty: number;
+          unit_price: number;
+          created_at: string;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["material_catalog"]["Row"],
+          "id" | "created_at"
+        >;
+        Update: Partial<Database["public"]["Tables"]["material_catalog"]["Insert"]>;
+      };
+      material_alternatives: {
+        Row: {
+          id: string;
+          base_id: string;
+          name: string;
+          tier: "basic" | "standard" | "premium";
+          unit_price: number;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["material_alternatives"]["Row"],
+          "id"
+        >;
+        Update: Partial<
+          Database["public"]["Tables"]["material_alternatives"]["Insert"]
+        >;
+      };
+      design_plan_materials: {
+        Row: {
+          id: string;
+          plan_id: string;
+          material_id: string;
+          variant_idx: number;
+          qty: number;
+          unit_price: number;
+          tier: string;
+          created_at: string;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["design_plan_materials"]["Row"],
+          "id" | "created_at"
+        >;
+        Update: Partial<
+          Database["public"]["Tables"]["design_plan_materials"]["Insert"]
+        >;
+      };
+      style_briefs: {
+        Row: {
+          style_key: string;
+          label: string;
+          intro: string;
+          mood_images: string[];
+          match_terms: string[];
+        };
+        Insert: Database["public"]["Tables"]["style_briefs"]["Row"];
+        Update: Partial<Database["public"]["Tables"]["style_briefs"]["Insert"]>;
+      };
+      design_options: {
+        Row: {
+          id: string;
+          category: "style" | "tone" | "flooring" | "wall" | "furniture";
+          style_key: string;
+          name: string;
+          description: string | null;
+          image: string | null;
+          swatch: string | null;
+          sort_order: number;
+        };
+        Insert: Database["public"]["Tables"]["design_options"]["Row"];
+        Update: Partial<Database["public"]["Tables"]["design_options"]["Insert"]>;
+      };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          project_id: string | null;
+          kind:
+            | "quote_received"
+            | "project_update"
+            | "pm_message"
+            | "project_status"
+            | "review_request";
+          title: string;
+          body: string | null;
+          unread: boolean;
+          created_at: string;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["notifications"]["Row"],
+          "id" | "created_at" | "unread"
+        > & {
+          unread?: boolean;
+        };
+        Update: Partial<Database["public"]["Tables"]["notifications"]["Insert"]>;
+      };
+      ban_records: {
+        Row: {
+          id: string;
+          contractor_id: string | null;
+          reason:
+            | "quote_fraud"
+            | "abandonment"
+            | "material_swap"
+            | "false_license"
+            | "abuse";
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: Omit<
+          Database["public"]["Tables"]["ban_records"]["Row"],
+          "id" | "created_at"
+        >;
+        Update: Partial<Database["public"]["Tables"]["ban_records"]["Insert"]>;
       };
     };
     Views: { [_ in never]: never };

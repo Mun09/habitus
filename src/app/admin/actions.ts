@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
+import { notifyProjectOwner } from "@/lib/supabase/notifications";
 
 async function requireAdmin() {
   const supabase = await createClient();
@@ -48,6 +49,13 @@ export async function addProjectUpdate(input: {
   });
   if (error) return { error: error.message };
 
+  await notifyProjectOwner(service, {
+    projectId: input.projectId,
+    kind: "project_update",
+    title: input.title,
+    body: input.body || null ? input.body : undefined,
+  });
+
   revalidatePath(`/projects/${input.projectId}`);
   revalidatePath(`/admin/projects/${input.projectId}`);
   return { ok: true };
@@ -65,12 +73,21 @@ export async function sendPmMessage(
 
   if (!body.trim()) return { error: "Empty message" };
   const service = await createServiceClient();
+  const trimmed = body.trim();
   const { error } = await service.from("chat_messages").insert({
     project_id: projectId,
     sender_type: "pm",
-    body: body.trim(),
+    body: trimmed,
   });
   if (error) return { error: error.message };
+
+  await notifyProjectOwner(service, {
+    projectId,
+    kind: "pm_message",
+    title: "New message from your PM",
+    body: trimmed.length > 80 ? `${trimmed.slice(0, 77)}…` : trimmed,
+  });
+
   return { ok: true };
 }
 
@@ -98,6 +115,21 @@ export async function updateProjectProgress(input: {
     .update(patch)
     .eq("id", input.projectId);
   if (error) return { error: error.message };
+
+  if (input.status === "completed") {
+    await notifyProjectOwner(service, {
+      projectId: input.projectId,
+      kind: "review_request",
+      title: "Project completed",
+      body: "Leave a review to help future homeowners pick the right contractor.",
+    });
+  } else if (input.status) {
+    await notifyProjectOwner(service, {
+      projectId: input.projectId,
+      kind: "project_status",
+      title: `Project status: ${input.status}`,
+    });
+  }
 
   revalidatePath(`/projects/${input.projectId}`);
   revalidatePath(`/admin/projects/${input.projectId}`);

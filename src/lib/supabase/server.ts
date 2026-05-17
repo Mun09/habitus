@@ -1,8 +1,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-// Note: once `supabase gen types typescript` produces a fresh schema for
-// src/lib/db/types.ts, re-add the <Database> generic here and below.
+// Once `npm run types:gen` produces authoritative types from your live
+// schema, swap to `createServerClient<Database>(...)` (and likewise for
+// the service client below) by re-importing Database from "@/lib/db/types".
 export async function createClient() {
   const cookieStore = await cookies();
 

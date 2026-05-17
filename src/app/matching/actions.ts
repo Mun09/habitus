@@ -1,7 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createServiceClient } from "@/lib/supabase/server";
+import { notifyProjectOwner } from "@/lib/supabase/notifications";
 
 type CreateQuoteInput = {
   contractorId: string;
@@ -69,6 +70,16 @@ export async function createQuoteRequest(
   if (projectError || !project) {
     return { error: projectError?.message ?? "Failed to open project" };
   }
+
+  const service = await createServiceClient();
+  await notifyProjectOwner(service, {
+    projectId: project.id,
+    kind: "quote_received",
+    title: contractor?.company
+      ? `${contractor.company} received your request`
+      : "Your consultation request was sent",
+    body: "We will reach out within 24 hours with availability and a quote.",
+  });
 
   revalidatePath("/projects");
   return { projectId: project.id };

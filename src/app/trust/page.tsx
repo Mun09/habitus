@@ -14,6 +14,7 @@ import { SectionHeading } from "@/components/common/section-heading";
 import { useLocale } from "@/lib/i18n/locale-provider";
 import { TRUST_FAQ, TRUST_LAYERS } from "@/lib/mock/bans";
 import { IMAGES } from "@/lib/mock/images";
+import { TrustStats } from "@/components/trust/trust-stats";
 
 const ICONS = [ShieldCheck, Sparkles, Lock, Scale];
 
@@ -86,6 +87,9 @@ export default function TrustPage() {
           </div>
         </div>
       </section>
+
+      {/* Live ban stats from ban_records */}
+      <TrustStats />
 
       {/* Reports */}
       <section className="py-20">

@@ -106,3 +106,49 @@ export function buildPrompt(selectedOptionIds: string[], styleKey: string): stri
 export function getKnownOptionPrompt(id: string): string | undefined {
   return ALL_PROMPTS[id];
 }
+
+// 5 Random scenario variants, in the same order as
+// material_catalog.style_key for the seeded 5 styles.
+export const RANDOM_STYLE_VARIANTS = [
+  "warm",
+  "scandinavian",
+  "vintage",
+  "cafe",
+  "natural",
+] as const;
+
+export type RandomStyleVariant = (typeof RANDOM_STYLE_VARIANTS)[number];
+
+const VARIANT_STYLE_SENTENCE: Record<RandomStyleVariant, string> = {
+  warm: "a warm minimalism interior with soft beige walls, light oak hardwood, hidden molding, and dimmable downlights",
+  scandinavian:
+    "a Nordic Scandinavian interior with snow-white walls, light birch laminate flooring, simple molding, and bright pendant lighting",
+  vintage:
+    "a modern vintage interior with deep forest matte walls, dark walnut flooring, brass-pendant lighting, and detailed crown molding",
+  cafe: "a cozy home cafe interior with textured latte plaster walls, warm oak flooring, pendant wash lighting, and an open cafe-counter kitchen",
+  natural:
+    "a natural planterior interior with off-white clay-paint walls, light bamboo flooring, full-spectrum lighting, planter shelves, and natural wood trim",
+};
+
+export function buildPromptForVariant(
+  variant: RandomStyleVariant,
+  selectedOptionIds: string[]
+): string {
+  const styleSentence = VARIANT_STYLE_SENTENCE[variant];
+  const furnitureParts = selectedOptionIds
+    .filter((id) => id in FURNITURE_PROMPTS)
+    .map((id) => FURNITURE_PROMPTS[id]);
+  const lines: string[] = [
+    `Redesign this interior space as a photorealistic professional render of ${styleSentence}.`,
+  ];
+  if (furnitureParts.length > 0) {
+    lines.push(`Furniture additions: ${furnitureParts.join("; ")}.`);
+  }
+  lines.push(
+    "Strictly preserve the original room layout, wall positions, windows, doors, and architectural features. Only restyle surfaces, furniture, and decor."
+  );
+  lines.push(
+    "Natural lighting, high quality, magazine-grade interior photography, sharp focus, balanced composition."
+  );
+  return lines.join(" ");
+}

@@ -18,6 +18,7 @@ import {
   sendPmMessage,
   updateProjectProgress,
 } from "@/app/admin/actions";
+import { PhotoUploader } from "@/components/uploads/photo-uploader";
 
 const STAGES = [
   "demolition",
@@ -93,17 +94,13 @@ export function AdminProjectClient({
   const [updateBody, setUpdateBody] = useState("");
   const [updateStage, setUpdateStage] = useState<string>(project.current_stage);
   const [updateAuthor, setUpdateAuthor] = useState("PM");
-  const [updatePhotos, setUpdatePhotos] = useState("");
+  const [updatePhotos, setUpdatePhotos] = useState<string[]>([]);
 
   const postUpdate = () => {
     if (!updateTitle.trim()) {
       toast.error("Title is required");
       return;
     }
-    const photos = updatePhotos
-      .split(/\r?\n/)
-      .map((s) => s.trim())
-      .filter(Boolean);
     startTransition(async () => {
       const result = await addProjectUpdate({
         projectId: project.id,
@@ -111,14 +108,14 @@ export function AdminProjectClient({
         author: updateAuthor,
         title: updateTitle,
         body: updateBody,
-        photos,
+        photos: updatePhotos,
       });
       if ("error" in result) toast.error(result.error);
       else {
         toast.success("Update published");
         setUpdateTitle("");
         setUpdateBody("");
-        setUpdatePhotos("");
+        setUpdatePhotos([]);
         router.refresh();
       }
     });
@@ -223,11 +220,11 @@ export function AdminProjectClient({
               value={updateBody}
               onChange={(e) => setUpdateBody(e.target.value)}
             />
-            <Textarea
-              rows={3}
-              placeholder={"Photo URLs (one per line)\nhttps://..."}
+            <PhotoUploader
+              folder="user-references"
               value={updatePhotos}
-              onChange={(e) => setUpdatePhotos(e.target.value)}
+              onChange={setUpdatePhotos}
+              max={6}
             />
             <Button onClick={postUpdate} disabled={pending}>
               Publish update

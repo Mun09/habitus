@@ -12,12 +12,20 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { COST_BENCHMARK, type CostBenchmark } from "@/lib/mock/materials";
+import type { CostBenchmark } from "@/lib/mock/materials";
+
+const EMPTY_BENCHMARK: CostBenchmark = {
+  ourQuote: 0,
+  marketAvg: 0,
+  lowballQuote: 0,
+  warning:
+    "Cost benchmark loads once the AI proposal completes. Pick a proposal to see the comparison.",
+};
 
 export function CostBenchmarkChart({
   benchmark,
 }: { benchmark?: CostBenchmark } = {}) {
-  const b = benchmark ?? COST_BENCHMARK;
+  const b = benchmark ?? EMPTY_BENCHMARK;
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);

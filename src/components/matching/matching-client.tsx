@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { MapPin, Sparkles, Filter as FilterIcon } from "lucide-react";
 import { ContractorCard } from "@/components/matching/contractor-card";
@@ -20,19 +21,75 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+type SortKey = "rating" | "price" | "years";
+type RegionKey = "seoul" | "gyeonggi" | "busan" | "incheon";
 
 export function MatchingClient({
   contractors,
   fromPlan,
   continueProject,
+  serverFilters,
 }: {
   contractors: Contractor[];
   fromPlan: string | null;
   continueProject: string | null;
+  serverFilters?: {
+    region: RegionKey | null;
+    maxPrice: number | null;
+    minRating: number | null;
+    sort: SortKey;
+  };
 }) {
   const { t } = useLocale();
-  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Hydrate the client-side filter state from server-decoded URL params so
+  // a shared link lands with the same filters checked.
+  const initialFilters: Filters = useMemo(() => {
+    const base: Filters = { ...DEFAULT_FILTERS };
+    if (serverFilters?.region) base.region = serverFilters.region;
+    if (serverFilters?.minRating != null) {
+      const r = serverFilters.minRating;
+      base.minRating = (r >= 4.5 ? 4.5 : r >= 4 ? 4 : 0) as Filters["minRating"];
+    }
+    if (serverFilters?.maxPrice != null) {
+      base.budget = [base.budget[0], serverFilters.maxPrice];
+    }
+    return base;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const [filters, setFilters] = useState<Filters>(initialFilters);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [sort, setSort] = useState<SortKey>(serverFilters?.sort ?? "rating");
+
+  // Push the server-meaningful subset of filters (region, sort) to the URL
+  // so the page re-runs its server query when the user changes them.
+  useEffect(() => {
+    const params = new URLSearchParams(Array.from(searchParams.entries()));
+    if (filters.region && filters.region !== "all")
+      params.set("region", filters.region);
+    else params.delete("region");
+    if (filters.minRating > 0) params.set("minRating", String(filters.minRating));
+    else params.delete("minRating");
+    if (sort !== "rating") params.set("sort", sort);
+    else params.delete("sort");
+    const next = params.toString();
+    const current = searchParams.toString();
+    if (next !== current) {
+      router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.region, filters.minRating, sort]);
 
   const results = useMemo(() => {
     return contractors.filter((c) => {
@@ -119,17 +176,29 @@ export function MatchingClient({
             <div className="text-sm text-muted-foreground">
               {t("matching.filter.results")} / {results.length}
             </div>
-            {filters.userLocation.address && (
-              <div className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                <MapPin className="h-3.5 w-3.5" />
-                <span>
-                  From:{" "}
-                  <span className="text-foreground font-medium">
-                    {filters.userLocation.address}
+            <div className="flex items-center gap-4">
+              {filters.userLocation.address && (
+                <div className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <MapPin className="h-3.5 w-3.5" />
+                  <span>
+                    From:{" "}
+                    <span className="text-foreground font-medium">
+                      {filters.userLocation.address}
+                    </span>
                   </span>
-                </span>
-              </div>
-            )}
+                </div>
+              )}
+              <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
+                <SelectTrigger className="h-8 w-[160px] text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="rating">Sort: highest rated</SelectItem>
+                  <SelectItem value="price">Sort: lowest price</SelectItem>
+                  <SelectItem value="years">Sort: most experience</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           {results.length === 0 ? (
             <div className="border border-dashed border-border bg-card p-16 text-center text-muted-foreground">

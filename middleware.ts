@@ -29,12 +29,12 @@ export async function middleware(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !anon) {
-    // No Supabase configured yet. Let regular protected routes through for
-    // local dev convenience, but never expose /admin without auth.
-    if (adminRoute) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-    return NextResponse.next({ request });
+    // Supabase is required for every protected surface. Without it we
+    // cannot resolve a session, so we always punt to /sign-in (which has
+    // its own helpful empty state when env vars are missing).
+    const signInUrl = new URL("/sign-in", request.url);
+    signInUrl.searchParams.set("next", pathname);
+    return NextResponse.redirect(signInUrl);
   }
 
   let response = NextResponse.next({ request });

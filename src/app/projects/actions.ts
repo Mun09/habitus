@@ -9,6 +9,7 @@ type ReviewInput = {
   rating: number;
   title: string;
   body: string;
+  photos?: string[];
 };
 
 type ReviewResult = { ok: true } | { error: string };
@@ -31,6 +32,7 @@ export async function createReview(input: ReviewInput): Promise<ReviewResult> {
     rating: input.rating,
     title: input.title.trim() || null,
     body: input.body.trim() || null,
+    photos: input.photos ?? [],
   });
   if (error) return { error: error.message };
 

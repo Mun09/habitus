@@ -45,6 +45,11 @@ You only need to do this once per environment.
    - [supabase/migrations/002_rls.sql](supabase/migrations/002_rls.sql): owner-scoped RLS policies
    - [supabase/migrations/003_seed.sql](supabase/migrations/003_seed.sql): 8 prototype contractors
    - [supabase/migrations/004_public_reads.sql](supabase/migrations/004_public_reads.sql): public read on reviews
+   - [supabase/migrations/005_extended_schema.sql](supabase/migrations/005_extended_schema.sql): materials catalog, BOM, style briefs, design options, notifications, ban records
+   - [supabase/migrations/006_rls_extended.sql](supabase/migrations/006_rls_extended.sql): RLS for the new tables
+   - [supabase/migrations/007_seed_data.sql](supabase/migrations/007_seed_data.sql): materials × 5 styles, 33 design options, 4 style briefs, 39 ban records, 15 seed reviews
+   - [supabase/migrations/008_realtime.sql](supabase/migrations/008_realtime.sql): publish `notifications` over Realtime
+   - [supabase/migrations/009_indexes.sql](supabase/migrations/009_indexes.sql): contractor search/sort indexes
 4. **Storage** > new bucket, name it `habitus-uploads`, mark it **public**.
    Folder structure used at runtime:
    - `user-spaces/{userId}/{timestamp}.jpg`: space photo uploads
@@ -84,6 +89,7 @@ Copy [.env.example](.env.example) and fill in the values you collected:
 NEXT_PUBLIC_SUPABASE_URL=https://<ref>.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 SUPABASE_SERVICE_ROLE_KEY=...
+SUPABASE_PROJECT_ID=<ref>
 
 OPENAI_API_KEY=sk-...
 
@@ -96,20 +102,32 @@ ADMIN_EMAILS=you@example.com
 `.env.local` is gitignored. Never commit `SUPABASE_SERVICE_ROLE_KEY`
 or `OPENAI_API_KEY`.
 
-### 5. (Optional) Strong types from your schema
+### 5. Generate strong types from your schema
 
 The repo ships a hand-written stub in
-[src/lib/db/types.ts](src/lib/db/types.ts) so the build does not depend
-on the Supabase CLI. To get accurate types once your project exists:
+[src/lib/db/types.ts](src/lib/db/types.ts) so the first build works.
+Replace it with the authoritative schema once your project exists:
 
-```bash
-npx supabase gen types typescript --project-id <ref> > src/lib/db/types.ts
+```powershell
+# PowerShell (Windows). Uses %SUPABASE_PROJECT_ID% from .env.local.
+npm run types:gen
 ```
 
-Then re-add the `<Database>` generic to both clients:
+```bash
+# Bash equivalent.
+npx supabase gen types typescript --project-id "$SUPABASE_PROJECT_ID" > src/lib/db/types.ts
+```
+
+After regenerating, add the `<Database>` generic back to all three
+client factories:
 
 - [src/lib/supabase/client.ts](src/lib/supabase/client.ts): `createBrowserClient<Database>(...)`
-- [src/lib/supabase/server.ts](src/lib/supabase/server.ts): `createServerClient<Database>(...)`
+- [src/lib/supabase/server.ts](src/lib/supabase/server.ts): `createServerClient<Database>(...)` and `createClient<Database>(...)` for the service-role client
+
+The hand-written stub uses self-referencing `Insert: Omit<Row, "id">`
+types that confuse strict generics, which is why the generics are left
+off in the default repo state. The CLI-generated file uses the standard
+`Relationships: []` shape and resolves cleanly.
 
 ## Run
 

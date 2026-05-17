@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { MATERIALS, type MaterialItem } from "@/lib/mock/materials";
+import type { MaterialItem } from "@/lib/mock/materials";
 import { cn } from "@/lib/utils";
 
 const TIER_COLORS: Record<string, string> = {
@@ -13,7 +13,22 @@ const TIER_COLORS: Record<string, string> = {
 
 export function MaterialTable({ items }: { items?: MaterialItem[] } = {}) {
   const [expanded, setExpanded] = useState<string | null>(null);
-  const list = items ?? MATERIALS;
+  const list = items;
+
+  if (!list) {
+    return (
+      <div className="rounded-3xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
+        Loading material list…
+      </div>
+    );
+  }
+  if (list.length === 0) {
+    return (
+      <div className="rounded-3xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
+        No materials snapshotted for this proposal yet.
+      </div>
+    );
+  }
 
   const fmt = (v: number) => `$${Math.round(v / 1300).toLocaleString()}`;
 

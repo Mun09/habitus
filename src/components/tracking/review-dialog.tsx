@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input, Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { PhotoUploader } from "@/components/uploads/photo-uploader";
 import { createReview } from "@/app/projects/actions";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +30,7 @@ export function ReviewDialog({
   const [rating, setRating] = useState(5);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [photos, setPhotos] = useState<string[]>([]);
   const [pending, startTransition] = useTransition();
 
   const submit = (e: React.FormEvent) => {
@@ -40,6 +42,7 @@ export function ReviewDialog({
         rating,
         title,
         body,
+        photos,
       });
       if ("error" in result) {
         toast.error(result.error);
@@ -49,6 +52,7 @@ export function ReviewDialog({
       setOpen(false);
       setTitle("");
       setBody("");
+      setPhotos([]);
       setRating(5);
     });
   };
@@ -113,6 +117,17 @@ export function ReviewDialog({
               onChange={(e) => setBody(e.target.value)}
               placeholder="How did the renovation go?"
               rows={5}
+            />
+          </div>
+          <div>
+            <label className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">
+              Photos
+            </label>
+            <PhotoUploader
+              folder="user-references"
+              value={photos}
+              onChange={setPhotos}
+              max={4}
             />
           </div>
           <DialogFooter>
