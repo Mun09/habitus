@@ -13,6 +13,8 @@ import type { DesignOption, StyleKey } from "./mock/design-options";
 
 export type DesignPlan = {
   id: string;
+  /** Supabase design_plans.id once the row has been persisted */
+  dbId?: string;
   styleKey: StyleKey;
   styleLabel: Bilingual;
   options: DesignOption[];

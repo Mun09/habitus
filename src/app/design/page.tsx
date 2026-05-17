@@ -32,6 +32,7 @@ export default function DesignPage() {
   const [styleKey, setStyleKey] = useState<StyleKey>("random");
   const [generatedUrls, setGeneratedUrls] = useState<string[]>([]);
   const [persistedSpaceUrl, setPersistedSpaceUrl] = useState<string | null>(null);
+  const [planDbId, setPlanDbId] = useState<string | null>(null);
 
   const stageLabels: Record<DesignStage, string> = {
     compose: t("design.stage.compose"),
@@ -84,6 +85,7 @@ export default function DesignPage() {
       if (insertError || !plan) {
         throw new Error(insertError?.message ?? "Failed to create plan");
       }
+      setPlanDbId(plan.id);
 
       // 3. Hit the API route which calls OpenAI gpt-image-1 and stores output.
       const res = await fetch("/api/design/generate", {
@@ -114,6 +116,7 @@ export default function DesignPage() {
     setStage("compose");
     setGeneratedUrls([]);
     setPersistedSpaceUrl(null);
+    setPlanDbId(null);
   };
 
   const jumpToStage = (next: DesignStage) => {
@@ -211,6 +214,7 @@ export default function DesignPage() {
               optionImages={optionImages}
               selectedOptionIds={selectedOptionIds}
               generatedUrls={generatedUrls}
+              planDbId={planDbId}
               onRegenerate={reset}
             />
           </motion.section>

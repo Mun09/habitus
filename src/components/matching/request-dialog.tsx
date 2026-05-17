@@ -22,23 +22,45 @@ import { useLocale } from "@/lib/i18n/locale-provider";
 import { useDesignPlan } from "@/lib/design-plan";
 import { CATEGORIES } from "@/lib/mock/design-options";
 import type { Contractor } from "@/lib/mock/contractors";
+import { createQuoteRequest } from "@/app/matching/actions";
 
 export function RequestDialog({ contractor }: { contractor: Contractor }) {
   const { t } = useLocale();
   const { plan, hasPlan } = useDesignPlan();
   const [open, setOpen] = useState(false);
   const [attachPlan, setAttachPlan] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (submitting) return;
+    const formData = new FormData(e.currentTarget);
+    const message = String(formData.get("message") ?? "");
+    const date = String(formData.get("date") ?? "");
+
+    setSubmitting(true);
+    const result = await createQuoteRequest({
+      contractorId: contractor.id,
+      designPlanId: attachPlan && hasPlan ? plan?.dbId ?? null : null,
+      message,
+      preferredStart: date || null,
+      attachPlan: hasPlan && attachPlan,
+    });
+    setSubmitting(false);
+
+    if ("error" in result) {
+      toast.error(result.error);
+      return;
+    }
+
     setOpen(false);
     toast.success(
       hasPlan && attachPlan
         ? t("matching.request.toastWithPlan")
         : t("matching.request.toast")
     );
-    setTimeout(() => router.push("/projects/proj-w2-space"), 600);
+    router.push(`/projects/${result.projectId}`);
   };
 
   return (
@@ -115,7 +137,7 @@ export function RequestDialog({ contractor }: { contractor: Contractor }) {
               <Calendar className="h-3.5 w-3.5" />
               {t("matching.request.dateLabel")}
             </label>
-            <Input type="date" required />
+            <Input type="date" name="date" required />
           </div>
           <div>
             <label className="text-xs uppercase tracking-wider text-muted-foreground inline-flex items-center gap-1.5 mb-2">
@@ -123,6 +145,7 @@ export function RequestDialog({ contractor }: { contractor: Contractor }) {
               {t("matching.request.messageLabel")}
             </label>
             <Textarea
+              name="message"
               required
               placeholder={t("matching.request.messagePlaceholder")}
               defaultValue=""
@@ -130,11 +153,13 @@ export function RequestDialog({ contractor }: { contractor: Contractor }) {
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="ghost">
+              <Button type="button" variant="ghost" disabled={submitting}>
                 {t("common.cancel")}
               </Button>
             </DialogClose>
-            <Button type="submit">{t("matching.request.submit")}</Button>
+            <Button type="submit" disabled={submitting}>
+              {submitting ? "Sending..." : t("matching.request.submit")}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

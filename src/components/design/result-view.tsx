@@ -75,6 +75,7 @@ export function ResultView({
   optionImages,
   selectedOptionIds,
   generatedUrls,
+  planDbId,
   onRegenerate,
 }: {
   spaceImage: string;
@@ -84,6 +85,7 @@ export function ResultView({
   optionImages: string[];
   selectedOptionIds: string[];
   generatedUrls?: string[];
+  planDbId?: string | null;
   onRegenerate: () => void;
 }) {
   const { t } = useLocale();
@@ -205,6 +207,7 @@ export function ResultView({
     const cleanUserRefs = userReferences.filter((r) => !r.startsWith("blob:"));
     const cleanSpace = spaceImage.startsWith("blob:") ? undefined : spaceImage;
     savePlan({
+      dbId: planDbId ?? undefined,
       styleKey,
       styleLabel: style.name,
       options,
