@@ -74,6 +74,7 @@ export function ResultView({
   userReferences,
   optionImages,
   selectedOptionIds,
+  generatedUrls,
   onRegenerate,
 }: {
   spaceImage: string;
@@ -82,6 +83,7 @@ export function ResultView({
   userReferences: string[];
   optionImages: string[];
   selectedOptionIds: string[];
+  generatedUrls?: string[];
   onRegenerate: () => void;
 }) {
   const { t } = useLocale();
@@ -118,9 +120,18 @@ export function ResultView({
     "Open lounge",
   ];
 
-  const allSpaces = W2_BEFORES;
-  const isMultiSpace = true;
-  const proposals: string[] = W2_AFTERS;
+  // When a real AI render has come back from /api/design/generate we
+  // surface that result directly. Otherwise we fall back to the W2-1
+  // prototype walkthrough so the demo path still works.
+  const hasGenerated = (generatedUrls?.length ?? 0) > 0;
+  const proposals: string[] = hasGenerated ? generatedUrls! : W2_AFTERS;
+  const allSpaces: string[] = hasGenerated
+    ? proposals.map((_, i) => spaceImages?.[i] ?? spaceImage)
+    : W2_BEFORES;
+  const labels: string[] = hasGenerated
+    ? proposals.map((_, i) => `Proposal ${i + 1}`)
+    : W2_LABELS;
+  const isMultiSpace = proposals.length > 1;
 
   // For the Random scenario the 5 outputs are rendered onto the
   // reference space, so override "before" so the slider stays coherent.
@@ -304,7 +315,7 @@ export function ResultView({
                 <ChevronRight className="h-4 w-4" />
               </button>
               <div className="absolute top-7 left-1/2 -translate-x-1/2 z-10 rounded-full bg-foreground/75 text-background px-2.5 py-1 text-[10px] font-medium tracking-wider uppercase pointer-events-none">
-                {W2_LABELS[activeIdx] ?? `Space ${activeIdx + 1}`} · {activeIdx + 1} / {allSpaces.length}
+                {labels[activeIdx] ?? `Space ${activeIdx + 1}`} · {activeIdx + 1} / {allSpaces.length}
               </div>
             </>
           )}
@@ -332,7 +343,7 @@ export function ResultView({
           >
             {proposals.map((src, i) => {
               const active = src === activeProposal;
-              const variantLabel = W2_LABELS[i] ?? `Space ${i + 1}`;
+              const variantLabel = labels[i] ?? `Space ${i + 1}`;
               const thumbSrc = allSpaces[i] ?? src;
               return (
                 <motion.button
@@ -398,7 +409,7 @@ export function ResultView({
             {t("design.result.materials")}
             {isMultiSpace ? (
               <span className="ml-2 normal-case tracking-normal text-foreground/70">
-                · {W2_LABELS[activeIdx] ?? `Space ${activeIdx + 1}`}
+                · {labels[activeIdx] ?? `Space ${activeIdx + 1}`}
               </span>
             ) : isRandom ? (
               <span className="ml-2 normal-case tracking-normal text-foreground/70">

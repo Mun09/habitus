@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 import { StageIndicator, type DesignStage } from "@/components/design/stage-indicator";
 import { ComposeWizard } from "@/components/design/compose-wizard";
 import { type UploadedPhoto } from "@/components/design/photo-uploader";
@@ -12,20 +13,25 @@ import {
   STYLE_RANDOM_ID,
   detectStyleFromOptions,
   getOptionImagesForGenerating,
+  type StyleKey,
 } from "@/lib/mock/design-options";
 import { IMAGES } from "@/lib/mock/images";
+import { useUser } from "@/lib/supabase/user-provider";
+import { createClient } from "@/lib/supabase/client";
+import { uploadSpacePhoto, isBlobUrl } from "@/lib/supabase/storage";
 
 export default function DesignPage() {
   const { t } = useLocale();
+  const { user } = useUser();
   const [stage, setStage] = useState<DesignStage>("compose");
   const [spacePhotos, setSpacePhotos] = useState<UploadedPhoto[]>([]);
   const [refUploaded, setRefUploaded] = useState<UploadedPhoto[]>([]);
   const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>([
     STYLE_RANDOM_ID,
   ]);
-  const [styleKey, setStyleKey] = useState<
-    "midcentury" | "minimalist" | "industrial" | "scandinavian" | "random"
-  >("random");
+  const [styleKey, setStyleKey] = useState<StyleKey>("random");
+  const [generatedUrls, setGeneratedUrls] = useState<string[]>([]);
+  const [persistedSpaceUrl, setPersistedSpaceUrl] = useState<string | null>(null);
 
   const stageLabels: Record<DesignStage, string> = {
     compose: t("design.stage.compose"),
@@ -37,13 +43,77 @@ export default function DesignPage() {
   const userReferenceUrls = refUploaded.map((p) => p.url);
   const generatingInputs = [...userReferenceUrls, ...optionImages];
 
-  const startGenerate = () => {
-    setStyleKey(detectStyleFromOptions(selectedOptionIds));
+  const startGenerate = async () => {
+    if (!user) {
+      toast.error("Sign in first.");
+      return;
+    }
+    const firstPhoto = spacePhotos[0];
+    if (!firstPhoto) {
+      toast.error("Add a space photo before generating.");
+      return;
+    }
+
+    const detected = detectStyleFromOptions(selectedOptionIds);
+    setStyleKey(detected);
+    setGeneratedUrls([]);
     setStage("generating");
+
+    try {
+      // 1. Upload (or pass through) the first space photo to Supabase Storage.
+      const spaceUrl = isBlobUrl(firstPhoto.url)
+        ? await uploadSpacePhoto(firstPhoto.url, user.id)
+        : firstPhoto.url;
+      setPersistedSpaceUrl(spaceUrl);
+
+      // 2. Create a design_plans row so the API call has a target to update.
+      const supabase = createClient();
+      const { data: plan, error: insertError } = await supabase
+        .from("design_plans")
+        .insert({
+          user_id: user.id,
+          style_key: detected,
+          style_label: detected,
+          selected_option_ids: selectedOptionIds,
+          space_image_url: spaceUrl,
+          user_reference_urls: userReferenceUrls.filter((u) => !isBlobUrl(u)),
+          status: "generating",
+        })
+        .select()
+        .single();
+      if (insertError || !plan) {
+        throw new Error(insertError?.message ?? "Failed to create plan");
+      }
+
+      // 3. Hit the API route which calls OpenAI gpt-image-1 and stores output.
+      const res = await fetch("/api/design/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          planId: plan.id,
+          spaceImageUrl: spaceUrl,
+          selectedOptionIds,
+          styleKey: detected,
+        }),
+      });
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({ error: res.statusText }));
+        throw new Error(errBody.error ?? "Generation failed");
+      }
+      const { urls } = (await res.json()) as { urls: string[] };
+      setGeneratedUrls(urls);
+      setStage("result");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Generation failed";
+      toast.error(msg);
+      setStage("compose");
+    }
   };
 
   const reset = () => {
     setStage("compose");
+    setGeneratedUrls([]);
+    setPersistedSpaceUrl(null);
   };
 
   const jumpToStage = (next: DesignStage) => {
@@ -108,7 +178,11 @@ export default function DesignPage() {
             <GeneratingState
               spaceImage={spacePhotos[0]?.url ?? IMAGES.scenarios.w2.studioEntry}
               referenceImages={generatingInputs}
-              onDone={() => setStage("result")}
+              onDone={() => {
+                // No-op: the design page itself transitions to "result"
+                // once the API call resolves. GeneratingState only handles
+                // the visual loading sequence.
+              }}
             />
           </motion.section>
         )}
@@ -123,7 +197,9 @@ export default function DesignPage() {
           >
             <ResultView
               spaceImage={
-                spacePhotos[0]?.url ?? IMAGES.scenarios.w2.studioEntry
+                persistedSpaceUrl ??
+                spacePhotos[0]?.url ??
+                IMAGES.scenarios.w2.studioEntry
               }
               spaceImages={
                 spacePhotos.length > 0
@@ -134,6 +210,7 @@ export default function DesignPage() {
               userReferences={userReferenceUrls}
               optionImages={optionImages}
               selectedOptionIds={selectedOptionIds}
+              generatedUrls={generatedUrls}
               onRegenerate={reset}
             />
           </motion.section>
