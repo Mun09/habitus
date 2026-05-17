@@ -175,6 +175,67 @@ If you ever feel the need to "run backend only" you probably want one of:
 | Supabase queries, RLS rejections | Supabase Studio → Logs |
 | OpenAI billing & request history | platform.openai.com → Usage |
 
+## Optional: run Supabase locally (Docker)
+
+If you do not want to depend on a cloud Supabase project for day-to-day
+development, the Supabase CLI can boot a full stack (Postgres + Auth +
+Storage + Realtime + Studio + Inbucket) in Docker containers.
+
+Requires **Docker Desktop** (WSL2 backend on Windows) running.
+
+```powershell
+# 1. One-time: scaffold supabase/config.toml + seed.sql.
+#    Your existing supabase/migrations/*.sql files are preserved.
+npx supabase init
+
+# 2. Boot the local stack (re-run after a reboot).
+npx supabase start
+
+# 3. Apply every migration in supabase/migrations/ + the seed.
+npx supabase db reset
+```
+
+`supabase start` prints local credentials. Copy the three values into
+`.env.local`, replacing the cloud ones:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon key from start output>
+SUPABASE_SERVICE_ROLE_KEY=<service_role key from start output>
+```
+
+Then `npm run dev` and you are talking to the local Postgres instead.
+
+### Local URLs
+
+| URL | What |
+|-----|------|
+| http://localhost:54321 | API gateway (Postgres + Auth + Storage + Realtime) |
+| http://localhost:54323 | Supabase Studio (Table editor, SQL, Logs, Auth) |
+| http://localhost:54324 | Inbucket (catches outgoing emails, e.g. magic links) |
+
+### Cloud vs local differences
+
+| Item | Cloud Supabase | Local Supabase |
+|------|----------------|----------------|
+| OpenAI `gpt-image-1` | Real key required | Same (it runs at OpenAI, not in your container) |
+| Google OAuth | Works out of the box | Hard against localhost. Use magic link → check Inbucket on :54324 |
+| Storage | S3-backed, durable | Container filesystem, lost on `db reset` / `stop --no-backup` |
+| Realtime | Works | Works |
+| Edge Functions | Works | Separate `supabase functions serve` needed (this project does not use them) |
+| Postgres data | Persistent | Lost on `db reset` or `supabase stop --no-backup` |
+
+### Stop / clean up
+
+```powershell
+npx supabase stop                # stop containers, preserve volumes
+npx supabase stop --no-backup    # stop containers, drop volumes (full wipe)
+```
+
+To switch back to cloud Supabase, swap the three keys in `.env.local`
+back to the cloud project's values and restart `npm run dev`. No code
+change needed; both modes speak the same Supabase API.
+
 ## End-to-end smoke test
 
 After Supabase + OpenAI keys are live:
