@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { Send, Sparkles, User as UserIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,9 +10,23 @@ import { useLocale } from "@/lib/i18n/locale-provider";
 import { AI_QUICK_REPLIES } from "@/lib/mock/ai-keywords";
 import type { ChatMessage, Project } from "@/lib/mock/projects";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
+import { useUser } from "@/lib/supabase/user-provider";
+import { rowToChatMessage } from "@/lib/supabase/projects";
+
+function isUuid(id: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+}
+
+function hasSupabaseEnv() {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
+}
 
 export function ChatPanel({ project }: { project: Project }) {
   const { t } = useLocale();
+  const { user } = useUser();
   const [tab, setTab] = useState<"ai" | "pm">("ai");
   const [aiMessages, setAiMessages] = useState<ChatMessage[]>([
     {
@@ -24,6 +38,41 @@ export function ChatPanel({ project }: { project: Project }) {
   ]);
   const [pmMessages, setPmMessages] = useState<ChatMessage[]>(project.pmMessages);
   const [input, setInput] = useState("");
+
+  // A real (DB-backed) chat is only available when Supabase is configured
+  // and the project id looks like a uuid. The legacy mock project keeps
+  // the prototype quick-reply behavior.
+  const isLive = useMemo(
+    () => hasSupabaseEnv() && isUuid(project.id),
+    [project.id]
+  );
+
+  // Subscribe to chat_messages inserts for this project.
+  useEffect(() => {
+    if (!isLive) return;
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`project-chat-${project.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "chat_messages",
+          filter: `project_id=eq.${project.id}`,
+        },
+        (payload) => {
+          const incoming = rowToChatMessage(payload.new as Parameters<typeof rowToChatMessage>[0]);
+          setPmMessages((m) =>
+            m.some((x) => x.id === incoming.id) ? m : [...m, incoming]
+          );
+        }
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isLive, project.id]);
 
   const sendAi = (text: string) => {
     if (!text.trim()) return;
@@ -64,16 +113,38 @@ export function ChatPanel({ project }: { project: Project }) {
     }, 700);
   };
 
-  const sendPm = (text: string) => {
-    if (!text.trim()) return;
+  const sendPm = async (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    setInput("");
+
+    if (isLive && user) {
+      const supabase = createClient();
+      const { data: inserted, error } = await supabase
+        .from("chat_messages")
+        .insert({
+          project_id: project.id,
+          sender_type: "user",
+          sender_id: user.id,
+          body: trimmed,
+        })
+        .select()
+        .single();
+      if (error || !inserted) return;
+      const msg = rowToChatMessage(inserted as Parameters<typeof rowToChatMessage>[0]);
+      setPmMessages((m) => (m.some((x) => x.id === msg.id) ? m : [...m, msg]));
+      return;
+    }
+
+    // Fallback (mock project / no Supabase): keep the legacy fake reply
+    // so the prototype walk-through still feels responsive.
     const userMsg: ChatMessage = {
       id: `up-${Date.now()}`,
       sender: "user",
-      body: text,
+      body: trimmed,
       time: "now",
     };
     setPmMessages((m) => [...m, userMsg]);
-    setInput("");
     setTimeout(() => {
       setPmMessages((m) => [
         ...m,
@@ -90,7 +161,7 @@ export function ChatPanel({ project }: { project: Project }) {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (tab === "ai") sendAi(input);
-    else sendPm(input);
+    else void sendPm(input);
   };
 
   return (
