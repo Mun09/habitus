@@ -14,6 +14,25 @@ import { passwordSignIn, passwordSignUp } from "./actions";
 
 type Mode = "options" | "email";
 
+type TestAccount = {
+  label: string;
+  email: string;
+  password: string;
+};
+
+// Demo seed accounts created by scripts/seed-test-accounts.sh. Surfacing
+// the password here is fine because this is a prototype with no real
+// users; strip this block before any real deployment.
+const TEST_ACCOUNTS: TestAccount[] = [
+  { label: "Admin", email: "admin@habitus.test", password: "Habitus123!" },
+  {
+    label: "Contractor (Craft Room)",
+    email: "contractor@habitus.test",
+    password: "Habitus123!",
+  },
+  { label: "Customer", email: "customer@habitus.test", password: "Habitus123!" },
+];
+
 function SignInInner() {
   const { t } = useLocale();
   const searchParams = useSearchParams();
@@ -24,6 +43,12 @@ function SignInInner() {
   const [sending, setSending] = useState(false);
   const [pending, startTransition] = useTransition();
   const busy = sending || pending;
+
+  const fillTestAccount = (acc: TestAccount) => {
+    setEmail(acc.email);
+    setPassword(acc.password);
+    setMode("email");
+  };
 
   const nextParam = searchParams.get("next");
 
@@ -101,27 +126,6 @@ function SignInInner() {
         <p className="text-sm text-muted-foreground mt-2">{t("auth.subtitle")}</p>
 
         <div className="mt-8 space-y-3">
-          <button
-            disabled
-            className="w-full h-12 rounded-full bg-[#FEE500] text-[#191600] text-sm font-medium opacity-50 cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            <span className="text-base">💬</span>
-            {t("auth.kakao")}
-            <span className="ml-1 text-[10px] uppercase tracking-wider rounded-full bg-black/10 px-2 py-0.5">
-              Soon
-            </span>
-          </button>
-          <button
-            disabled
-            className="w-full h-12 rounded-full bg-[#03C75A] text-white text-sm font-medium opacity-50 cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            <span className="font-bold">N</span>
-            {t("auth.naver")}
-            <span className="ml-1 text-[10px] uppercase tracking-wider rounded-full bg-white/20 px-2 py-0.5">
-              Soon
-            </span>
-          </button>
-
           <Button onClick={signInWithGoogle} variant="default" size="lg" className="w-full">
             <span className="font-bold">G</span>
             {t("auth.google")}
@@ -196,6 +200,30 @@ function SignInInner() {
               </button>
             </form>
           )}
+        </div>
+
+        <div className="mt-6 pt-6 border-t border-border">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground mb-3">
+            Test accounts (demo)
+          </div>
+          <div className="space-y-2">
+            {TEST_ACCOUNTS.map((acc) => (
+              <button
+                key={acc.email}
+                type="button"
+                onClick={() => fillTestAccount(acc)}
+                className="w-full text-left rounded-md border border-border bg-card/60 px-3 py-2 hover:bg-muted transition cursor-pointer"
+              >
+                <div className="text-xs font-medium">{acc.label}</div>
+                <div className="text-[11px] text-muted-foreground font-mono mt-0.5 truncate">
+                  {acc.email} · {acc.password}
+                </div>
+              </button>
+            ))}
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-2">
+            Click to autofill, then press Sign in.
+          </p>
         </div>
 
         <p className="text-xs text-muted-foreground mt-8 text-center">{t("auth.note")}</p>
