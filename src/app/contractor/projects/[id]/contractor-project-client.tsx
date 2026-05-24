@@ -16,9 +16,9 @@ import {
 } from "@/components/ui/select";
 import {
   addProjectUpdate,
-  sendPmMessage,
+  sendContractorMessage,
   updateProjectProgress,
-} from "@/app/admin/actions";
+} from "@/app/contractor/actions";
 import { PhotoUploader } from "@/components/uploads/photo-uploader";
 
 const STAGES = [
@@ -57,19 +57,20 @@ type ChatRow = {
   created_at: string;
 };
 
-export function AdminProjectClient({
+export function ContractorProjectClient({
   project,
   updates,
   chats,
+  defaultAuthor,
 }: {
   project: ProjectRow;
   updates: UpdateRow[];
   chats: ChatRow[];
+  defaultAuthor: string;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
-  // Progress + stage form
   const [progress, setProgress] = useState(project.progress);
   const [stage, setStage] = useState(project.current_stage);
   const [status, setStatus] = useState(project.status);
@@ -90,11 +91,10 @@ export function AdminProjectClient({
     });
   };
 
-  // New update form
   const [updateTitle, setUpdateTitle] = useState("");
   const [updateBody, setUpdateBody] = useState("");
   const [updateStage, setUpdateStage] = useState<string>(project.current_stage);
-  const [updateAuthor, setUpdateAuthor] = useState("PM");
+  const [updateAuthor, setUpdateAuthor] = useState(defaultAuthor);
   const [updatePhotos, setUpdatePhotos] = useState<string[]>([]);
 
   const postUpdate = () => {
@@ -122,12 +122,11 @@ export function AdminProjectClient({
     });
   };
 
-  // PM message form
   const [chatBody, setChatBody] = useState("");
   const postMessage = () => {
     if (!chatBody.trim()) return;
     startTransition(async () => {
-      const result = await sendPmMessage(project.id, chatBody);
+      const result = await sendContractorMessage(project.id, chatBody);
       if ("error" in result) toast.error(result.error);
       else {
         setChatBody("");
@@ -139,7 +138,6 @@ export function AdminProjectClient({
 
   return (
     <div className="grid gap-8 lg:grid-cols-2">
-      {/* Left column: progress + new update */}
       <section className="space-y-6">
         <div className="border border-border bg-card p-5">
           <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground mb-3">
@@ -199,7 +197,7 @@ export function AdminProjectClient({
               onChange={(e) => setUpdateTitle(e.target.value)}
             />
             <Input
-              placeholder="Author (e.g. Site lead 박정훈)"
+              placeholder="Author (defaults to your company)"
               value={updateAuthor}
               onChange={(e) => setUpdateAuthor(e.target.value)}
             />
@@ -234,11 +232,10 @@ export function AdminProjectClient({
         </div>
       </section>
 
-      {/* Right column: chat + history */}
       <section className="space-y-6">
         <div className="border border-border bg-card p-5">
           <div className="text-xs uppercase tracking-[0.16em] text-muted-foreground mb-3">
-            Send PM message
+            Send message to homeowner
           </div>
           <Textarea
             rows={3}
@@ -296,7 +293,9 @@ export function AdminProjectClient({
                   </div>
                   <div className="text-sm font-medium">{u.title}</div>
                   {u.body && (
-                    <div className="text-xs text-foreground/80 mt-1">{u.body}</div>
+                    <div className="text-xs text-foreground/80 mt-1">
+                      {u.body}
+                    </div>
                   )}
                   {u.photos && u.photos.length > 0 && (
                     <div className="mt-2 grid grid-cols-3 gap-1.5">

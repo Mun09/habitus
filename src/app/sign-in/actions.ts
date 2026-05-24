@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { finalizeSignIn } from "@/lib/auth/finalize-signin";
-import { LOCALE_COOKIE } from "@/lib/i18n/locale-provider";
+import { LOCALE_COOKIE } from "@/lib/i18n/cookie";
 
 type Input = {
   email: string;

@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { LOCALE_COOKIE } from "@/lib/i18n/locale-provider";
+import { LOCALE_COOKIE } from "@/lib/i18n/cookie";
 import type { Locale } from "@/lib/i18n/dictionaries";
 import type { Database } from "@/lib/db/types";
 

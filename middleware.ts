@@ -1,13 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { isAdminPath, isProtected } from "@/lib/auth/route-policy";
-
-function getAdminEmails(): string[] {
-  return (process.env.ADMIN_EMAILS ?? "")
-    .split(",")
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
-}
+import { isAdminEmail } from "@/lib/auth/role-emails";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -62,9 +56,7 @@ export async function middleware(request: NextRequest) {
     // Phase 1: ADMIN_EMAILS env is the source of truth. Phase 2 swaps
     // this for a user_profiles.role='admin' check (env stays as a
     // bootstrap fallback so the first admin can ever sign in).
-    const allowed = getAdminEmails();
-    const email = user.email?.toLowerCase();
-    if (allowed.length === 0 || !email || !allowed.includes(email)) {
+    if (!isAdminEmail(user.email)) {
       return NextResponse.redirect(new URL("/", request.url));
     }
   }

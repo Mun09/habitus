@@ -1,25 +1,42 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient, createServiceClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import { notifyProjectOwner } from "@/lib/supabase/notifications";
-import { isAdminEmail } from "@/lib/auth/role-emails";
+import { requireContractor } from "@/lib/auth/require-contractor";
 
-async function requireAdmin() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user?.email) {
-    throw new Error("Unauthorized");
-  }
-  if (!isAdminEmail(user.email)) {
-    throw new Error("Forbidden");
-  }
-  return user;
+const STAGES = [
+  "demolition",
+  "plumbing",
+  "electrical",
+  "carpentry",
+  "painting",
+  "finishing",
+] as const;
+
+const STATUSES = ["pending", "in_progress", "completed", "cancelled"] as const;
+
+type Stage = (typeof STAGES)[number];
+type Status = (typeof STATUSES)[number];
+
+export type ContractorResult = { ok: true } | { error: string };
+
+// Assert the project belongs to the calling contractor. Defense-in-
+// depth on top of the RLS policies in 011_contractor_link.sql.
+async function assertOwnsProject(
+  contractorId: string,
+  projectId: string,
+): Promise<{ ok: true } | { error: string }> {
+  const service = await createServiceClient();
+  const { data } = await service
+    .from("projects")
+    .select("contractor_id")
+    .eq("id", projectId)
+    .maybeSingle();
+  if (!data) return { error: "Project not found" };
+  if (data.contractor_id !== contractorId) return { error: "Forbidden" };
+  return { ok: true };
 }
-
-export type AdminResult = { ok: true } | { error: string };
 
 export async function addProjectUpdate(input: {
   projectId: string;
@@ -28,18 +45,22 @@ export async function addProjectUpdate(input: {
   title: string;
   body: string;
   photos: string[];
-}): Promise<AdminResult> {
+}): Promise<ContractorResult> {
+  let identity;
   try {
-    await requireAdmin();
+    identity = await requireContractor();
   } catch (err) {
     return { error: err instanceof Error ? err.message : "Unauthorized" };
   }
+
+  const guard = await assertOwnsProject(identity.contractorId, input.projectId);
+  if ("error" in guard) return guard;
 
   const service = await createServiceClient();
   const { error } = await service.from("project_updates").insert({
     project_id: input.projectId,
     stage: input.stage || null,
-    author: input.author || "PM",
+    author: input.author || identity.companyName,
     title: input.title,
     body: input.body || null,
     photos: input.photos,
@@ -50,27 +71,32 @@ export async function addProjectUpdate(input: {
     projectId: input.projectId,
     kind: "project_update",
     title: input.title,
-    body: input.body || null ? input.body : undefined,
+    body: input.body || undefined,
   });
 
   revalidatePath(`/projects/${input.projectId}`);
-  revalidatePath(`/admin/projects/${input.projectId}`);
+  revalidatePath(`/contractor/projects/${input.projectId}`);
   return { ok: true };
 }
 
-export async function sendPmMessage(
+export async function sendContractorMessage(
   projectId: string,
-  body: string
-): Promise<AdminResult> {
+  body: string,
+): Promise<ContractorResult> {
+  let identity;
   try {
-    await requireAdmin();
+    identity = await requireContractor();
   } catch (err) {
     return { error: err instanceof Error ? err.message : "Unauthorized" };
   }
 
-  if (!body.trim()) return { error: "Empty message" };
-  const service = await createServiceClient();
   const trimmed = body.trim();
+  if (!trimmed) return { error: "Empty message" };
+
+  const guard = await assertOwnsProject(identity.contractorId, projectId);
+  if ("error" in guard) return guard;
+
+  const service = await createServiceClient();
   const { error } = await service.from("chat_messages").insert({
     project_id: projectId,
     sender_type: "pm",
@@ -81,10 +107,11 @@ export async function sendPmMessage(
   await notifyProjectOwner(service, {
     projectId,
     kind: "pm_message",
-    title: "New message from your PM",
+    title: `New message from ${identity.companyName}`,
     body: trimmed.length > 80 ? `${trimmed.slice(0, 77)}…` : trimmed,
   });
 
+  revalidatePath(`/contractor/projects/${projectId}`);
   return { ok: true };
 }
 
@@ -93,12 +120,23 @@ export async function updateProjectProgress(input: {
   progress: number;
   currentStage: string;
   status?: string;
-}): Promise<AdminResult> {
+}): Promise<ContractorResult> {
+  let identity;
   try {
-    await requireAdmin();
+    identity = await requireContractor();
   } catch (err) {
     return { error: err instanceof Error ? err.message : "Unauthorized" };
   }
+
+  if (!STAGES.includes(input.currentStage as Stage)) {
+    return { error: `Invalid stage: ${input.currentStage}` };
+  }
+  if (input.status && !STATUSES.includes(input.status as Status)) {
+    return { error: `Invalid status: ${input.status}` };
+  }
+
+  const guard = await assertOwnsProject(identity.contractorId, input.projectId);
+  if ("error" in guard) return guard;
 
   const service = await createServiceClient();
   const patch: Record<string, unknown> = {
@@ -129,6 +167,6 @@ export async function updateProjectProgress(input: {
   }
 
   revalidatePath(`/projects/${input.projectId}`);
-  revalidatePath(`/admin/projects/${input.projectId}`);
+  revalidatePath(`/contractor/projects/${input.projectId}`);
   return { ok: true };
 }

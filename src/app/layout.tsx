@@ -3,10 +3,12 @@ import { Fraunces, Inter } from "next/font/google";
 import { cookies } from "next/headers";
 import { Toaster } from "sonner";
 import "./globals.css";
-import { LOCALE_COOKIE, LocaleProvider } from "@/lib/i18n/locale-provider";
+import { LocaleProvider } from "@/lib/i18n/locale-provider";
+import { LOCALE_COOKIE } from "@/lib/i18n/cookie";
 import type { Locale } from "@/lib/i18n/dictionaries";
 import { DesignPlanProvider } from "@/lib/design-plan";
 import { UserProvider } from "@/lib/supabase/user-provider";
+import { createClient } from "@/lib/supabase/server";
 import { Header } from "@/components/layout/header";
 import {
   ConditionalFooter,
@@ -46,6 +48,26 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const initialLocale = readLocale(cookieStore.get(LOCALE_COOKIE)?.value);
 
+  // Seed UserProvider with the server-validated session so the header
+  // and any other client component reading useUser() doesn't flash a
+  // "signed out" state on every navigation while the browser client
+  // re-reads cookies asynchronously.
+  let initialUser = null;
+  if (
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ) {
+    try {
+      const supabase = await createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      initialUser = user;
+    } catch {
+      // If Supabase is unreachable, fall back to the client-side check.
+    }
+  }
+
   return (
     <html
       lang={initialLocale}
@@ -53,7 +75,7 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <LocaleProvider initialLocale={initialLocale}>
-          <UserProvider>
+          <UserProvider initialUser={initialUser}>
             <DesignPlanProvider>
               <Header />
               <ConditionalMain>{children}</ConditionalMain>

@@ -17,9 +17,10 @@ type Mode = "options" | "email";
 function SignInInner() {
   const { t } = useLocale();
   const searchParams = useSearchParams();
+  const signupIntent = searchParams.get("mode") === "signup";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mode, setMode] = useState<Mode>("options");
+  const [mode, setMode] = useState<Mode>(signupIntent ? "email" : "options");
   const [sending, setSending] = useState(false);
   const [pending, startTransition] = useTransition();
   const busy = sending || pending;
@@ -158,6 +159,7 @@ function SignInInner() {
                 <Button
                   type="submit"
                   size="lg"
+                  variant={signupIntent ? "outline" : "default"}
                   className="w-full"
                   disabled={busy || !email || !password}
                 >
@@ -165,7 +167,7 @@ function SignInInner() {
                 </Button>
                 <Button
                   type="button"
-                  variant="outline"
+                  variant={signupIntent ? "default" : "outline"}
                   size="lg"
                   className="w-full"
                   onClick={handleSignUp}

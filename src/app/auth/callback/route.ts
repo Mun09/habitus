@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { finalizeSignIn } from "@/lib/auth/finalize-signin";
-import { LOCALE_COOKIE } from "@/lib/i18n/locale-provider";
+import { LOCALE_COOKIE } from "@/lib/i18n/cookie";
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);

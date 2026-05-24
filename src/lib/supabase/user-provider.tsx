@@ -30,7 +30,10 @@ export function UserProvider({
 }) {
   const [user, setUser] = useState<User | null>(initialUser);
   const [session, setSession] = useState<Session | null>(initialSession);
-  const [loading, setLoading] = useState(true);
+  // If the server already resolved a user, treat the initial state as
+  // ready so the UI doesn't flash a signed-out view before the browser
+  // client re-reads cookies asynchronously.
+  const [loading, setLoading] = useState(initialUser === null);
 
   useEffect(() => {
     if (!hasSupabaseEnv()) {

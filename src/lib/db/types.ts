@@ -20,6 +20,7 @@ export type Database = {
           onboarded_at: string | null;
           role: UserRole;
           locale: Locale;
+          contractor_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -34,6 +35,7 @@ export type Database = {
           onboarded_at?: string | null;
           role?: UserRole;
           locale?: Locale;
+          contractor_id?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["user_profiles"]["Insert"]>;
       };

@@ -3,8 +3,7 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { dictionaries, type Locale, type TKey } from "./dictionaries";
-
-export const LOCALE_COOKIE = "habitus_locale";
+import { LOCALE_COOKIE } from "./cookie";
 
 type Bilingual<T> = T | { en: T; ko?: T };
 

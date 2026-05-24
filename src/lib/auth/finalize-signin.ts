@@ -1,14 +1,8 @@
 import type { User } from "@supabase/supabase-js";
 import { createServiceClient } from "@/lib/supabase/server";
 import { postSignInDestination } from "./route-policy";
+import { contractorIdForEmail, isAdminEmail } from "./role-emails";
 import type { Locale, UserRole } from "@/lib/db/types";
-
-function adminEmails(): string[] {
-  return (process.env.ADMIN_EMAILS ?? "")
-    .split(",")
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
-}
 
 export type FinalizeResult = {
   destination: string;
@@ -18,20 +12,21 @@ export type FinalizeResult = {
 
 // Shared between the OAuth/magic-link callback and the password sign-in
 // server action. Ensures a user_profiles row exists, promotes the user
-// to admin if their email matches ADMIN_EMAILS, and computes the
-// post-sign-in destination based on role + the requested next path.
+// to admin or contractor based on ADMIN_EMAILS / CONTRACTOR_EMAILS, and
+// computes the post-sign-in destination based on role + the requested
+// next path. Admin wins over contractor if an email is in both lists.
 export async function finalizeSignIn(
   user: User,
   next: string | null | undefined,
 ): Promise<FinalizeResult> {
   const service = await createServiceClient();
 
-  const shouldBeAdmin = !!user.email &&
-    adminEmails().includes(user.email.toLowerCase());
+  const shouldBeAdmin = isAdminEmail(user.email);
+  const contractorSlug = shouldBeAdmin ? null : contractorIdForEmail(user.email);
 
   const { data: existing } = await service
     .from("user_profiles")
-    .select("role, locale")
+    .select("role, locale, contractor_id")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -39,17 +34,33 @@ export async function finalizeSignIn(
   const locale: Locale = (existing?.locale as Locale | undefined) ?? "en";
 
   if (!existing) {
+    const insertRole: UserRole = shouldBeAdmin
+      ? "admin"
+      : contractorSlug
+      ? "contractor"
+      : "customer";
     await service.from("user_profiles").insert({
       id: user.id,
-      role: shouldBeAdmin ? "admin" : "customer",
+      role: insertRole,
+      contractor_id: contractorSlug,
     });
-    role = shouldBeAdmin ? "admin" : "customer";
+    role = insertRole;
   } else if (shouldBeAdmin && existing.role !== "admin") {
     await service
       .from("user_profiles")
       .update({ role: "admin" })
       .eq("id", user.id);
     role = "admin";
+  } else if (
+    contractorSlug &&
+    (existing.role !== "contractor" ||
+      existing.contractor_id !== contractorSlug)
+  ) {
+    await service
+      .from("user_profiles")
+      .update({ role: "contractor", contractor_id: contractorSlug })
+      .eq("id", user.id);
+    role = "contractor";
   }
 
   return {
