@@ -104,12 +104,6 @@ create index if not exists idx_ban_records_reason on public.ban_records(reason);
 
 -- 8) cost_benchmark_summary: per-style market comparison
 create or replace view public.cost_benchmark_summary as
-with plan_totals as (
-  select style_key, variant_idx,
-         sum(unit_price * qty)::int as our_quote
-  from public.material_catalog
-  group by style_key, 0
-)
 select style_key,
        our_quote,
        round(our_quote * 1.36)::int as market_avg,
