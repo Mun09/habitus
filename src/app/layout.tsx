@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
+import { cookies } from "next/headers";
 import { Toaster } from "sonner";
 import "./globals.css";
-import { LocaleProvider } from "@/lib/i18n/locale-provider";
+import { LOCALE_COOKIE, LocaleProvider } from "@/lib/i18n/locale-provider";
+import type { Locale } from "@/lib/i18n/dictionaries";
 import { DesignPlanProvider } from "@/lib/design-plan";
 import { UserProvider } from "@/lib/supabase/user-provider";
 import { Header } from "@/components/layout/header";
@@ -11,6 +13,10 @@ import {
   ConditionalMain,
   ConditionalMobileBottomNav,
 } from "@/components/layout/conditional-chrome";
+
+function readLocale(value: string | undefined): Locale {
+  return value === "ko" ? "ko" : "en";
+}
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -32,18 +38,21 @@ export const metadata: Metadata = {
     "AI design, verified contractor matching, and live tracking, all in one place.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const initialLocale = readLocale(cookieStore.get(LOCALE_COOKIE)?.value);
+
   return (
     <html
-      lang="en"
+      lang={initialLocale}
       className={`${fraunces.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <LocaleProvider>
+        <LocaleProvider initialLocale={initialLocale}>
           <UserProvider>
             <DesignPlanProvider>
               <Header />

@@ -18,7 +18,12 @@ function SignInInner() {
   const [emailMode, setEmailMode] = useState(false);
   const [sending, setSending] = useState(false);
 
-  const nextPath = searchParams.get("next") || "/onboarding";
+  const nextParam = searchParams.get("next");
+
+  const buildCallback = (origin: string) => {
+    const base = `${origin}/auth/callback`;
+    return nextParam ? `${base}?next=${encodeURIComponent(nextParam)}` : base;
+  };
 
   const signInWithGoogle = async () => {
     const supabase = createClient();
@@ -26,7 +31,7 @@ function SignInInner() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
+        redirectTo: buildCallback(origin),
       },
     });
     if (error) toast.error(error.message);
@@ -41,7 +46,7 @@ function SignInInner() {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
+        emailRedirectTo: buildCallback(origin),
       },
     });
     setSending(false);

@@ -1,6 +1,9 @@
-// Hand-written stub kept in sync with supabase/migrations/001..009. Run
+// Hand-written stub kept in sync with supabase/migrations/001..010. Run
 // `npm run types:gen` to replace this file with authoritative types pulled
 // from your Supabase project (requires `SUPABASE_PROJECT_ID` env).
+
+export type UserRole = "customer" | "contractor" | "admin";
+export type Locale = "en" | "ko";
 
 export type Database = {
   public: {
@@ -15,6 +18,8 @@ export type Database = {
           budget_min: number | null;
           budget_max: number | null;
           onboarded_at: string | null;
+          role: UserRole;
+          locale: Locale;
           created_at: string;
           updated_at: string;
         };
@@ -27,6 +32,8 @@ export type Database = {
           budget_min?: number | null;
           budget_max?: number | null;
           onboarded_at?: string | null;
+          role?: UserRole;
+          locale?: Locale;
         };
         Update: Partial<Database["public"]["Tables"]["user_profiles"]["Insert"]>;
       };

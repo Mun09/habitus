@@ -1,16 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-
-const PROTECTED_PREFIXES = ["/onboarding", "/design", "/matching", "/projects", "/app"];
-const ADMIN_PREFIX = "/admin";
-
-function isProtected(pathname: string) {
-  return PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
-}
-
-function isAdmin(pathname: string) {
-  return pathname === ADMIN_PREFIX || pathname.startsWith(`${ADMIN_PREFIX}/`);
-}
+import { isAdminPath, isProtected } from "@/lib/auth/route-policy";
 
 function getAdminEmails(): string[] {
   return (process.env.ADMIN_EMAILS ?? "")
@@ -21,7 +11,7 @@ function getAdminEmails(): string[] {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const adminRoute = isAdmin(pathname);
+  const adminRoute = isAdminPath(pathname);
   if (!adminRoute && !isProtected(pathname)) {
     return NextResponse.next({ request });
   }
@@ -53,6 +43,11 @@ export async function middleware(request: NextRequest) {
     },
   });
 
+  // getSession() refreshes an expired access token via the setAll
+  // callback above. getUser() then validates the (possibly refreshed)
+  // token against Supabase. Without the getSession() call, a user
+  // with an expired token would silently fail on subsequent requests.
+  await supabase.auth.getSession();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -64,6 +59,9 @@ export async function middleware(request: NextRequest) {
   }
 
   if (adminRoute) {
+    // Phase 1: ADMIN_EMAILS env is the source of truth. Phase 2 swaps
+    // this for a user_profiles.role='admin' check (env stays as a
+    // bootstrap fallback so the first admin can ever sign in).
     const allowed = getAdminEmails();
     const email = user.email?.toLowerCase();
     if (allowed.length === 0 || !email || !allowed.includes(email)) {

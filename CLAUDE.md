@@ -8,7 +8,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Habitus — interior design + verified contractor matching + live project tracking, packaged as a single Next.js app. Supabase (Postgres + Auth + Storage + Realtime) is the source of truth for every domain object. The files under `src/lib/mock/` are kept as **seed sources** for `supabase/migrations/007_seed_data.sql` and as TypeScript type holders; runtime data is read from the DB.
 
-Every protected route (`/onboarding`, `/design`, `/matching`, `/projects`, `/app`, `/admin`) requires a Supabase session — `middleware.ts` redirects to `/sign-in` when Supabase env vars are absent or no user is present. The `/app` route is the one exception: a marketing-only carousel of flow screenshots that still hard-codes preview data; treat it as a brochure, not a data surface.
+Every protected route (`/onboarding`, `/design`, `/matching`, `/projects`, `/app`, `/settings`, `/contractor`, `/admin`) requires a Supabase session — `middleware.ts` redirects to `/sign-in` when Supabase env vars are absent or no user is present. The single source of truth for path × role access is [src/lib/auth/route-policy.ts](src/lib/auth/route-policy.ts) — imported by both `middleware.ts` and `src/app/auth/callback/route.ts`. The `/app` route is the one exception: a marketing-only carousel of flow screenshots that still hard-codes preview data; treat it as a brochure, not a data surface.
+
+User role lives in `user_profiles.role` (`customer` | `contractor` | `admin`). Post-login routing happens in [src/app/auth/callback/route.ts](src/app/auth/callback/route.ts): customers go to `/onboarding`/`/projects`, contractors to `/contractor` (Phase 3), admins to `/admin`. `ADMIN_EMAILS` env auto-promotes matching users to `admin` on sign-in. See [docs/auth-and-roles.md](docs/auth-and-roles.md).
 
 ## Heads-up: Next.js version
 
@@ -58,7 +60,7 @@ When adding photos to one surface, do not reach into the other folder. The histo
 
 ### i18n
 
-`src/lib/i18n/locale-provider.tsx` exposes `useLocale()` returning `t(key)` and `pick(bilingual)`. Locale is hard-coded to `"en"`; `dictionaries.ts` is keyed by `Locale` so a future locale switch only needs the provider state changed. Some mock data uses `Bilingual = string | { en: string }` — always go through `pick()`.
+`src/lib/i18n/locale-provider.tsx` exposes `useLocale()` returning `t(key)`, `pick(bilingual)`, and `setLocale(next)`. Supported locales: `en` (default) and `ko`. Resolution order: `habitus_locale` cookie → signed-in user's `user_profiles.locale` → `"en"`. Root layout reads the cookie server-side and seeds the provider via `initialLocale` so SSR matches the user's language without a flash. Users flip language at `/settings`. Mock data using `Bilingual = string | { en: T, ko?: T }` should always go through `pick()`. Full guide: [docs/i18n.md](docs/i18n.md).
 
 ### UI primitives
 

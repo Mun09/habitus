@@ -3,15 +3,17 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, Settings, X } from "lucide-react";
 import { Logo } from "@/components/common/logo";
 import { NotificationsBell } from "@/components/layout/notifications-bell";
 import { useLocale } from "@/lib/i18n/locale-provider";
+import { useUser } from "@/lib/supabase/user-provider";
 import { cn } from "@/lib/utils";
 
 export function Header() {
   const { t } = useLocale();
   const pathname = usePathname();
+  const { user } = useUser();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -66,6 +68,15 @@ export function Header() {
         </nav>
         <div className="flex items-center gap-1">
           <NotificationsBell />
+          {user && (
+            <Link
+              href="/settings"
+              aria-label={t("nav.settings")}
+              className="cursor-pointer rounded-md p-2 hover:bg-muted hidden md:inline-flex items-center text-muted-foreground hover:text-foreground"
+            >
+              <Settings className="h-5 w-5" />
+            </Link>
+          )}
           <button
             type="button"
             aria-label="menu"
@@ -89,6 +100,16 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+            {user && (
+              <Link
+                href="/settings"
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-3 text-sm hover:bg-muted flex items-center gap-2"
+              >
+                <Settings className="h-4 w-4" />
+                {t("nav.settings")}
+              </Link>
+            )}
           </nav>
         </div>
       )}
