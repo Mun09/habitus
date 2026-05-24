@@ -1,7 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { isAdminPath, isProtected } from "@/lib/auth/route-policy";
-import { isAdminEmail } from "@/lib/auth/role-emails";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -49,19 +48,35 @@ export async function middleware(request: NextRequest) {
   if (!user) {
     const signInUrl = new URL("/sign-in", request.url);
     signInUrl.searchParams.set("next", pathname);
-    return NextResponse.redirect(signInUrl);
+    return redirectWithCookies(signInUrl, response);
   }
 
   if (adminRoute) {
-    // Phase 1: ADMIN_EMAILS env is the source of truth. Phase 2 swaps
-    // this for a user_profiles.role='admin' check (env stays as a
-    // bootstrap fallback so the first admin can ever sign in).
-    if (!isAdminEmail(user.email)) {
-      return NextResponse.redirect(new URL("/", request.url));
+    const { data: profile } = await supabase
+      .from("user_profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (profile?.role !== "admin") {
+      return redirectWithCookies(new URL("/", request.url), response);
     }
   }
 
   return response;
+}
+
+// Build a redirect response that preserves any auth cookies Supabase
+// just refreshed on the in-flight `response`. Without this, a session
+// that gets refreshed mid-request and then bounces to /sign-in (or /)
+// loses the freshly-issued access/refresh tokens, and the user gets
+// kicked back to /sign-in on the next navigation despite being valid.
+function redirectWithCookies(to: URL, source: NextResponse): NextResponse {
+  const redir = NextResponse.redirect(to);
+  source.cookies.getAll().forEach((cookie) => {
+    redir.cookies.set(cookie);
+  });
+  return redir;
 }
 
 export const config = {

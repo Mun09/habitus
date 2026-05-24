@@ -3,17 +3,24 @@
 import { revalidatePath } from "next/cache";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
 import { notifyProjectOwner } from "@/lib/supabase/notifications";
-import { isAdminEmail } from "@/lib/auth/role-emails";
 
 async function requireAdmin() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user?.email) {
+  if (!user) {
     throw new Error("Unauthorized");
   }
-  if (!isAdminEmail(user.email)) {
+
+  const service = await createServiceClient();
+  const { data: profile } = await service
+    .from("user_profiles")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (profile?.role !== "admin") {
     throw new Error("Forbidden");
   }
   return user;

@@ -94,9 +94,6 @@ SUPABASE_PROJECT_ID=<ref>
 OPENAI_API_KEY=sk-...
 
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-
-# Comma-separated emails allowed into /admin. Yours goes here.
-ADMIN_EMAILS=you@example.com
 ```
 
 `.env.local` is gitignored. Never commit `SUPABASE_SERVICE_ROLE_KEY`
@@ -256,7 +253,7 @@ After Supabase + OpenAI keys are live:
 6. On `/projects/{uuid}`, type a message in the PM tab. A
    `chat_messages` row is written. Realtime updates fire when new
    rows appear.
-7. `/admin` (only if your email is in `ADMIN_EMAILS`) → pick the
+7. `/admin` (only if your `user_profiles.role='admin'`) → pick the
    project → publish a `project_update`, send a PM message, or push
    `progress` to 100 + `status` to `completed`. Switch back to
    `/projects/{uuid}` to see the changes (Realtime + revalidatePath).
@@ -279,7 +276,7 @@ vercel deploy --prod --yes
 Before the first deploy:
 
 1. **Vercel dashboard > Project > Settings > Environment Variables**.
-   Add the same six keys from `.env.local`, scoping them to
+   Add the same keys from `.env.local`, scoping them to
    `Production`, `Preview`, and `Development`. Set
    `NEXT_PUBLIC_APP_URL` to your production URL (no trailing slash).
 2. Add the production callback to both providers:
@@ -297,11 +294,11 @@ Aliased prototype domain: `gather-alpha-six.vercel.app`.
 `/admin` is gated behind:
 
 1. The same auth middleware as the rest of the app (session required).
-2. An additional email allowlist (`ADMIN_EMAILS` env var). Empty list
-   disables the surface entirely.
+2. A DB check that `user_profiles.role = 'admin'`. Set this in Supabase
+   Studio for any user who needs the surface.
 
 Each Server Action under [src/app/admin/actions.ts](src/app/admin/actions.ts)
-re-checks the caller's email before using the service-role client, so
+re-checks the caller's role before using the service-role client, so
 even if the middleware is misconfigured the surface refuses to write.
 
 From `/admin/projects/{id}` a PM can:

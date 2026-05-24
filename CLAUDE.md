@@ -10,7 +10,7 @@ Habitus — interior design + verified contractor matching + live project tracki
 
 Every protected route (`/onboarding`, `/design`, `/matching`, `/projects`, `/app`, `/settings`, `/contractor`, `/admin`) requires a Supabase session — `middleware.ts` redirects to `/sign-in` when Supabase env vars are absent or no user is present. The single source of truth for path × role access is [src/lib/auth/route-policy.ts](src/lib/auth/route-policy.ts) — imported by both `middleware.ts` and `src/app/auth/callback/route.ts`. The `/app` route is the one exception: a marketing-only carousel of flow screenshots that still hard-codes preview data; treat it as a brochure, not a data surface.
 
-User role lives in `user_profiles.role` (`customer` | `contractor` | `admin`). Post-login routing happens in [src/app/auth/callback/route.ts](src/app/auth/callback/route.ts): customers go to `/onboarding`/`/projects`, contractors to `/contractor` (Phase 3), admins to `/admin`. `ADMIN_EMAILS` env auto-promotes matching users to `admin` on sign-in. See [docs/auth-and-roles.md](docs/auth-and-roles.md).
+User role lives in `user_profiles.role` (`customer` | `contractor` | `admin`). Post-login routing happens in [src/app/auth/callback/route.ts](src/app/auth/callback/route.ts): customers go to `/onboarding`/`/projects`, contractors to `/contractor` (Phase 3), admins to `/admin`. New sign-ins always start as `customer`; promotion to `contractor` or `admin` is done in Supabase Studio by editing `user_profiles.role` (and `contractor_id` for contractors). See [docs/auth-and-roles.md](docs/auth-and-roles.md).
 
 ## Heads-up: Next.js version
 

@@ -13,29 +13,34 @@ Habitus uses a single Supabase Auth pool for every user (customer, contractor, a
 ## Where role lives
 
 - DB column: `user_profiles.role text not null default 'customer' check (in customer/contractor/admin)` (migration [010_roles_and_locale.sql](../supabase/migrations/010_roles_and_locale.sql))
+- `user_profiles.contractor_id` (FK → `contractors.id`) binds a contractor user to a contractor row (migration [011_contractor_link.sql](../supabase/migrations/011_contractor_link.sql))
 - TS type: `UserRole` in [src/lib/db/types.ts](../src/lib/db/types.ts)
 - Single source of truth for "which role may visit which path": [src/lib/auth/route-policy.ts](../src/lib/auth/route-policy.ts)
 
 ## Sign-in flow
 
 1. User lands on `/sign-in`, optionally with `?next=/some/path`
-2. Picks Google OAuth or magic link. Both redirect to `/auth/callback`
-3. [auth/callback/route.ts](../src/app/auth/callback/route.ts):
-   - Exchanges code for session
+2. Picks Google OAuth, magic link, or email + password. All paths land in [finalize-signin.ts](../src/lib/auth/finalize-signin.ts)
+3. `finalizeSignIn`:
    - Looks up `user_profiles` row (creates one with `role='customer'` if missing)
-   - **Admin promotion:** If the user's email is in the `ADMIN_EMAILS` env var, role is upserted to `admin`. This runs on every callback and is idempotent
    - Reads `locale` from the profile and writes it to the `habitus_locale` cookie so the first server render after sign-in is already in the user's language
    - Redirects via `postSignInDestination(role, next)` which:
      - Honors `?next=...` only if the role is allowed there
      - Otherwise sends the user to `homeFor(role)`
 
+Promotion to `contractor` or `admin` is **operator work** — flip `user_profiles.role` (and `contractor_id` for contractors) directly in Supabase Studio. There is no env-var auto-promotion.
+
 ## Adding an admin
 
-1. Add the email to `ADMIN_EMAILS` (comma-separated) in `.env` and on Vercel
-2. Have that user sign in. The callback auto-promotes their `user_profiles.role` to `admin`
-3. Subsequent sign-ins skip the promotion (idempotent)
+1. Have the user sign in once so a `user_profiles` row exists
+2. In Supabase Studio, set their `user_profiles.role` to `admin`
+3. Next sign-in lands them on `/admin`
 
-You can also flip the column manually in the Supabase dashboard; `ADMIN_EMAILS` is the bootstrap path, not the only way.
+## Adding a contractor
+
+1. Have the user sign in once so a `user_profiles` row exists
+2. In Supabase Studio, set their `user_profiles.role` to `contractor` **and** `user_profiles.contractor_id` to the matching `contractors.id` slug (e.g. `kim-warm`, `lee-haus`)
+3. Next sign-in lands them on `/contractor`. `requireContractor()` ([src/lib/auth/require-contractor.ts](../src/lib/auth/require-contractor.ts)) enforces the binding on every contractor-side request
 
 ## Middleware
 
@@ -43,13 +48,16 @@ You can also flip the column manually in the Supabase dashboard; `ADMIN_EMAILS` 
 
 - Calls `supabase.auth.getSession()` so an expired access token is refreshed via the cookie setter callback **before** `getUser()` validates
 - Redirects unauthenticated users to `/sign-in?next=<pathname>`
-- For `/admin/*` specifically, enforces the `ADMIN_EMAILS` check (Phase 1 — Phase 2 swaps this for `role='admin'`)
+- For `/admin/*` specifically, looks up `user_profiles.role` and redirects non-admins to `/`
 
-Phase 1 does **not** yet enforce role-vs-path at the middleware layer. That is enforced inside the callback's `postSignInDestination` so wrong-role users get bounced on sign-in. Phase 3 will add per-request role checks for `/contractor`.
+Role-vs-path enforcement at sign-in lives in `postSignInDestination`. Phase 3 added `requireContractor()` for contractor routes; admin and contractor routes both have an in-request DB check on top of the middleware gate.
 
 ## Files of record
 
 - [supabase/migrations/010_roles_and_locale.sql](../supabase/migrations/010_roles_and_locale.sql)
+- [supabase/migrations/011_contractor_link.sql](../supabase/migrations/011_contractor_link.sql)
 - [src/lib/auth/route-policy.ts](../src/lib/auth/route-policy.ts)
+- [src/lib/auth/finalize-signin.ts](../src/lib/auth/finalize-signin.ts)
+- [src/lib/auth/require-contractor.ts](../src/lib/auth/require-contractor.ts)
 - [src/app/auth/callback/route.ts](../src/app/auth/callback/route.ts)
 - [middleware.ts](../middleware.ts)
