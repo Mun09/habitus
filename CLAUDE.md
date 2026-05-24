@@ -70,3 +70,4 @@ When adding photos to one surface, do not reach into the other folder. The histo
 
 - **No em dashes** in copy, comments, or chat output (reads as AI-generated). En dashes for numeric ranges are fine.
 - DB is the source of truth. When adding a domain field: write a new `supabase/migrations/0XX_*.sql` migration first, then update the TypeScript stub in `src/lib/db/types.ts` (or regenerate with `npm run types:gen`), then the seed mock in `src/lib/mock/*.ts`, then consumers.
+- **Commits must not include `Co-Authored-By: Claude` trailers** (or any other AI co-author trailer). Write the commit message body only — no `Co-Authored-By` line, no "Generated with Claude Code" footer.
